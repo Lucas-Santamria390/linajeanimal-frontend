@@ -10,7 +10,7 @@ export default function AppRouter() {
     <BrowserRouter>
       <AuthProvider>
         <Navbar />
-        <main className="min-h-screen bg-gray-50">
+        <main className="min-h-screen bg-neutral-bg">
           <Routes>
             <Route path="/" element={<h1 className="p-6 text-xl">Página principal</h1>} />
             <Route path="/login" element={<Login />} />
