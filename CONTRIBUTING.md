@@ -97,14 +97,28 @@ Página → Custom Hook → Servicio (Axios) → API Backend
                     AuthContext (token)
 ```
 
+### Convenciones de nomenclatura
+
+| Tipo | Convención | Ejemplo |
+|------|-----------|---------|
+| Componentes | PascalCase | `AnimalList`, `DataTable`, `ConfirmModal` |
+| Hooks | prefijo `use` | `useAnimales`, `useAuth`, `useDashboard` |
+| Servicios | verbo + entidad | `getAnimales`, `createEspecie`, `deleteRaza` |
+| Archivos | kebab-case | `animales.js`, `form-field.jsx` |
+| Carpetas | plural | `pages/`, `services/`, `hooks/` |
+
 ### Reglas obligatorias
 
-- **Estados cubiertos:** cada componente debe manejar loading, empty, error, success.
+- **Estados cubiertos:** cada página y componente debe manejar loading, empty, error, success.
+- **Responsive:** toda página debe ser funcional en móvil (< 640px), tablet (768-1024px) y PC (> 1024px). Usar clases Tailwind `sm:`, `md:`, `lg:`.
 - **Autenticación:** todo request autenticado usa el interceptor de Axios (token del localStorage).
-- **Manejo de errores:** mostrar mensajes al usuario con el componente `Alert`, no en console.log.
+- **Manejo de errores:** mostrar mensajes al usuario con el componente `Alert`, nunca en `console.log`.
 - **Protección de rutas:** usar `ProtectedRoute` para rutas privadas, redirigir a `/login` en 401.
-- **Formularios:** validar campos obligatorios, email, longitud de password, valores numéricos antes de enviar.
-- **Sin datos simulados:** toda la data debe venir del API real, no de mocks locales.
+- **Formularios:** validar campos obligatorios, email, longitud de password (≥ 8), valores numéricos antes de enviar. Mostrar errores por campo.
+- **Props:** desestructurar con valores por defecto: `function Card({ titulo = 'Sin título', items = [] })`.
+- **Sin datos simulados:** toda la data debe venir del API real. Excepción única: Landing page.
+- **Código limpio:** sin `console.log` (excepto desarrollo temporal), sin código comentado, sin imports no usados.
+- **Paleta:** usar colores `brand-*` (verde), `secondary-*` (cian) y `neutral-*` definidos en `src/index.css`. No usar colores fijos como `indigo-*` o `gray-*`.
 
 ### Roles y visibilidad
 
@@ -112,6 +126,16 @@ Página → Custom Hook → Servicio (Axios) → API Backend
 |-----|--------------------|
 | `admin` | CRUD animales, CRUD especies, CRUD razas, CRUD usuarios |
 | `user` | CRUD solo sobre sus animales, lectura de especies/razas |
+
+### Issues y tareas
+
+Ver `docs/ISSUES.md` para la lista completa de issues organizados por milestone y developer. Cada issue especifica dependencias, prioridad y entregables esperados.
+
+### Testing (cuando aplique)
+
+- Usar Vitest + @testing-library/react para tests unitarios y de integración.
+- Priorizar tests de hooks (lógica) y páginas (flujo completo).
+- Ver agente `test-frontend` en `.opencode/agents/` para guía detallada.
 
 ## Antes de contribuir por primera vez
 
