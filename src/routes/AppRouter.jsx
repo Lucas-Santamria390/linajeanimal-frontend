@@ -6,6 +6,11 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
 
+/**
+ * Configuracion de rutas de la aplicacion
+ * BrowserRouter + AuthProvider + Navbar con rutas protegidas.
+ * @returns {JSX.Element}
+ */
 export default function AppRouter() {
   return (
     <BrowserRouter>

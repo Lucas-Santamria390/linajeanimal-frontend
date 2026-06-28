@@ -1,3 +1,11 @@
+/**
+ * Componente de alerta/notificacion con tipos predefinidos
+ * @param {object} props - Propiedades del componente
+ * @param {('success'|'error'|'warning'|'info')} [props.type='info'] - Tipo de alerta
+ * @param {string|null} props.message - Mensaje a mostrar
+ * @param {() => void} [props.onClose] - Callback al cerrar la alerta
+ * @returns {JSX.Element|null}
+ */
 export default function Alert({ type = 'info', message, onClose }) {
   const colors = {
     success: 'bg-brand-50 border-brand-500 text-brand-700',

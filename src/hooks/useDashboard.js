@@ -4,6 +4,10 @@ import { getEspecies } from '../services/especies'
 import { getRazas } from '../services/razas'
 import { getUsuarios } from '../services/usuarios'
 
+/**
+ * Hook que obtiene estadisticas del dashboard
+ * @returns {{ stats: (object|null), loading: boolean, error: (string|null) }} Estado del dashboard
+ */
 export function useDashboard() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
