@@ -1,6 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+/**
+ * Barra de navegacion principal
+ * Muestra enlaces al dashboard y nombre de usuario cuando esta autenticado,
+ * o enlace de inicio de sesion cuando no lo esta.
+ * @returns {JSX.Element}
+ */
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
   const navigate = useNavigate()

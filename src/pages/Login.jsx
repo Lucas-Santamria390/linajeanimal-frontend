@@ -4,6 +4,12 @@ import { useAuth } from '../context/AuthContext'
 import Alert from '../components/Alert'
 import Loading from '../components/Loading'
 
+/**
+ * Pagina de inicio de sesion
+ * Validacion de campos email/password antes de enviar.
+ * Muestra errores por campo y error general del API.
+ * @returns {JSX.Element}
+ */
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

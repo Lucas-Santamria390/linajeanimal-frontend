@@ -2,6 +2,12 @@ import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
 
+/**
+ * Instancia de Axios preconfigurada con:
+ * - Base URL desde VITE_API_URL (fallback localhost)
+ * - Interceptor de request que adjunta token JWT del localStorage
+ * - Interceptor de response que limpia sesion y redirige a /login en 401
+ */
 const api = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -27,4 +33,5 @@ api.interceptors.response.use(
   }
 )
 
+/** Instancia de Axios preconfigurada */
 export default api

@@ -7,6 +7,21 @@ import {
   deleteAnimal,
 } from '../services/animales'
 
+/**
+ * Hook CRUD para animales
+ * @param {object} [initialParams] - Parametros iniciales de busqueda (page, limit, filtros)
+ * @returns {{
+ *   data: object[],
+ *   loading: boolean,
+ *   error: (string|null),
+ *   pagination: (object|null),
+ *   refetch: (newParams?: object) => void,
+ *   getById: (id: number|string) => Promise<object>,
+ *   create: (formData: object) => Promise<object>,
+ *   update: (id: number|string, formData: object) => Promise<object>,
+ *   remove: (id: number|string) => Promise<void>
+ * }} Retorna estado del hook y operaciones CRUD
+ */
 export function useAnimales(initialParams = {}) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)

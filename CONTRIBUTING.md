@@ -70,6 +70,7 @@ docs: actualizar README con credenciales de prueba
    - [ ] Linting pasa (`npm run lint`)
    - [ ] Los componentes cubren estados loading, empty, error, success
    - [ ] Los formularios validan campos antes de enviar
+   - [ ] Toda función exportada tiene JSDoc (`@param`, `@returns`, descripción)
    - [ ] Se siguen los estándares del proyecto
 
 4. **Review:** mínimo 1 aprobación antes de mergear a `develop`
@@ -109,6 +110,7 @@ Página → Custom Hook → Servicio (Axios) → API Backend
 
 ### Reglas obligatorias
 
+- **JSDoc:** toda función exportada debe tener bloque JSDoc con descripción, `@param` (por parámetro) y `@returns`. El linter lo valida con `eslint-plugin-jsdoc`.
 - **Estados cubiertos:** cada página y componente debe manejar loading, empty, error, success.
 - **Responsive:** toda página debe ser funcional en móvil (< 640px), tablet (768-1024px) y PC (> 1024px). Usar clases Tailwind `sm:`, `md:`, `lg:`.
 - **Autenticación:** todo request autenticado usa el interceptor de Axios (token del localStorage).

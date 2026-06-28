@@ -7,6 +7,21 @@ import {
   deleteRaza,
 } from '../services/razas'
 
+/**
+ * Hook CRUD para razas
+ * @param {object} [initialParams] - Parametros iniciales (incluye especie_id para filtrar)
+ * @returns {{
+ *   data: object[],
+ *   loading: boolean,
+ *   error: (string|null),
+ *   pagination: (object|null),
+ *   refetch: (newParams?: object) => void,
+ *   getById: (id: number|string) => Promise<object>,
+ *   create: (formData: object) => Promise<object>,
+ *   update: (id: number|string, formData: object) => Promise<object>,
+ *   remove: (id: number|string) => Promise<void>
+ * }} Retorna estado del hook y operaciones CRUD
+ */
 export function useRazas(initialParams = {}) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)

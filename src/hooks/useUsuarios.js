@@ -8,6 +8,22 @@ import {
   toggleUsuarioActivo,
 } from '../services/usuarios'
 
+/**
+ * Hook CRUD para usuarios
+ * @param {object} [initialParams] - Parametros iniciales de busqueda (page, limit)
+ * @returns {{
+ *   data: object[],
+ *   loading: boolean,
+ *   error: (string|null),
+ *   pagination: (object|null),
+ *   refetch: (newParams?: object) => void,
+ *   getById: (id: number|string) => Promise<object>,
+ *   create: (formData: object) => Promise<object>,
+ *   update: (id: number|string, formData: object) => Promise<object>,
+ *   remove: (id: number|string) => Promise<void>,
+ *   toggleActive: (id: number|string, active: boolean) => Promise<object>
+ * }} Retorna estado del hook y operaciones CRUD
+ */
 export function useUsuarios(initialParams = {}) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)

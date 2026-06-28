@@ -7,6 +7,21 @@ import {
   deleteEspecie,
 } from '../services/especies'
 
+/**
+ * Hook CRUD para especies
+ * @param {object} [initialParams] - Parametros iniciales de busqueda
+ * @returns {{
+ *   data: object[],
+ *   loading: boolean,
+ *   error: (string|null),
+ *   pagination: (object|null),
+ *   refetch: (newParams?: object) => void,
+ *   getById: (id: number|string) => Promise<object>,
+ *   create: (formData: object) => Promise<object>,
+ *   update: (id: number|string, formData: object) => Promise<object>,
+ *   remove: (id: number|string) => Promise<void>
+ * }} Retorna estado del hook y operaciones CRUD
+ */
 export function useEspecies(initialParams = {}) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
