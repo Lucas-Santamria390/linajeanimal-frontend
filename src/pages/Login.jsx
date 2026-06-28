@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Alert from '../components/Alert'
 import Loading from '../components/Loading'
 
 export default function Login() {
+  const location = useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
+  const [registeredMessage] = useState(location.state?.registered)
   const { login, loading, error, setError } = useAuth()
   const navigate = useNavigate()
 
@@ -39,6 +41,9 @@ export default function Login() {
         </h1>
 
         <Alert message={error} type="error" onClose={() => setError(null)} />
+        {registeredMessage && (
+          <Alert type="success" message="Cuenta creada exitosamente. Inicia sesion." />
+        )}
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-neutral-text mb-1">Correo</label>
@@ -72,6 +77,13 @@ export default function Login() {
             Ingresar
           </button>
         )}
+
+        <p className="text-center text-sm text-neutral-muted mt-4">
+          No tienes cuenta?{' '}
+          <Link to="/register" className="text-brand-500 hover:underline">
+            Registrate
+          </Link>
+        </p>
       </form>
     </div>
   )
