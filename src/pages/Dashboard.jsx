@@ -3,6 +3,11 @@ import { useDashboard } from '../hooks/useDashboard'
 import Loading from '../components/Loading'
 import Alert from '../components/Alert'
 
+/**
+ * Pagina de Dashboard con estadisticas generales
+ * Muestra tarjetas con totales de animales, especies, razas y usuarios.
+ * @returns {JSX.Element}
+ */
 export default function Dashboard() {
   const { user } = useAuth()
   const { stats, loading, error } = useDashboard()

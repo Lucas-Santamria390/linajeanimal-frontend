@@ -3,6 +3,13 @@ import api from '../services/api'
 
 const AuthContext = createContext(null)
 
+/**
+ * Proveedor de autenticacion global
+ * Maneja login/logout, almacena token y usuario en localStorage
+ * @param {object} props - Propiedades del componente
+ * @param {JSX.Element} props.children - Componentes hijos
+ * @returns {JSX.Element}
+ */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('user')
@@ -51,6 +58,11 @@ export function AuthProvider({ children }) {
   )
 }
 
+/**
+ * Hook para acceder al contexto de autenticacion
+ * @returns {{ user: (object|null), token: (string|null), loading: boolean, error: (string|null), isAuthenticated: boolean, login: (email: string, password: string) => Promise<boolean>, logout: () => void, setError: (msg: string|null) => void }} Estado y funciones de autenticacion
+ * @throws {Error} Si se usa fuera de AuthProvider
+ */
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext)

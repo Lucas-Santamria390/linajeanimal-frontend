@@ -1,3 +1,9 @@
+/**
+ * Componente de spinner de carga
+ * @param {object} props - Propiedades del componente
+ * @param {string} [props.message='Cargando...'] - Mensaje opcional
+ * @returns {JSX.Element}
+ */
 export default function Loading({ message = 'Cargando...' }) {
   return (
     <div className="flex items-center justify-center py-12">
