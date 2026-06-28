@@ -4,11 +4,14 @@ Aplicación web para la gestión de un **árbol genealógico de animales**, desa
 
 ## Tecnologías
 
-- **React 19** + **Vite 8**
-- **React Router v7** (navegación)
-- **Axios** (consumo de API)
-- **Tailwind CSS v4** (estilos)
-- **ESLint** (código limpio)
+| Capa | Tecnología | Versión |
+|------|-----------|---------|
+| Framework | React | ^19.2.7 |
+| Bundler | Vite | ^8.1.0 |
+| Routing | React Router DOM | ^7.18.0 |
+| HTTP Client | Axios | ^1.18.1 |
+| Estilos | Tailwind CSS | v4 |
+| Linter | ESLint | ^10.5.0 |
 
 ## Requisitos
 
@@ -54,6 +57,16 @@ Página → Custom Hook → Servicio (Axios) → API Backend
                        ↕
                  AuthContext (token en localStorage)
 ```
+
+### Flujo de autenticación
+
+1. Usuario ingresa credenciales en `/login`
+2. `AuthContext.login()` envía POST a `/auth/login`
+3. Backend valida y devuelve `{ success, data: { usuario, token } }`
+4. Token se guarda en `localStorage`
+5. Axios interceptor agrega `Authorization: Bearer <token>` a cada request
+6. Si el backend responde 401, el interceptor limpia el storage y redirige a `/login`
+7. `ProtectedRoute` verifica `isAuthenticated` antes de renderizar rutas privadas
 
 Las rutas privadas están protegidas por `ProtectedRoute` que redirige a `/login` si no hay token.
 
