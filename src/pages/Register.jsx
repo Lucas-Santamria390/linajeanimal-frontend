@@ -1,8 +1,15 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { register } from '../services/auth'
 import Alert from '../components/Alert'
 import Loading from '../components/Loading'
+
+const PASSWORD_REQUIREMENTS = [
+  { label: 'Minimo 8 caracteres', test: (v) => v.length >= 8 },
+  { label: 'Al menos una mayuscula', test: (v) => /[A-Z]/.test(v) },
+  { label: 'Al menos un numero', test: (v) => /\d/.test(v) },
+  { label: 'Al menos un caracter especial', test: (v) => /[!@#$%^&*(),.?":{}|<>_]/.test(v) },
+]
 
 export default function Register() {
   const [form, setForm] = useState({ nombre: '', email: '', password: '', password_confirmation: '' })
@@ -11,13 +18,13 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
+  const successTimeout = useRef(null)
 
-  const passwordRequirements = [
-    { label: 'Minimo 8 caracteres', test: (v) => v.length >= 8 },
-    { label: 'Al menos una mayuscula', test: (v) => /[A-Z]/.test(v) },
-    { label: 'Al menos un numero', test: (v) => /\d/.test(v) },
-    { label: 'Al menos un caracter especial', test: (v) => /[!@#$%^&*(),.?":{}|<>_]/.test(v) },
-  ]
+  useEffect(() => {
+    return () => {
+      if (successTimeout.current) clearTimeout(successTimeout.current)
+    }
+  }, [])
 
   const validate = () => {
     const errs = {}
@@ -26,7 +33,7 @@ export default function Register() {
     else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Correo invalido'
     if (!form.password) errs.password = 'La contrasena es obligatoria'
     else {
-      for (const req of passwordRequirements) {
+      for (const req of PASSWORD_REQUIREMENTS) {
         if (!req.test(form.password)) {
           errs.password = 'La contrasena no cumple los requisitos'
           break
@@ -53,9 +60,9 @@ export default function Register() {
     if (!validate()) return
     setLoading(true)
     try {
-      await register(form)
+      await register({ nombre: form.nombre, email: form.email, password: form.password })
       setSuccess(true)
-      setTimeout(() => navigate('/login', { state: { registered: true } }), 1500)
+      successTimeout.current = setTimeout(() => navigate('/login', { state: { registered: true } }), 1500)
     } catch (err) {
       setApiError(err.response?.data?.message || 'Error al registrarse')
     } finally {
@@ -88,8 +95,9 @@ export default function Register() {
         <Alert message={apiError} type="error" onClose={() => setApiError(null)} />
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-neutral-text mb-1">Nombre</label>
+          <label htmlFor="nombre" className="block text-sm font-medium text-neutral-text mb-1">Nombre</label>
           <input
+            id="nombre"
             name="nombre"
             type="text"
             value={form.nombre}
@@ -102,8 +110,9 @@ export default function Register() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-neutral-text mb-1">Correo</label>
+          <label htmlFor="email" className="block text-sm font-medium text-neutral-text mb-1">Correo</label>
           <input
+            id="email"
             name="email"
             type="email"
             value={form.email}
@@ -116,8 +125,9 @@ export default function Register() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-neutral-text mb-1">Contrasena</label>
+          <label htmlFor="password" className="block text-sm font-medium text-neutral-text mb-1">Contrasena</label>
           <input
+            id="password"
             name="password"
             type="password"
             value={form.password}
@@ -127,14 +137,14 @@ export default function Register() {
             }`}
           />
           <ul className="mt-1 space-y-0.5">
-            {passwordRequirements.map((req) => {
+            {PASSWORD_REQUIREMENTS.map((req) => {
               const passed = form.password ? req.test(form.password) : false
               return (
                 <li
                   key={req.label}
                   className={`text-xs ${passed ? 'text-brand-600' : 'text-neutral-muted'}`}
                 >
-                  {passed ? '?' : '?'} {req.label}
+                  <span aria-hidden="true">{passed ? '?' : '?'}</span> {req.label}
                 </li>
               )
             })}
@@ -143,10 +153,11 @@ export default function Register() {
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-neutral-text mb-1">
+          <label htmlFor="password_confirmation" className="block text-sm font-medium text-neutral-text mb-1">
             Confirmar contrasena
           </label>
           <input
+            id="password_confirmation"
             name="password_confirmation"
             type="password"
             value={form.password_confirmation}
@@ -165,7 +176,8 @@ export default function Register() {
         ) : (
           <button
             type="submit"
-            className="w-full bg-brand-500 text-white py-2 rounded font-medium hover:bg-brand-600"
+            disabled={loading}
+            className="w-full bg-brand-500 text-white py-2 rounded font-medium hover:bg-brand-600 disabled:opacity-50"
           >
             Registrarse
           </button>

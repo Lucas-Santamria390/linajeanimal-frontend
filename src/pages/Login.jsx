@@ -9,9 +9,13 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
-  const [registeredMessage] = useState(location.state?.registered)
+  const registeredMessage = location.state?.registered
   const { login, loading, error, setError } = useAuth()
   const navigate = useNavigate()
+
+  if (registeredMessage) {
+    window.history.replaceState({}, document.title)
+  }
 
   const validate = () => {
     const errs = {}
@@ -46,8 +50,10 @@ export default function Login() {
         )}
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-neutral-text mb-1">Correo</label>
+          <label htmlFor="email" className="block text-sm font-medium text-neutral-text mb-1">Correo</label>
           <input
+            id="email"
+            name="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -57,8 +63,10 @@ export default function Login() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-neutral-text mb-1">Contraseña</label>
+          <label htmlFor="password" className="block text-sm font-medium text-neutral-text mb-1">Contraseña</label>
           <input
+            id="password"
+            name="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
