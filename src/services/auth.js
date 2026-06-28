@@ -11,10 +11,11 @@ export const login = (email, password) =>
 
 /**
  * Registra un nuevo usuario
- * @param {object} data - { nombre, email, password, password_confirmation }
+ * @param {object} data - { nombre, email, password }
  * @returns {Promise<object>} { success, data: { usuario, token } }
  */
-export const register = (data) => api.post('/auth/register', data)
+export const register = ({ nombre, email, password }) =>
+  api.post('/auth/register', { nombre, email, password })
 
 /**
  * Obtiene perfil del usuario autenticado
