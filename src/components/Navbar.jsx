@@ -11,24 +11,24 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-indigo-700 text-white px-6 py-3 flex items-center justify-between">
+    <nav className="bg-brand-600 text-white px-6 py-3 flex items-center justify-between">
       <Link to="/" className="font-bold text-lg">
         LinajeAnimal
       </Link>
       <div className="flex items-center gap-4">
         {isAuthenticated ? (
           <>
-            <Link to="/dashboard" className="hover:text-indigo-200">Dashboard</Link>
-            <span className="text-indigo-200">{user?.nombre || user?.email}</span>
+            <Link to="/dashboard" className="hover:text-brand-100">Dashboard</Link>
+            <span className="text-brand-100">{user?.nombre || user?.email}</span>
             <button
               onClick={handleLogout}
-              className="bg-white text-indigo-700 px-3 py-1 rounded text-sm font-medium hover:bg-indigo-100"
+              className="bg-white text-brand-600 px-3 py-1 rounded text-sm font-medium hover:bg-brand-50"
             >
               Cerrar sesión
             </button>
           </>
         ) : (
-          <Link to="/login" className="hover:text-indigo-200">Iniciar sesión</Link>
+          <Link to="/login" className="hover:text-brand-100">Iniciar sesión</Link>
         )}
       </div>
     </nav>

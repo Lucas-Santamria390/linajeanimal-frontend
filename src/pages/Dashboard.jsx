@@ -10,7 +10,7 @@ export default function Dashboard() {
   if (loading) return <Loading message="Cargando estadísticas..." />
 
   const cards = [
-    { label: 'Animales', value: stats?.animales, color: 'border-l-indigo-500' },
+    { label: 'Animales', value: stats?.animales, color: 'border-l-brand-500' },
     { label: 'Especies', value: stats?.especies, color: 'border-l-green-500' },
     { label: 'Razas', value: stats?.razas, color: 'border-l-blue-500' },
     { label: 'Usuarios', value: stats?.usuarios, color: 'border-l-amber-500' },
