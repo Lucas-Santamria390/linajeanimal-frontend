@@ -4,10 +4,17 @@ import { useAuth } from '../context/AuthContext'
 import Alert from '../components/Alert'
 import Loading from '../components/Loading'
 
+const PASSWORD_REQUIREMENTS = [
+  { label: 'Minimo 8 caracteres', test: (v) => v.length >= 8 },
+  { label: 'Al menos una mayuscula', test: (v) => /[A-Z]/.test(v) },
+  { label: 'Al menos un numero', test: (v) => /\d/.test(v) },
+  { label: 'Al menos un caracter especial', test: (v) => /[!@#$%^&*(),.?":{}|<>_]/.test(v) },
+]
+
 /**
  * Pagina de inicio de sesion
  * Validacion de campos email/password antes de enviar.
- * Muestra errores por campo y error general del API.
+ * Muestra errores por campo, checklist de requisitos de password y error general del API.
  * @returns {JSX.Element}
  */
 export default function Login() {
@@ -26,9 +33,16 @@ export default function Login() {
   const validate = () => {
     const errs = {}
     if (!email) errs.email = 'El correo es obligatorio'
-    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = 'Correo inválido'
-    if (!password) errs.password = 'La contraseña es obligatoria'
-    else if (password.length < 8) errs.password = 'Mínimo 8 caracteres'
+    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = 'Correo invalido'
+    if (!password) errs.password = 'La contrasena es obligatoria'
+    else {
+      for (const req of PASSWORD_REQUIREMENTS) {
+        if (!req.test(password)) {
+          errs.password = 'La contrasena no cumple los requisitos'
+          break
+        }
+      }
+    }
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -69,7 +83,7 @@ export default function Login() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-neutral-text mb-1">Contraseña</label>
+          <label htmlFor="password" className="block text-sm font-medium text-neutral-text mb-1">Contrasena</label>
           <input
             id="password"
             name="password"
@@ -78,15 +92,29 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             className={`w-full border rounded px-3 py-2 text-sm ${errors.password ? 'border-red-500' : 'border-neutral-300'}`}
           />
+          <ul className="mt-1 space-y-0.5">
+            {PASSWORD_REQUIREMENTS.map((req) => {
+              const passed = password ? req.test(password) : false
+              return (
+                <li
+                  key={req.label}
+                  className={`text-xs ${passed ? 'text-brand-600' : 'text-neutral-muted'}`}
+                >
+                  <span aria-hidden="true">{passed ? '?' : '?'}</span> {req.label}
+                </li>
+              )
+            })}
+          </ul>
           {errors.password && <p className="text-red-600 text-xs mt-1">{errors.password}</p>}
         </div>
 
         {loading ? (
-          <Loading message="Iniciando sesión..." />
+          <Loading message="Iniciando sesion..." />
         ) : (
           <button
             type="submit"
-            className="w-full bg-brand-500 text-white py-2 rounded font-medium hover:bg-brand-600"
+            disabled={loading}
+            className="w-full bg-brand-500 text-white py-2 rounded font-medium hover:bg-brand-600 disabled:opacity-50"
           >
             Ingresar
           </button>

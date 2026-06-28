@@ -11,7 +11,10 @@ export const login = (email, password) =>
 
 /**
  * Registra un nuevo usuario
- * @param {object} data - { nombre, email, password }
+ * @param {object} data - Datos del registro
+ * @param {string} data.nombre - Nombre del usuario
+ * @param {string} data.email - Correo electronico
+ * @param {string} data.password - Contrasena (min 8 chars, mayuscula, numero, especial)
  * @returns {Promise<object>} { success, data: { usuario, token } }
  */
 export const register = ({ nombre, email, password }) =>

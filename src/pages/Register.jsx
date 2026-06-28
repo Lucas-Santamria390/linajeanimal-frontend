@@ -11,6 +11,12 @@ const PASSWORD_REQUIREMENTS = [
   { label: 'Al menos un caracter especial', test: (v) => /[!@#$%^&*(),.?":{}|<>_]/.test(v) },
 ]
 
+/**
+ * Pagina de registro de nuevo usuario
+ * Formulario con validacion de email y password (checklist en vivo).
+ * Llama a POST /auth/register y redirige a /login en exito.
+ * @returns {JSX.Element}
+ */
 export default function Register() {
   const [form, setForm] = useState({ nombre: '', email: '', password: '', password_confirmation: '' })
   const [errors, setErrors] = useState({})
