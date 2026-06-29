@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
+import AnimalesList from '../pages/AnimalesList'
 
 /**
  * Configuracion de rutas de la aplicacion
@@ -26,6 +27,14 @@ export default function AppRouter() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/animales"
+              element={
+                <ProtectedRoute>
+                  <AnimalesList />
                 </ProtectedRoute>
               }
             />
