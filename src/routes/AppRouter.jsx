@@ -7,6 +7,7 @@ import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
 import EspeciesList from '../pages/EspeciesList'
 import AnimalesList from '../pages/AnimalesList'
+import RazasList from '../pages/RazasList'
 
 /**
  * Configuracion de rutas de la aplicacion
@@ -44,6 +45,14 @@ export default function AppRouter() {
               element={
                 <ProtectedRoute>
                   <AnimalesList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/razas"
+              element={
+                <ProtectedRoute>
+                  <RazasList />
                 </ProtectedRoute>
               }
             />
