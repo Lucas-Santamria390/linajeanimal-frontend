@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -12,6 +12,17 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handleEscape = (e) => { if (e.key === 'Escape') setIsOpen(false) }
+    document.addEventListener('keydown', handleEscape)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
 
   const handleLogout = () => {
     setIsOpen(false)
@@ -160,7 +171,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-lg transition-colors shadow-xs cursor-pointer"
+                className="w-full py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-lg transition-colors shadow-xs cursor-pointer"
               >
                 Cerrar sesión
               </button>
