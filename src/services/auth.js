@@ -1,13 +1,42 @@
 import api from './api'
 
+/**
+ * Inicia sesion con email y password
+ * @param {string} email - Correo electronico del usuario
+ * @param {string} password - Contrasena del usuario
+ * @returns {Promise<object>} { success, data: { usuario, token } }
+ */
 export const login = (email, password) =>
   api.post('/auth/login', { email, password })
 
-export const register = (data) => api.post('/auth/register', data)
+/**
+ * Registra un nuevo usuario
+ * @param {object} data - Datos del registro
+ * @param {string} data.nombre - Nombre del usuario
+ * @param {string} data.email - Correo electronico
+ * @param {string} data.password - Contrasena (min 8 chars, mayuscula, numero, especial)
+ * @returns {Promise<object>} { success, data: { usuario, token } }
+ */
+export const register = ({ nombre, email, password }) =>
+  api.post('/auth/register', { nombre, email, password })
 
+/**
+ * Obtiene perfil del usuario autenticado
+ * @returns {Promise<object>} { success, data: { ...usuario } }
+ */
 export const getProfile = () => api.get('/auth/profile')
 
+/**
+ * Cambia la contrasena del usuario autenticado
+ * @param {string} oldPassword - Contrasena actual
+ * @param {string} newPassword - Nueva contrasena
+ * @returns {Promise<object>} { success, data: { ... } }
+ */
 export const changePassword = (oldPassword, newPassword) =>
   api.put('/auth/password', { oldPassword, newPassword })
 
+/**
+ * Cierra sesion en el backend
+ * @returns {Promise<object>} { success, data: { ... } }
+ */
 export const logout = () => api.post('/auth/logout')
