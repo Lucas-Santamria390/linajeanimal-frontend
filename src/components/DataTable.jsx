@@ -1,6 +1,16 @@
-import React from 'react';
 import EmptyState from './EmptyState';
 
+/**
+ * Tabla de datos responsiva con vista de tarjetas en móvil y tabla en escritorio
+ * @param {object} props - Propiedades del componente
+ * @param {Array<{key: string, header: string, sortable?: boolean, render?: (value: unknown, row: object) => import('react').ReactNode, className?: string}>} props.columns - Configuración de columnas
+ * @param {Array<object>} props.data - Datos a renderizar
+ * @param {(key: string) => void} [props.onSort] - Callback al ordenar por columna
+ * @param {string} [props.emptyMessage] - Mensaje cuando no hay datos
+ * @param {string} [props.emptyTitle] - Título cuando no hay datos
+ * @param {React.ElementType} [props.emptyIcon] - Icono cuando no hay datos
+ * @returns {JSX.Element}
+ */
 export default function DataTable({ 
   columns = [], 
   data = [], 
@@ -49,10 +59,16 @@ export default function DataTable({
           <thead className="bg-neutral-50 border-b border-neutral-200 text-xs font-semibold text-neutral-500 uppercase tracking-wider">
             <tr>
               {columns.map((col, index) => (
-                <th 
-                  key={col.key || index} 
+                <th
+                  key={col.key ?? index}
+                  scope="col"
                   className={`px-6 py-4 ${col.sortable ? 'cursor-pointer select-none hover:bg-neutral-100' : ''} ${col.className || ''}`}
-                  onClick={() => col.sortable && onSort && onSort(col.key)}
+                  {...(col.sortable ? {
+                    tabIndex: 0,
+                    role: 'button',
+                    onClick: () => onSort?.(col.key),
+                    onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSort?.(col.key) } }
+                  } : {})}
                 >
                   <div className="flex items-center gap-1">
                     {col.header}

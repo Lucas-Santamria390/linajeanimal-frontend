@@ -1,11 +1,20 @@
-import React from 'react';
-
+/**
+ * Paginación con soporte dual (clásico y mongoose-paginate)
+ * @param {object} props - Propiedades del componente
+ * @param {number} [props.page=1] - Página actual
+ * @param {number} [props.totalPages] - Total de páginas (formato clásico)
+ * @param {number} [props.pages] - Total de páginas (mongoose-paginate)
+ * @param {number} [props.total] - Total de documentos (formato clásico)
+ * @param {number} [props.totalDocs] - Total de documentos (mongoose-paginate)
+ * @param {(page: number) => void} [props.onPageChange] - Callback al cambiar página
+ * @returns {JSX.Element|null}
+ */
 export default function Pagination({ 
   page = 1, 
   totalPages, 
-  pages, // Mongoose-paginate fallback
+  pages,
   total, 
-  totalDocs, // Mongoose-paginate fallback
+  totalDocs,
   onPageChange 
 }) {
   // Normalización adaptativa de propiedades del formato clásico vs mongoose-paginate
