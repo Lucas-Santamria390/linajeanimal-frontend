@@ -1,5 +1,12 @@
-import React from 'react';
-
+/**
+ * Estado vacío para tablas y listas sin datos
+ * @param {object} props - Propiedades del componente
+ * @param {React.ElementType} [props.icon] - Icono opcional
+ * @param {string} [props.title] - Título informativo
+ * @param {string} [props.message] - Mensaje descriptivo
+ * @param {React.ReactNode} [props.action] - Botón o acción opcional
+ * @returns {JSX.Element}
+ */
 export default function EmptyState({ icon: Icon, title, message, action }) {
   return (
     <div className="flex flex-col items-center justify-center text-center p-8 min-h-[350px] bg-white rounded-xl border border-neutral-200 shadow-sm">

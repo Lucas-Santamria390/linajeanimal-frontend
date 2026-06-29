@@ -1,6 +1,13 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * Cabecera de página con título, breadcrumbs y botón de acción
+ * @param {object} props - Propiedades del componente
+ * @param {string} props.title - Título de la página
+ * @param {Array<{label: string, to?: string}>} [props.breadcrumbs] - Migas de pan
+ * @param {React.ReactNode} [props.action] - Botón o acción en la esquina derecha
+ * @returns {JSX.Element}
+ */
 export default function PageHeader({ title, breadcrumbs = [], action }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
@@ -19,7 +26,7 @@ export default function PageHeader({ title, breadcrumbs = [], action }) {
                         {crumb.label}
                       </span>
                     ) : (
-                      <Link to={crumb.to || '#'} className="hover:text-emerald-600 transition-colors">
+                      <Link to={crumb.to || '#'} className="hover:text-brand-600 transition-colors">
                         {crumb.label}
                       </Link>
                     )}
