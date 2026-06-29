@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * Barra de busqueda con icono y debounce configurable.
@@ -20,14 +20,16 @@ export default function SearchBar({
   ariaLabel = 'Buscar',
 }) {
   const [query, setQuery] = useState(initialValue)
+  const onSearchRef = useRef(onSearch)
+  useEffect(() => { onSearchRef.current = onSearch }, [onSearch])
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      onSearch(query.trim())
+      onSearchRef.current(query.trim())
     }, delay)
 
     return () => window.clearTimeout(timeoutId)
-  }, [query, delay, onSearch])
+  }, [query, delay])
 
   return (
     <div className={`relative ${className}`.trim()}>

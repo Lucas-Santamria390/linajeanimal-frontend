@@ -17,7 +17,7 @@ export default function StatCard({
 }) {
   return (
     <article
-      className={`rounded-2xl border border-neutral-300 bg-neutral-card p-5 shadow-sm ${borderClassName} border-l-4 ${className}`.trim()}
+      className={`rounded-2xl border border-neutral-300 bg-neutral-card p-5 shadow-sm border-l-4 ${borderClassName} ${className}`.trim()}
     >
       <div className="flex items-start justify-between gap-4">
         <div>

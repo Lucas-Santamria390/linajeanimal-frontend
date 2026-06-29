@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 /**
  * Modal de confirmacion que bloquea la interaccion externa hasta resolver la accion.
@@ -23,11 +23,23 @@ export default function ConfirmModal({
   confirmText = 'Confirmar',
   cancelText = 'Cancelar',
 }) {
+  const dialogRef = useRef(null)
+
   useEffect(() => {
     if (!isOpen) return undefined
 
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+
+    const dialog = dialogRef.current
+    if (dialog) {
+      const focusable = dialog.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length > 0) {
+        focusable[0].focus()
+      }
+    }
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape' && !loading) {
@@ -54,6 +66,7 @@ export default function ConfirmModal({
       }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-modal-title"
