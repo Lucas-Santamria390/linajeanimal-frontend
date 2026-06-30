@@ -26,7 +26,7 @@ export default function PageHeader({ title, breadcrumbs = [], action }) {
                         {crumb.label}
                       </span>
                     ) : (
-                      <Link to={crumb.to || '#'} className="hover:text-brand-600 transition-colors">
+                      <Link to={crumb.to || crumb.href || '#'} className="hover:text-brand-600 transition-colors">
                         {crumb.label}
                       </Link>
                     )}
