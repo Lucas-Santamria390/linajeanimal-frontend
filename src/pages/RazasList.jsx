@@ -122,6 +122,7 @@ export default function RazasList() {
       setDeleteTarget(null)
     } catch {
       setDeleteTarget(null)
+      setAlertMessage({ type: 'error', message: 'No se pudo desactivar la raza. Intenta nuevamente.' })
     } finally {
       setIsDeleting(false)
     }
