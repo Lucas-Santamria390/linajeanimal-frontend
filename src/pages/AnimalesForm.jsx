@@ -133,11 +133,19 @@ export default function AnimalesForm() {
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'especie' ? { raza: '', padre: '', madre: '' } : {}),
+    }))
     setErrors((prev) => {
-      if (!(name in prev)) return prev
       const next = { ...prev }
       delete next[name]
+      if (name === 'especie') {
+        delete next.raza
+        delete next.padre
+        delete next.madre
+      }
       return next
     })
   }, [])
@@ -161,15 +169,17 @@ export default function AnimalesForm() {
       if (form.identificador.trim()) payload.identificador = form.identificador.trim()
       if (form.fotoUrl.trim()) payload.fotoUrl = form.fotoUrl.trim()
       if (form.notas.trim()) payload.notas = form.notas.trim()
-      if (form.padre) payload.padre = form.padre
-      if (form.madre) payload.madre = form.madre
+      payload.padre = form.padre || null
+      payload.madre = form.madre || null
 
       if (isEditing) {
         await update(id, payload)
       } else {
         await create(payload)
       }
-      navigate('/animales')
+      navigate('/animales', {
+        state: { success: isEditing ? 'Animal actualizado exitosamente' : 'Animal creado exitosamente' },
+      })
     } catch (err) {
       const message = err?.response?.data?.message || 'Error al guardar el animal'
       setApiError(message)
