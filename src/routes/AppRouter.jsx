@@ -9,6 +9,7 @@ import EspeciesList from '../pages/EspeciesList'
 import AnimalesList from '../pages/AnimalesList'
 import RazasList from '../pages/RazasList'
 import AnimalesForm from '../pages/AnimalesForm'
+import RazasForm from '../pages/RazasForm'
 import Perfil from '../pages/Perfil'
 
 /**
@@ -23,7 +24,7 @@ export default function AppRouter() {
         <Navbar />
         <main className="min-h-screen bg-neutral-bg">
           <Routes>
-            <Route path="/" element={<h1 className="p-6 text-xl">Página principal</h1>} />
+            <Route path="/" element={<h1 className="p-6 text-xl">PÃ¡gina principal</h1>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
@@ -82,7 +83,23 @@ export default function AppRouter() {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<h1 className="p-6 text-xl">404 - Página no encontrada</h1>} />
+            <Route
+              path="/razas/nuevo"
+              element={
+                <ProtectedRoute>
+                  <RazasForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/razas/:id/editar"
+              element={
+                <ProtectedRoute>
+                  <RazasForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<h1 className="p-6 text-xl">404 - PÃ¡gina no encontrada</h1>} />
           </Routes>
         </main>
       </AuthProvider>

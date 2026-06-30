@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useEspecies } from '../hooks/useEspecies'
 import { useRazas } from '../hooks/useRazas'
@@ -10,6 +10,7 @@ import Pagination from '../components/Pagination'
 import ConfirmModal from '../components/ConfirmModal'
 import Loading from '../components/Loading'
 import Alert from '../components/Alert'
+import EmptyState from '../components/EmptyState'
 
 /**
  * Pagina de listado de razas con filtro por especie, paginacion y borrado suave.
@@ -17,13 +18,18 @@ import Alert from '../components/Alert'
  */
 export default function RazasList() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user } = useAuth()
   const isAdmin = user?.rol === 'admin'
 
   const rowsPerPage = 10
   const [page, setPage] = useState(1)
   const [especieFiltro, setEspecieFiltro] = useState('')
-  const [alertMessage, setAlertMessage] = useState(null)
+  const [alertMessage, setAlertMessage] = useState(() => {
+    const msg = location.state?.success || ''
+    if (msg) window.history.replaceState({}, document.title)
+    return msg ? { type: 'success', message: msg } : null
+  })
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -84,7 +90,7 @@ export default function RazasList() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => navigate(`/razas/editar/${row._id}`)}
+              onClick={() => navigate(`/razas/${row._id}/editar`)}
               className="text-sm font-medium text-secondary-600 transition-colors hover:text-secondary-800"
             >
               Editar
@@ -116,6 +122,7 @@ export default function RazasList() {
       setDeleteTarget(null)
     } catch {
       setDeleteTarget(null)
+      setAlertMessage({ type: 'error', message: 'No se pudo desactivar la raza. Intenta nuevamente.' })
     } finally {
       setIsDeleting(false)
     }
@@ -126,6 +133,15 @@ export default function RazasList() {
       <PageHeader
         title="Razas"
         breadcrumbs={[{ label: 'Razas' }]}
+        action={isAdmin ? (
+          <button
+            type="button"
+            onClick={() => navigate('/razas/nuevo')}
+            className="inline-flex items-center rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+          >
+            + Nueva raza
+          </button>
+        ) : null}
       />
 
       {alertMessage && (
@@ -181,16 +197,30 @@ export default function RazasList() {
         <Loading message="Cargando razas..." />
       ) : (
         <div className="space-y-4">
-          <DataTable
-            columns={columns}
-            data={razas}
-            emptyTitle={especieFiltro ? 'No hay razas para la especie seleccionada' : 'No hay razas registradas'}
-            emptyMessage={
-              especieFiltro
-                ? 'Prueba con otra especie o limpia el filtro para ver todo el catálogo.'
-                : 'Aún no hay razas activas disponibles en el sistema.'
-            }
-          />
+          {razas.length === 0 ? (
+            <EmptyState
+              title={especieFiltro ? 'No hay razas para la especie seleccionada' : 'No hay razas registradas'}
+              message={
+                especieFiltro
+                  ? 'Prueba con otra especie o limpia el filtro para ver todo el catálogo.'
+                  : 'Aún no hay razas activas disponibles en el sistema.'
+              }
+              action={isAdmin ? (
+                <button
+                  type="button"
+                  onClick={() => navigate('/razas/nuevo')}
+                  className="inline-flex items-center rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+                >
+                  Agregar raza
+                </button>
+              ) : null}
+            />
+          ) : (
+            <DataTable
+              columns={columns}
+              data={razas}
+            />
+          )}
 
           {pagination && pagination.pages > 1 && (
             <Pagination

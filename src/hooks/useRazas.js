@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   getRazas,
   getRaza,
@@ -10,6 +10,8 @@ import {
 /**
  * Hook CRUD para razas
  * @param {object} [initialParams] - Parametros iniciales (incluye especie para filtrar)
+ * @param {object} [options] - Opciones de comportamiento del hook.
+ * @param {boolean} [options.skipInitialFetch=false] - Evita la carga inicial automatica.
  * @returns {{
  *   data: object[],
  *   loading: boolean,
@@ -22,7 +24,9 @@ import {
  *   remove: (id: number|string) => Promise<void>
  * }} Retorna estado del hook y operaciones CRUD
  */
-export function useRazas(initialParams = {}) {
+export function useRazas(initialParams = {}, options = {}) {
+  const { skipInitialFetch = false } = options
+  const shouldSkipInitialFetch = useRef(skipInitialFetch)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -31,6 +35,11 @@ export function useRazas(initialParams = {}) {
   const [refreshCount, setRefreshCount] = useState(0)
 
   useEffect(() => {
+    if (shouldSkipInitialFetch.current) {
+      shouldSkipInitialFetch.current = false
+      return undefined
+    }
+
     let cancelled = false
     const fetchData = async () => {
       setLoading(true)
