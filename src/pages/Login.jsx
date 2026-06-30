@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-
+import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Alert from '../components/Alert'
@@ -23,12 +22,9 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
-  const [sessionExpired] = useState(() => sessionStorage.getItem('sessionExpired'))
   const registeredMessage = location.state?.registered
-
-  useEffect(() => {
-    if (sessionExpired) sessionStorage.removeItem('sessionExpired')
-  }, [sessionExpired])
+  const sessionExpired = sessionStorage.getItem('sessionExpired')
+  if (sessionExpired) sessionStorage.removeItem('sessionExpired')
   const { login, loading, error, setError } = useAuth()
   const navigate = useNavigate()
 
