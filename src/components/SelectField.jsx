@@ -8,6 +8,7 @@
  * @param {Array<object|string>} [props.options=[]] - Opciones a renderizar.
  * @param {string} [props.placeholder='Selecciona una opcion'] - Texto del placeholder.
  * @param {boolean} [props.loading=false] - Indica si las opciones estan cargando.
+ * @param {string} [props.loadingText='Cargando opciones...'] - Texto a mostrar mientras carga.
  * @param {string} [props.error] - Mensaje de error a mostrar.
  * @param {boolean} [props.disabled=false] - Indica si el campo esta deshabilitado.
  * @param {boolean} [props.required=false] - Indica si el campo es obligatorio.
@@ -23,6 +24,7 @@ export default function SelectField({
   options = [],
   placeholder = 'Selecciona una opcion',
   loading = false,
+  loadingText = 'Cargando opciones...',
   error,
   disabled = false,
   required = false,
@@ -63,7 +65,7 @@ export default function SelectField({
       >
         {loading ? (
           <option value="" disabled>
-            Cargando opciones...
+            {loadingText}
           </option>
         ) : (
           <>
