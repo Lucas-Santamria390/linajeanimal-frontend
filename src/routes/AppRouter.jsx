@@ -5,6 +5,11 @@ import Navbar from '../components/Navbar'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
+import EspeciesList from '../pages/EspeciesList'
+import AnimalesList from '../pages/AnimalesList'
+import RazasList from '../pages/RazasList'
+import AnimalesForm from '../pages/AnimalesForm'
+import Perfil from '../pages/Perfil'
 
 /**
  * Configuracion de rutas de la aplicacion
@@ -26,6 +31,54 @@ export default function AppRouter() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/especies"
+              element={
+                <ProtectedRoute>
+                  <EspeciesList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/animales"
+              element={
+                <ProtectedRoute>
+                  <AnimalesList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/animales/nuevo"
+              element={
+                <ProtectedRoute>
+                  <AnimalesForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/animales/:id/editar"
+              element={
+                <ProtectedRoute>
+                  <AnimalesForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/perfil"
+              element={
+                <ProtectedRoute>
+                  <Perfil />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/razas"
+              element={
+                <ProtectedRoute>
+                  <RazasList />
                 </ProtectedRoute>
               }
             />
