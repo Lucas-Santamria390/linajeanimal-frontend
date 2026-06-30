@@ -11,6 +11,7 @@ import RazasList from '../pages/RazasList'
 import AnimalesForm from '../pages/AnimalesForm'
 import RazasForm from '../pages/RazasForm'
 import Perfil from '../pages/Perfil'
+import Landing from '../pages/Landing'
 
 /**
  * Configuracion de rutas de la aplicacion
@@ -24,7 +25,7 @@ export default function AppRouter() {
         <Navbar />
         <main className="min-h-screen bg-neutral-bg">
           <Routes>
-            <Route path="/" element={<h1 className="p-6 text-xl">PÃ¡gina principal</h1>} />
+            <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
@@ -99,7 +100,7 @@ export default function AppRouter() {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<h1 className="p-6 text-xl">404 - PÃ¡gina no encontrada</h1>} />
+            <Route path="*" element={<h1 className="p-6 text-xl">404 - Página no encontrada</h1>} />
           </Routes>
         </main>
       </AuthProvider>
