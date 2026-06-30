@@ -100,7 +100,7 @@ export default function AppRouter() {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<h1 className="p-6 text-xl">404 - Pagina no encontrada</h1>} />
+            <Route path="*" element={<h1 className="p-6 text-xl">404 - Página no encontrada</h1>} />
           </Routes>
         </main>
       </AuthProvider>

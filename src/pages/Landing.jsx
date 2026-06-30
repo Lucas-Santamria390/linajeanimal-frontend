@@ -4,22 +4,22 @@ const features = [
   {
     title: 'Trazabilidad completa',
     description:
-      'Visualiza la linea genealogica de cada animal con relaciones claras entre padres, hijos y hermanos.',
+      'Visualiza la línea genealógica de cada animal con relaciones claras entre padres, hijos y hermanos.',
     icon: GenealogyIcon,
   },
   {
-    title: 'Gestion centralizada',
-    description: 'Administra animales, especies y razas desde una interfaz ordenada, rapida y consistente.',
+    title: 'Gestión centralizada',
+    description: 'Administra animales, especies y razas desde una interfaz ordenada, rápida y consistente.',
     icon: ManagementIcon,
   },
   {
     title: 'Acceso seguro',
-    description: 'Inicia sesion o registrate con un flujo pensado para separar acceso publico y rutas privadas.',
+    description: 'Inicia sesión o regístrate con un flujo pensado para separar acceso público y rutas privadas.',
     icon: ShieldIcon,
   },
   {
-    title: 'Diseno responsivo',
-    description: 'Una experiencia mobile-first que se adapta con naturalidad desde telefonos hasta pantallas grandes.',
+    title: 'Diseño responsivo',
+    description: 'Una experiencia mobile-first que se adapta con naturalidad desde teléfonos hasta pantallas grandes.',
     icon: DeviceIcon,
   },
 ]
@@ -49,11 +49,11 @@ export default function Landing() {
 
           <div className="space-y-5">
             <h1 className="max-w-3xl text-4xl font-black tracking-tight text-neutral-text sm:text-5xl lg:text-6xl">
-              Gestiona el linaje de tus animales con una experiencia clara, rapida y responsiva.
+              Gestiona el linaje de tus animales con una experiencia clara, rápida y responsiva.
             </h1>
             <p className="max-w-2xl text-base leading-7 text-neutral-muted sm:text-lg">
-              Explora una landing pensada para presentar el sistema de gestion genealogica de animales:
-              acceso publico, navegacion simple y una interfaz lista para escalar con el resto de la
+              Explora una landing pensada para presentar el sistema de gestión genealógica de animales:
+              acceso público, navegación simple y una interfaz lista para escalar con el resto de la
               plataforma.
             </p>
           </div>
@@ -75,16 +75,16 @@ export default function Landing() {
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
-              <p className="text-2xl font-black text-brand-700">Genealogia</p>
+              <p className="text-2xl font-black text-brand-700">Genealogía</p>
               <p className="mt-1 text-sm text-neutral-muted">Relaciones familiares visibles.</p>
             </div>
             <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
               <p className="text-2xl font-black text-secondary-600">CRUD</p>
-              <p className="mt-1 text-sm text-neutral-muted">Gestion de entidades principales.</p>
+              <p className="mt-1 text-sm text-neutral-muted">Gestión de entidades principales.</p>
             </div>
             <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
               <p className="text-2xl font-black text-brand-700">Mobile-first</p>
-              <p className="mt-1 text-sm text-neutral-muted">Diseno fluido en cualquier pantalla.</p>
+              <p className="mt-1 text-sm text-neutral-muted">Diseño fluido en cualquier pantalla.</p>
             </div>
           </div>
         </div>
@@ -104,11 +104,11 @@ export default function Landing() {
 
               <div className="space-y-5 p-5 sm:p-6">
                 <div className="rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 p-5 text-white shadow-lg shadow-brand-500/20">
-                  <p className="text-sm font-medium text-brand-100">Panel de administracion</p>
+                  <p className="text-sm font-medium text-brand-100">Panel de administración</p>
                   <h2 className="mt-2 text-2xl font-bold">Visibilidad total sobre tu sistema</h2>
                   <p className="mt-2 max-w-md text-sm leading-6 text-brand-50/90">
-                    Una interfaz visual que resume el espiritu del producto: orden, control y lectura
-                    rapida de la informacion.
+                    Una interfaz visual que resume el espíritu del producto: orden, control y lectura
+                    rápida de la información.
                   </p>
                 </div>
 
@@ -135,7 +135,7 @@ export default function Landing() {
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-secondary-600">
-              Caracteristicas
+              Características
             </p>
             <h2 className="mt-2 text-2xl font-bold text-neutral-text sm:text-3xl">
               Todo lo que la landing necesita mostrar
@@ -143,11 +143,11 @@ export default function Landing() {
           </div>
           <p className="max-w-2xl text-sm leading-6 text-neutral-muted sm:text-base">
             Cuatro tarjetas para presentar el producto sin depender de backend, manteniendo el foco en
-            navegacion, claridad y conversion.
+            navegación, claridad y conversión.
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {features.map(({ title, description, icon: Icon }) => (
             <article
               key={title}
@@ -168,7 +168,7 @@ export default function Landing() {
           <div>
             <p className="text-lg font-bold text-neutral-text">LinajeAnimal</p>
             <p className="mt-1 text-sm text-neutral-muted">
-              Landing publica del frontend de gestion genealogica de animales.
+              Landing pública del frontend de gestión genealógica de animales.
             </p>
           </div>
 
@@ -196,7 +196,7 @@ function FooterLink({ label, to, href }) {
   }
 
   return (
-    <a href={href} target="_blank" rel="noreferrer" className={sharedClassName}>
+    <a href={href} target="_blank" rel="noopener noreferrer" className={sharedClassName}>
       {label}
     </a>
   )
