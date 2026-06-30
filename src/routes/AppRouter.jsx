@@ -9,6 +9,7 @@ import EspeciesList from '../pages/EspeciesList'
 import AnimalesList from '../pages/AnimalesList'
 import RazasList from '../pages/RazasList'
 import AnimalesForm from '../pages/AnimalesForm'
+import Perfil from '../pages/Perfil'
 
 /**
  * Configuracion de rutas de la aplicacion
@@ -62,6 +63,14 @@ export default function AppRouter() {
               element={
                 <ProtectedRoute>
                   <AnimalesForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/perfil"
+              element={
+                <ProtectedRoute>
+                  <Perfil />
                 </ProtectedRoute>
               }
             />
