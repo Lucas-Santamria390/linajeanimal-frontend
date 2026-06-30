@@ -23,6 +23,8 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
   const registeredMessage = location.state?.registered
+  const sessionExpired = sessionStorage.getItem('sessionExpired')
+  if (sessionExpired) sessionStorage.removeItem('sessionExpired')
   const { login, loading, error, setError } = useAuth()
   const navigate = useNavigate()
 
@@ -65,6 +67,9 @@ export default function Login() {
         </h1>
 
         <Alert message={error} type="error" onClose={() => setError(null)} />
+        {sessionExpired && (
+          <Alert type="warning" message="Tu sesion ha expirado. Inicia sesion nuevamente." />
+        )}
         {registeredMessage && (
           <Alert type="success" message="Cuenta creada exitosamente. Inicia sesion." />
         )}

@@ -136,6 +136,11 @@ Privadas:
 - **Móvil:** tabla convertida a cards (cada animal es una card apilable)
 - **Tablet/PC:** tabla normal con scroll horizontal
 
+**Filtro por propietario:**
+- **Admin:** ve todos los animales (sin filtro)
+- **User:** solo ve sus animales (`propietario: user._id` en los params)
+- Pendiente de implementar en `AnimalesList.jsx`
+
 **Hooks:** `useAnimales`
 
 ---
@@ -169,6 +174,12 @@ Privadas:
 **Responsive:**
 - **Móvil:** 1 columna
 - **Tablet/PC:** 2 columnas para campos, selects lado a lado
+
+**Propietario:**
+- Se asigna automáticamente el ID del usuario autenticado al crear
+- No se muestra en el formulario (es transparente para el user)
+- El admin puede ver/quién es el propietario en el detalle
+- Pendiente de implementar en `AnimalesForm.jsx`
 
 **Hooks:** `useAnimalForm`, `useEspecies`, `useRazas`
 
@@ -558,3 +569,14 @@ const Especies = React.lazy(() => import('../pages/Especies'))
 10. **Árbol genealógico** (extender useGenealogy con children/siblings/familyTree + componente GenealogyTree)
 11. **Navbar responsive + Sidebar** (menú hamburguesa + drawer)
 12. **Landing page**
+
+---
+
+## 15. Pendientes detectados
+
+| # | Pendiente | Dónde aplica | Prioridad |
+|---|-----------|-------------|-----------|
+| 1 | **Filtro por propietario** — user solo ve sus animales, admin ve todos | `AnimalesList.jsx` + `AnimalesForm.jsx` | Alta (definido en CONTRIBUTING.md) |
+| 2 | **Mensaje "Sesión expirada"** en Login cuando viene de redirect post-401 | `api.js` (interceptor) + `Login.jsx` | Media (issue #8) |
+| 3 | Cambiar a `StatCard` en Dashboard (hoy usa divs inline) | `Dashboard.jsx` | Baja |
+| 4 | Unificar paginación server-side en EspeciesList (hoy usa client-side con slice) | `EspeciesList.jsx` | Baja |
