@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useEspecies } from '../hooks/useEspecies'
@@ -26,7 +26,6 @@ export default function RazasList() {
   const [alertMessage, setAlertMessage] = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
-  const initialFetchSkipped = useRef(false)
 
   const {
     data: razas,
@@ -35,7 +34,7 @@ export default function RazasList() {
     pagination,
     refetch,
     remove,
-  } = useRazas({ page: 1, limit: rowsPerPage })
+  } = useRazas()
   const {
     data: especies,
     loading: loadingEspecies,
@@ -44,11 +43,6 @@ export default function RazasList() {
   } = useEspecies({ limit: 100 })
 
   useEffect(() => {
-    if (!initialFetchSkipped.current) {
-      initialFetchSkipped.current = true
-      return
-    }
-
     refetch({
       page,
       limit: rowsPerPage,
@@ -113,32 +107,22 @@ export default function RazasList() {
     setPage(1)
   }, [])
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     if (!deleteTarget || isDeleting) return
-
     setIsDeleting(true)
     try {
       await remove(deleteTarget._id)
-      setAlertMessage({ type: 'success', message: 'Raza desactivada con exito.' })
+      setAlertMessage({ type: 'success', message: 'Raza desactivada con éxito.' })
       setDeleteTarget(null)
-    } catch (deleteError) {
-      const message = deleteError?.response?.data?.message || 'No se pudo desactivar la raza.'
-      setAlertMessage({ type: 'error', message })
+    } catch {
+      setDeleteTarget(null)
     } finally {
       setIsDeleting(false)
     }
-  }, [deleteTarget, isDeleting, remove])
-
-  const handleRetry = useCallback(() => {
-    refetch()
-  }, [refetch])
-
-  const handleRetryEspecies = useCallback(() => {
-    refetchEspecies()
-  }, [refetchEspecies])
+  }
 
   return (
-    <div className="mx-auto max-w-none space-y-6 p-4 sm:p-6 lg:p-8">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       <PageHeader
         title="Razas"
         breadcrumbs={[{ label: 'Razas' }]}
@@ -157,7 +141,7 @@ export default function RazasList() {
           <Alert type="error" message={errorEspecies} className="flex-1" />
           <button
             type="button"
-            onClick={handleRetryEspecies}
+            onClick={refetchEspecies}
             className="shrink-0 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-neutral-50"
           >
             Reintentar
@@ -170,7 +154,7 @@ export default function RazasList() {
           <Alert type="error" message={error} className="flex-1" />
           <button
             type="button"
-            onClick={handleRetry}
+            onClick={refetch}
             className="shrink-0 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-neutral-50"
           >
             Reintentar
@@ -203,8 +187,8 @@ export default function RazasList() {
             emptyTitle={especieFiltro ? 'No hay razas para la especie seleccionada' : 'No hay razas registradas'}
             emptyMessage={
               especieFiltro
-                ? 'Prueba con otra especie o limpia el filtro para ver todo el catalogo.'
-                : 'Aun no hay razas activas disponibles en el sistema.'
+                ? 'Prueba con otra especie o limpia el filtro para ver todo el catálogo.'
+                : 'Aún no hay razas activas disponibles en el sistema.'
             }
           />
 
@@ -225,7 +209,7 @@ export default function RazasList() {
         title="Desactivar raza"
         message={
           deleteTarget
-            ? `Esta accion desactivara la raza "${deleteTarget.nombre}". Podras restaurarla mas adelante desde el backend si el flujo lo permite.`
+            ? `Esta acción desactivará la raza "${deleteTarget.nombre}". Podrás restaurarla más adelante desde el backend si el flujo lo permite.`
             : ''
         }
         confirmText="Desactivar"
