@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAnimales } from '../hooks/useAnimales'
 import { useEspecies } from '../hooks/useEspecies'
 import { useRazas } from '../hooks/useRazas'
@@ -18,6 +18,8 @@ import Alert from '../components/Alert'
  */
 export default function AnimalesList() {
   const navigate = useNavigate()
+  const location = useLocation()
+
   const [search, setSearch] = useState('')
   const [especieFiltro, setEspecieFiltro] = useState('')
   const [razaFiltro, setRazaFiltro] = useState('')
@@ -25,7 +27,11 @@ export default function AnimalesList() {
   const [page, setPage] = useState(1)
 
   const [deleteTarget, setDeleteTarget] = useState(null)
-  const [successMsg, setSuccessMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState(() => {
+    const msg = location.state?.success || ''
+    if (msg) window.history.replaceState({}, document.title)
+    return msg
+  })
   const [deleting, setDeleting] = useState(false)
 
   const { data, loading, error, pagination, remove, refetch } = useAnimales()
