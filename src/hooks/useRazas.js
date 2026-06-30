@@ -9,7 +9,7 @@ import {
 
 /**
  * Hook CRUD para razas
- * @param {object} [initialParams] - Parametros iniciales (incluye especie para filtrar)
+ * @param {object} [initialParams] - Parametros iniciales (incluye especie_id para filtrar)
  * @returns {{
  *   data: object[],
  *   loading: boolean,

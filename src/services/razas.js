@@ -2,7 +2,7 @@ import api from './api'
 
 /**
  * Obtiene lista de razas (con filtro opcional por especie)
- * @param {object} [params] - { especie, nombre }
+ * @param {object} [params] - { especie_id, nombre }
  * @returns {Promise<object>} { success, data: raza[], pagination }
  */
 export const getRazas = (params = {}) => api.get('/razas', { params })
@@ -16,7 +16,7 @@ export const getRaza = (id) => api.get(`/razas/${id}`)
 
 /**
  * Crea una nueva raza
- * @param {object} data - { nombre, especie }
+ * @param {object} data - { nombre, especie_id }
  * @returns {Promise<object>} { success, data: { ...raza } }
  */
 export const createRaza = (data) => api.post('/razas', data)

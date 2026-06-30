@@ -21,7 +21,6 @@
  * @param {string} [props.pattern] - Patron HTML para validacion.
  * @param {number} [props.maxLength] - Longitud maxima permitida.
  * @param {boolean} [props.readOnly=false] - Indica si el campo es solo lectura.
- * @param {string} [props.describedBy] - ID del elemento que describe el campo (aria-describedby).
  * @returns {JSX.Element}
  */
 export default function FormField({
@@ -44,11 +43,9 @@ export default function FormField({
   pattern,
   maxLength,
   readOnly = false,
-  describedBy,
 }) {
   const inputId = id || name
   const errorId = `${inputId}-error`
-  const describedById = [error ? errorId : null, describedBy].filter(Boolean).join(' ') || undefined
 
   return (
     <div className={`space-y-1 ${className}`.trim()}>
@@ -74,7 +71,7 @@ export default function FormField({
         maxLength={maxLength}
         readOnly={readOnly}
         aria-invalid={Boolean(error)}
-        aria-describedby={describedById}
+        aria-describedby={error ? errorId : undefined}
         className="w-full rounded-lg border border-neutral-300 bg-neutral-card px-3 py-2 text-neutral-text outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-muted"
       />
       {error && (
