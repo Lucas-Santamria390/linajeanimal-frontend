@@ -64,7 +64,7 @@ export default function Perfil() {
       setNewPassword('')
       setConfirmNew('')
     } catch (err) {
-      setApiError(err.response?.data?.message || 'Error al cambiar contrasena')
+      setApiError(err?.response?.data?.message || 'Error al cambiar contrasena')
     } finally {
       setLoading(false)
     }
@@ -126,8 +126,9 @@ export default function Perfil() {
               onChange={(e) => setNewPassword(e.target.value)}
               error={errors.newPassword}
               autoComplete="new-password"
+              describedBy="password-reqs"
             />
-            <ul className="mt-1 space-y-0.5 ml-1">
+            <ul id="password-reqs" className="mt-1 space-y-0.5 ml-1">
               {PASSWORD_REQUIREMENTS.map((req) => {
                 const passed = newPassword ? req.test(newPassword) : false
                 return (
@@ -168,6 +169,7 @@ export default function Perfil() {
 
       <div className="flex justify-center">
         <button
+          type="button"
           onClick={handleLogout}
           className="bg-red-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors cursor-pointer"
         >
