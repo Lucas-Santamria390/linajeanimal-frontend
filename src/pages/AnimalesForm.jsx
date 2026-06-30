@@ -45,7 +45,7 @@ export default function AnimalesForm() {
 
   const { create, update, getById } = useAnimales()
   const { data: especies, loading: loadingEspecies } = useEspecies({ limit: 100 })
-  const { data: razas, loading: loadingRazas, refetch: refetchRazas } = useRazas({ limit: 0 })
+  const { data: razas, loading: loadingRazas, refetch: refetchRazas } = useRazas()
 
   useEffect(() => {
     if (!id) return

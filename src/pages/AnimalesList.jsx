@@ -48,7 +48,7 @@ export default function AnimalesList() {
   }, [page, search, especieFiltro, razaFiltro, sexoFiltro, refetch])
 
   const { data: especies, loading: loadingEspecies, error: errorEspecies } = useEspecies({ limit: 100 })
-  const { data: razas, loading: loadingRazas, error: errorRazas, refetch: refetchRazas } = useRazas({ limit: 0 })
+  const { data: razas, loading: loadingRazas, error: errorRazas, refetch: refetchRazas } = useRazas()
 
   useEffect(() => {
     if (!especieFiltro) return
