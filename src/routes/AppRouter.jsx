@@ -8,6 +8,7 @@ import Dashboard from '../pages/Dashboard'
 import EspeciesList from '../pages/EspeciesList'
 import AnimalesList from '../pages/AnimalesList'
 import RazasList from '../pages/RazasList'
+import AnimalesForm from '../pages/AnimalesForm'
 
 /**
  * Configuracion de rutas de la aplicacion
@@ -45,6 +46,22 @@ export default function AppRouter() {
               element={
                 <ProtectedRoute>
                   <AnimalesList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/animales/nuevo"
+              element={
+                <ProtectedRoute>
+                  <AnimalesForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/animales/:id/editar"
+              element={
+                <ProtectedRoute>
+                  <AnimalesForm />
                 </ProtectedRoute>
               }
             />
