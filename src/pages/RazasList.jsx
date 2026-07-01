@@ -158,7 +158,7 @@ export default function RazasList() {
           <button
             type="button"
             onClick={refetchEspecies}
-            className="shrink-0 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-neutral-50"
+            className="shrink-0 rounded-lg bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Reintentar
           </button>
@@ -171,14 +171,14 @@ export default function RazasList() {
           <button
             type="button"
             onClick={refetch}
-            className="shrink-0 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-neutral-50"
+            className="shrink-0 rounded-lg bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Reintentar
           </button>
         </div>
       )}
 
-      <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-5">
+      <div className="rounded-2xl border border-neutral-200 bg-neutral-card p-4 shadow-sm sm:p-5">
         <div className="grid gap-4 md:max-w-md">
           <SelectField
             id="filtro-especie"

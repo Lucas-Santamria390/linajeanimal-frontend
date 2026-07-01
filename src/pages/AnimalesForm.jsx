@@ -231,7 +231,7 @@ export default function AnimalesForm() {
         <Alert type="error" message={apiError} onClose={() => setApiError(null)} />
       )}
 
-      <form onSubmit={handleSubmit} noValidate className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-6">
+      <form onSubmit={handleSubmit} noValidate className="rounded-2xl border border-neutral-200 bg-neutral-card p-4 shadow-sm sm:p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             id="nombre"
@@ -398,7 +398,7 @@ export default function AnimalesForm() {
           <button
             type="button"
             onClick={() => navigate('/animales')}
-            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-text transition-colors hover:bg-neutral-50"
+            className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Cancelar
           </button>

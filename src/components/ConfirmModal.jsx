@@ -71,7 +71,7 @@ export default function ConfirmModal({
         aria-modal="true"
         aria-labelledby="confirm-modal-title"
         aria-describedby="confirm-modal-message"
-        className="w-full max-w-md rounded-2xl bg-neutral-card p-6 shadow-2xl"
+        className="w-full max-w-md rounded-2xl border border-neutral-200 bg-neutral-card p-6 shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <h2 id="confirm-modal-title" className="text-lg font-semibold text-neutral-text">
@@ -85,7 +85,7 @@ export default function ConfirmModal({
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="inline-flex items-center justify-center rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-text transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center justify-center rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-secondary-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {cancelText}
           </button>

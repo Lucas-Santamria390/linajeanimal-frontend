@@ -42,7 +42,7 @@ export default function Landing() {
 
       <section className="relative mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-16">
         <div className="space-y-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/80 px-4 py-2 text-sm font-medium text-brand-700 shadow-sm backdrop-blur">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-neutral-card/80 px-4 py-2 text-sm font-medium text-brand-700 shadow-sm backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-secondary-500" />
             LinajeAnimal Frontend
           </div>
@@ -67,22 +67,22 @@ export default function Landing() {
             </Link>
             <Link
               to="/register"
-              className="inline-flex items-center justify-center rounded-xl border border-brand-200 bg-white px-6 py-3 text-sm font-semibold text-brand-700 shadow-sm transition-colors duration-200 hover:border-brand-300 hover:bg-brand-50"
+              className="inline-flex items-center justify-center rounded-xl border border-brand-200 bg-neutral-card px-6 py-3 text-sm font-semibold text-brand-700 shadow-sm transition-colors duration-200 hover:border-brand-300 hover:bg-brand-50"
             >
               Register
             </Link>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
+            <div className="rounded-2xl border border-neutral-200 bg-neutral-card/80 p-4 shadow-sm backdrop-blur">
               <p className="text-2xl font-black text-brand-700">Genealogía</p>
               <p className="mt-1 text-sm text-neutral-muted">Relaciones familiares visibles.</p>
             </div>
-            <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
+            <div className="rounded-2xl border border-neutral-200 bg-neutral-card/80 p-4 shadow-sm backdrop-blur">
               <p className="text-2xl font-black text-secondary-600">CRUD</p>
               <p className="mt-1 text-sm text-neutral-muted">Gestión de entidades principales.</p>
             </div>
-            <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
+            <div className="rounded-2xl border border-neutral-200 bg-neutral-card/80 p-4 shadow-sm backdrop-blur">
               <p className="text-2xl font-black text-brand-700">Mobile-first</p>
               <p className="mt-1 text-sm text-neutral-muted">Diseño fluido en cualquier pantalla.</p>
             </div>
@@ -93,7 +93,7 @@ export default function Landing() {
           <div className="absolute -left-6 top-8 h-24 w-24 rounded-full bg-secondary-500/20 blur-3xl" />
           <div className="absolute -right-4 bottom-10 h-28 w-28 rounded-full bg-brand-500/15 blur-3xl" />
 
-          <div className="relative rounded-[2rem] border border-white/70 bg-white/85 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur">
+          <div className="relative rounded-[2rem] border border-neutral-200 bg-neutral-card/85 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur">
             <div className="overflow-hidden rounded-[1.5rem] border border-neutral-200 bg-neutral-card">
               <div className="flex items-center gap-2 border-b border-neutral-200 bg-neutral-bg px-4 py-3">
                 <span className="h-3 w-3 rounded-full bg-red-400" />
@@ -151,7 +151,7 @@ export default function Landing() {
           {features.map(({ title, description, icon: Icon }) => (
             <article
               key={title}
-              className="group rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
+              className="group rounded-3xl border border-neutral-200 bg-neutral-card p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-500 group-hover:text-white">
                 <Icon className="h-6 w-6" />
@@ -163,7 +163,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="relative border-t border-brand-100 bg-white/85 backdrop-blur">
+      <footer className="relative border-t border-brand-100 bg-neutral-card/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div>
             <p className="text-lg font-bold text-neutral-text">LinajeAnimal</p>
@@ -185,7 +185,7 @@ export default function Landing() {
 
 function FooterLink({ label, to, href }) {
   const sharedClassName =
-    'inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-text transition-colors hover:border-brand-200 hover:text-brand-700 hover:bg-brand-50'
+    'inline-flex items-center justify-center rounded-full border border-neutral-200 bg-neutral-card px-4 py-2 text-sm font-medium text-neutral-text transition-colors hover:border-brand-200 hover:text-brand-700 hover:bg-brand-50'
 
   if (to) {
     return (

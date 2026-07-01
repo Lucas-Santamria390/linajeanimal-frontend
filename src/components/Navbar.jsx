@@ -76,7 +76,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="bg-white text-brand-500 px-3 py-1.5 rounded text-sm font-medium hover:bg-brand-50 transition-colors cursor-pointer"
+                className="rounded bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600 cursor-pointer"
               >
                 Cerrar sesión
               </button>
@@ -84,7 +84,7 @@ export default function Navbar() {
           ) : (
             <Link 
               to="/login" 
-              className="bg-white text-brand-500 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-brand-50 transition-colors shadow-xs"
+              className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-semibold text-white transition-colors shadow-xs hover:bg-secondary-600"
             >
               Iniciar sesión
             </Link>
@@ -171,7 +171,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-full py-2.5 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold rounded-lg transition-colors shadow-xs cursor-pointer"
+                className="w-full rounded-lg bg-secondary-500 py-2.5 text-sm font-bold text-white transition-colors shadow-xs hover:bg-secondary-600 cursor-pointer"
               >
                 Cerrar sesión
               </button>
@@ -180,7 +180,7 @@ export default function Navbar() {
             <Link
               to="/login"
               onClick={() => setIsOpen(false)}
-              className="block w-full py-2.5 bg-white text-brand-500 text-center text-sm font-bold rounded-lg transition-colors shadow-xs"
+              className="block w-full rounded-lg bg-secondary-500 py-2.5 text-center text-sm font-bold text-white transition-colors shadow-xs hover:bg-secondary-600"
             >
               Iniciar sesión
             </Link>
