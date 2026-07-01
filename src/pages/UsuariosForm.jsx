@@ -111,9 +111,9 @@ export default function UsuariosForm() {
 
     if (!isEdit) {
       if (!form.password) {
-        nextErrors.password = 'La contrasena es obligatoria.'
+        nextErrors.password = 'La contraseña es obligatoria.'
       } else if (!passwordPattern.test(form.password)) {
-        nextErrors.password = 'La contrasena debe tener 8 caracteres, mayuscula, numero y simbolo.'
+        nextErrors.password = 'La contraseña debe tener 8 caracteres, mayúscula, número y símbolo.'
       }
     }
 
@@ -243,7 +243,7 @@ export default function UsuariosForm() {
               id="password"
               name="password"
               type="password"
-              label="Contrasena"
+              label="Contraseña"
               value={form.password}
               onChange={handleChange}
               error={errors.password}
@@ -252,7 +252,7 @@ export default function UsuariosForm() {
             />
           ) : (
             <div className="rounded-lg border border-dashed border-neutral-300 bg-neutral-50 p-4 text-sm text-neutral-muted md:col-span-1">
-              La contrasena no se modifica desde este formulario.
+              La contraseña no se modifica desde este formulario.
             </div>
           )}
         </div>
