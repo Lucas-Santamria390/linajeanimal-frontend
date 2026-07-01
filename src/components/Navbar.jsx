@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 /**
- * Barra de navegación principal responsive con menú hamburguesa y drawer lateral.
+ * Barra de navegación principal responsive. En escritorio muestra solo logo y sesión
+ * (la navegación la resuelve Sidebar); en móvil despliega un drawer lateral con todos los enlaces.
  * @returns {JSX.Element} Navbar completo con vista de escritorio y drawer móvil.
  */
 export default function Navbar() {
@@ -45,57 +46,37 @@ export default function Navbar() {
         <span>🐾 LinajeAnimal</span>
       </Link>
 
-      {/* CONTENIDO ESCRITORIO (>= 768px) */}
-      <div className="hidden md:flex items-center gap-6">
-        {/* Enlaces de Navegación */}
-        <div className="flex items-center space-x-1">
-          {isAuthenticated ? (
-            <>
-              <Link to="/dashboard" className={getLinkClass('/dashboard')}>Dashboard</Link>
-              <Link to="/animales" className={getLinkClass('/animales')}>Animales</Link>
-              <Link to="/especies" className={getLinkClass('/especies')}>Especies</Link>
-              <Link to="/razas" className={getLinkClass('/razas')}>Razas</Link>
-              {user?.rol === 'admin' && (
-                <Link to="/usuarios" className={getLinkClass('/usuarios')}>Usuarios</Link>
-              )}
-            </>
-          ) : (
-            <Link to="/" className={getLinkClass('/')}>Inicio</Link>
-          )}
-        </div>
-
-        {/* Datos de Sesión / Acceso */}
-        <div className="flex items-center gap-4">
-          {isAuthenticated ? (
-            <div className="flex items-center gap-4 border-l border-brand-400 pl-4">
-              <Link to="/perfil" className="text-right hover:opacity-80 transition-opacity">
-                <p className="text-sm font-bold leading-tight text-white">{user?.nombre || user?.email}</p>
-                <p className="text-xs text-brand-200 capitalize font-medium">{user?.rol || 'user'}</p>
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="rounded bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600 cursor-pointer"
-              >
-                Cerrar sesión
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link
-                to="/register"
-                className="rounded-lg border border-brand-100 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
-              >
-                Registrarse
-              </Link>
-              <Link
-                to="/login"
-                className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-semibold text-white transition-colors shadow-xs hover:bg-secondary-600"
-              >
-                Iniciar sesión
-              </Link>
-            </div>
-          )}
-        </div>
+      {/* SESIÓN / ACCESO — ESCRITORIO (>= 768px). La navegación por secciones la maneja Sidebar. */}
+      <div className="hidden md:flex items-center gap-4">
+        {isAuthenticated ? (
+          <div className="flex items-center gap-4 border-l border-brand-400 pl-4">
+            <Link to="/perfil" className="text-right hover:opacity-80 transition-opacity">
+              <p className="text-sm font-bold leading-tight text-white">{user?.nombre || user?.email}</p>
+              <p className="text-xs text-brand-200 capitalize font-medium">{user?.rol || 'user'}</p>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="rounded bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600 cursor-pointer"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Link
+              to="/register"
+              className="rounded-lg border border-brand-100 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+            >
+              Registrarse
+            </Link>
+            <Link
+              to="/login"
+              className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-semibold text-white transition-colors shadow-xs hover:bg-secondary-600"
+            >
+              Iniciar sesión
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* BOTÓN HAMBURGUESA - MÓVIL (< 768px) */}
@@ -120,7 +101,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* DRAWER LATERAL RESPONSIVE (< 768px) */}
+      {/* DRAWER LATERAL RESPONSIVE (< 768px) — unica navegacion por secciones en movil */}
       {/* Fondo oscuro traslúcido */}
       {isOpen && (
         <div

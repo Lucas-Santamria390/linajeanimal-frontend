@@ -70,8 +70,13 @@ export function useGenealogy() {
     safeSet(setError, null)
     try {
       const res = await getFamilyTree(id, clamped)
-      safeSet(setFamilyTree, res.data.data)
-      return res.data.data
+      // El backend anida el arbol dentro de { generaciones, arbol }.
+      // Se desenvuelve aqui para que el resto de la app (GenealogyTree, AnimalDetail)
+      // reciba directamente el nodo raiz con sus campos (nombre, sexo, padre, madre, hijos, hermanos).
+      const payload = res.data.data
+      const arbol = payload?.arbol ?? payload ?? null
+      safeSet(setFamilyTree, arbol)
+      return arbol
     } catch (err) {
       const msg = err.response?.data?.message || 'Error al cargar árbol genealógico'
       safeSet(setError, msg)
