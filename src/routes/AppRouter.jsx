@@ -57,7 +57,7 @@ export default function AppRouter() {
               }
             />
             <Route
-              path="/especies/editar/:id"
+              path="/especies/:id/editar"
               element={
                 <ProtectedRoute>
                   <EspeciesForm />
