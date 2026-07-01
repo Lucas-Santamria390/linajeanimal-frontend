@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useUsuarios } from '../hooks/useUsuarios'
 import PageHeader from '../components/PageHeader'
 import FormField from '../components/FormField'
@@ -15,14 +16,16 @@ const initialForm = {
 }
 
 /**
- * Formulario basico de usuarios para crear y editar registros.
+ * Formulario de usuarios para crear y editar registros.
  * @returns {JSX.Element}
  */
 export default function UsuariosForm() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { user: currentUser } = useAuth()
   const { id } = useParams()
   const isEdit = Boolean(id)
+  const isSelfEdit = Boolean(isEdit && currentUser?._id && currentUser._id === id)
 
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
@@ -70,10 +73,19 @@ export default function UsuariosForm() {
     }
   }, [getById, id, isEdit])
 
+  const roleOptions = useMemo(
+    () => [
+      { value: 'user', label: 'Usuario' },
+      { value: 'admin', label: 'Administrador' },
+    ],
+    []
+  )
+
   const handleChange = useCallback((event) => {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
     setErrors((current) => ({ ...current, [name]: '' }))
+    setSubmitError(null)
   }, [])
 
   const validate = useCallback(() => {
@@ -82,23 +94,32 @@ export default function UsuariosForm() {
     const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
 
     if (!form.nombre.trim()) nextErrors.nombre = 'El nombre es obligatorio.'
+
     if (!form.email.trim()) {
       nextErrors.email = 'El email es obligatorio.'
     } else if (!emailPattern.test(form.email.trim())) {
       nextErrors.email = 'Ingresa un email valido.'
     }
-    if (!form.rol) nextErrors.rol = 'Selecciona un rol.'
+
+    if (!form.rol) {
+      nextErrors.rol = 'Selecciona un rol.'
+    }
+
+    if (isSelfEdit && form.rol !== currentUser?.rol) {
+      nextErrors.rol = 'No puedes desactivar tu propio acceso administrativo desde este formulario.'
+    }
+
     if (!isEdit) {
       if (!form.password) {
-        nextErrors.password = 'La contraseña es obligatoria.'
+        nextErrors.password = 'La contrasena es obligatoria.'
       } else if (!passwordPattern.test(form.password)) {
-        nextErrors.password = 'La contraseña debe tener 8 caracteres, mayuscula, numero y simbolo.'
+        nextErrors.password = 'La contrasena debe tener 8 caracteres, mayuscula, numero y simbolo.'
       }
     }
 
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
-  }, [form.nombre, form.email, form.rol, form.password, isEdit])
+  }, [form.nombre, form.email, form.rol, form.password, isEdit, isSelfEdit, currentUser?.rol])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -106,6 +127,7 @@ export default function UsuariosForm() {
 
     setSubmitting(true)
     setSubmitError(null)
+
     try {
       const payload = {
         nombre: form.nombre.trim(),
@@ -126,9 +148,12 @@ export default function UsuariosForm() {
         },
       })
     } catch (err) {
-      setSubmitError(err?.response?.data?.message || (isEdit
-        ? 'No se pudo actualizar el usuario. Intenta nuevamente.'
-        : 'No se pudo crear el usuario. Intenta nuevamente.'))
+      setSubmitError(
+        err?.response?.data?.message ||
+          (isEdit
+            ? 'No se pudo actualizar el usuario. Intenta nuevamente.'
+            : 'No se pudo crear el usuario. Intenta nuevamente.')
+      )
     } finally {
       setSubmitting(false)
     }
@@ -165,6 +190,13 @@ export default function UsuariosForm() {
         />
       )}
 
+      {isSelfEdit && (
+        <Alert
+          type="warning"
+          message="No puedes cambiar tu propio rol a usuario desde este formulario. Mantente como administrador para conservar acceso al panel."
+        />
+      )}
+
       {submitError && <Alert type="error" message={submitError} onClose={() => setSubmitError(null)} />}
 
       <form
@@ -182,6 +214,7 @@ export default function UsuariosForm() {
             required
             placeholder="Ej. Maria Lopez"
           />
+
           <FormField
             id="email"
             name="email"
@@ -193,6 +226,7 @@ export default function UsuariosForm() {
             required
             placeholder="ejemplo@correo.com"
           />
+
           <SelectField
             id="rol"
             name="rol"
@@ -201,17 +235,15 @@ export default function UsuariosForm() {
             onChange={handleChange}
             error={errors.rol}
             required
-            options={[
-              { value: 'user', label: 'User' },
-              { value: 'admin', label: 'Admin' },
-            ]}
+            options={roleOptions}
           />
+
           {!isEdit ? (
             <FormField
               id="password"
               name="password"
               type="password"
-              label="Contraseña"
+              label="Contrasena"
               value={form.password}
               onChange={handleChange}
               error={errors.password}
@@ -220,7 +252,7 @@ export default function UsuariosForm() {
             />
           ) : (
             <div className="rounded-lg border border-dashed border-neutral-300 bg-neutral-50 p-4 text-sm text-neutral-muted md:col-span-1">
-              La contraseña no se modifica desde este formulario.
+              La contrasena no se modifica desde este formulario.
             </div>
           )}
         </div>
