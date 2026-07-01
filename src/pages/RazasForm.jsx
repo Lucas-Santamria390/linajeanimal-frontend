@@ -169,21 +169,21 @@ export default function RazasForm() {
           ]}
         />
 
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="rounded-2xl border border-neutral-200 bg-neutral-card p-5 shadow-sm sm:p-6">
           <div className="space-y-4">
             <Alert type="error" message={loadError} />
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={handleRetryLoad}
-                className="inline-flex items-center justify-center rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+                className="inline-flex items-center justify-center rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
               >
                 Reintentar
               </button>
               <button
                 type="button"
                 onClick={() => navigate('/razas')}
-                className="inline-flex items-center justify-center rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-text transition-colors hover:bg-neutral-50"
+                className="inline-flex items-center justify-center rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
               >
                 Volver a razas
               </button>
@@ -214,7 +214,7 @@ export default function RazasForm() {
           <button
             type="button"
             onClick={refetchEspecies}
-            className="shrink-0 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-neutral-50"
+            className="shrink-0 rounded-lg bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Reintentar
           </button>
@@ -224,7 +224,7 @@ export default function RazasForm() {
       <form
         onSubmit={handleSubmit}
         noValidate
-        className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-6"
+        className="rounded-2xl border border-neutral-200 bg-neutral-card p-4 shadow-sm sm:p-6"
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
@@ -275,7 +275,7 @@ export default function RazasForm() {
           <button
             type="button"
             onClick={() => navigate('/razas')}
-            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-text transition-colors hover:bg-neutral-50"
+            className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Cancelar
           </button>

@@ -107,7 +107,7 @@ export default function EspeciesList() {
           <button
             type="button"
             onClick={() => fetchEspecies()}
-            className="shrink-0 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 transition-colors"
+            className="shrink-0 rounded-lg bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Reintentar
           </button>
@@ -145,7 +145,7 @@ export default function EspeciesList() {
           ) : null}
         />
       ) : (
-        <div className="bg-white rounded-xl shadow-xs border border-neutral-200 overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-neutral-200 bg-neutral-card shadow-sm">
           <DataTable
             columns={columnas}
             data={currentEspecies}

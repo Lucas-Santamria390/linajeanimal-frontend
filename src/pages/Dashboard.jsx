@@ -30,11 +30,11 @@ export default function Dashboard() {
 
       {error && <Alert type="error" message={error} />}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <div
             key={card.label}
-            className={`bg-white p-4 rounded shadow border-l-4 ${card.color}`}
+            className={`rounded-2xl border border-neutral-200 bg-neutral-card p-4 shadow-sm border-l-4 ${card.color}`}
           >
             <p className="text-sm text-neutral-muted">{card.label}</p>
             <p className="text-2xl font-bold text-neutral-text">{card.value ?? '--'}</p>

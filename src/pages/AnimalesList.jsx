@@ -133,7 +133,7 @@ export default function AnimalesList() {
   ], [navigate])
 
   return (
-    <div className="p-6">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       <PageHeader
         title="Animales"
         breadcrumbs={[{ label: 'Animales' }]}
@@ -157,7 +157,7 @@ export default function AnimalesList() {
           <button
             type="button"
             onClick={() => refetch()}
-            className="shrink-0 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 transition-colors"
+            className="shrink-0 rounded-lg bg-secondary-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Reintentar
           </button>

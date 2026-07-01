@@ -57,10 +57,10 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-bg">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-bg px-4 py-8">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
+        className="w-full max-w-sm rounded-2xl border border-neutral-200 bg-neutral-card p-8 shadow-md"
       >
         <h1 className="text-2xl font-bold text-center mb-6 text-neutral-text">
           Iniciar sesión
@@ -82,7 +82,11 @@ export default function Login() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full border rounded px-3 py-2 text-sm ${errors.email ? 'border-red-500' : 'border-neutral-300'}`}
+            className={`w-full rounded-lg border px-3 py-2 text-sm text-neutral-text outline-none transition ${
+              errors.email
+                ? 'border-red-500'
+                : 'border-neutral-300 bg-neutral-card focus:border-brand-500 focus:ring-2 focus:ring-brand-100'
+            }`}
           />
           {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
         </div>
@@ -95,7 +99,11 @@ export default function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full border rounded px-3 py-2 text-sm ${errors.password ? 'border-red-500' : 'border-neutral-300'}`}
+            className={`w-full rounded-lg border px-3 py-2 text-sm text-neutral-text outline-none transition ${
+              errors.password
+                ? 'border-red-500'
+                : 'border-neutral-300 bg-neutral-card focus:border-brand-500 focus:ring-2 focus:ring-brand-100'
+            }`}
           />
           <ul className="mt-1 space-y-0.5">
             {PASSWORD_REQUIREMENTS.map((req) => {
@@ -119,7 +127,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand-500 text-white py-2 rounded font-medium hover:bg-brand-600 disabled:opacity-50"
+            className="w-full rounded-lg bg-brand-500 py-2 font-medium text-white transition-colors hover:bg-brand-600 disabled:opacity-50"
           >
             Ingresar
           </button>

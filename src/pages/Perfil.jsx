@@ -76,13 +76,13 @@ export default function Perfil() {
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto space-y-8">
+    <div className="mx-auto max-w-2xl space-y-8 p-4 sm:p-6 lg:p-8">
       <PageHeader title="Mi Perfil" breadcrumbs={[{ label: 'Perfil' }]} />
 
       {apiError && <Alert type="error" message={apiError} onClose={() => setApiError(null)} />}
       {success && <Alert type="success" message={success} onClose={() => setSuccess(null)} />}
 
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
+      <div className="space-y-4 rounded-2xl border border-neutral-200 bg-neutral-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-neutral-text">Datos personales</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
@@ -104,7 +104,7 @@ export default function Perfil() {
         </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="rounded-2xl border border-neutral-200 bg-neutral-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-neutral-text mb-4">Cambiar contrasena</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormField
@@ -159,7 +159,7 @@ export default function Perfil() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full md:w-auto bg-brand-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-brand-600 disabled:opacity-50 transition-colors cursor-pointer"
+              className="w-full rounded-lg bg-brand-500 px-6 py-2 font-medium text-white transition-colors hover:bg-brand-600 disabled:opacity-50 md:w-auto cursor-pointer"
             >
               Actualizar contrasena
             </button>
@@ -171,7 +171,7 @@ export default function Perfil() {
         <button
           type="button"
           onClick={handleLogout}
-          className="bg-red-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors cursor-pointer"
+          className="rounded-lg bg-secondary-500 px-6 py-2 font-medium text-white transition-colors hover:bg-secondary-600 cursor-pointer"
         >
           Cerrar sesion
         </button>

@@ -17,10 +17,12 @@ export default function Alert({ type = 'info', message, onClose }) {
   if (!message) return null
 
   return (
-    <div className={`border-l-4 p-3 rounded ${colors[type] || colors.info} flex justify-between items-start`}>
+    <div className={`flex items-start justify-between rounded border-l-4 p-3 ${colors[type] || colors.info}`}>
       <span className="text-sm">{message}</span>
       {onClose && (
-        <button onClick={onClose} className="ml-3 text-sm font-bold hover:opacity-70">&times;</button>
+        <button onClick={onClose} className="ml-3 text-sm font-bold text-neutral-muted transition hover:opacity-70">
+          &times;
+        </button>
       )}
     </div>
   )
