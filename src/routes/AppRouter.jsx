@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from '../context/AuthContext'
 import ProtectedRoute from '../components/ProtectedRoute'
+import AdminRoute from '../components/AdminRoute'
 import Navbar from '../components/Navbar'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
@@ -12,6 +13,8 @@ import AnimalesForm from '../pages/AnimalesForm'
 import RazasForm from '../pages/RazasForm'
 import Perfil from '../pages/Perfil'
 import Landing from '../pages/Landing'
+import UsuariosList from '../pages/UsuariosList'
+import UsuariosForm from '../pages/UsuariosForm'
 
 /**
  * Configuracion de rutas de la aplicacion
@@ -100,7 +103,37 @@ export default function AppRouter() {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<h1 className="p-6 text-xl">404 - Página no encontrada</h1>} />
+            <Route
+              path="/usuarios"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <UsuariosList />
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/usuarios/nuevo"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <UsuariosForm />
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/usuarios/:id/editar"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <UsuariosForm />
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<h1 className="p-6 text-xl">404 - P\u00e1gina no encontrada</h1>} />
           </Routes>
         </main>
       </AuthProvider>
