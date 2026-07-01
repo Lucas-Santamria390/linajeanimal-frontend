@@ -9,7 +9,7 @@
  */
 export default function EmptyState({ icon: Icon, title, message, action }) {
   return (
-    <div className="flex flex-col items-center justify-center text-center p-8 min-h-[350px] bg-white rounded-xl border border-neutral-200 shadow-sm">
+    <div className="flex flex-col items-center justify-center text-center p-8 min-h-[350px] bg-neutral-card rounded-xl border border-neutral-200 shadow-sm">
       <div className="p-4 bg-neutral-50 rounded-full text-neutral-400 mb-4">
         {Icon ? (
           <Icon className="w-10 h-10" />
@@ -20,10 +20,10 @@ export default function EmptyState({ icon: Icon, title, message, action }) {
         )}
       </div>
 
-      <h3 className="text-lg font-semibold text-neutral-900 mb-1">
+      <h3 className="mb-1 text-lg font-semibold text-neutral-text">
         {title || 'No hay datos disponibles'}
       </h3>
-      <p className="text-sm text-neutral-500 max-w-sm mb-6">
+      <p className="mb-6 max-w-sm text-sm text-neutral-muted">
         {message || 'No se encontraron registros en este momento.'}
       </p>
 

@@ -37,14 +37,14 @@ export default function DataTable({
         {data.map((row, rowIndex) => (
           <div 
             key={row._id || row.id || rowIndex} 
-            className="bg-white p-4 rounded-xl border border-neutral-200 shadow-sm flex flex-col gap-3"
+            className="bg-neutral-card p-4 rounded-xl border border-neutral-200 shadow-sm flex flex-col gap-3"
           >
             {columns.map((col, colIndex) => (
               <div key={col.key || colIndex} className="flex justify-between items-start text-sm">
-                <span className="font-semibold text-neutral-500 text-xs uppercase tracking-wider pr-2">
+                <span className="font-semibold text-neutral-muted text-xs uppercase tracking-wider pr-2">
                   {col.header}:
                 </span>
-                <span className="text-neutral-900 font-medium text-right">
+                <span className="font-medium text-right text-neutral-text">
                   {col.render ? col.render(row[col.key], row) : row[col.key]}
                 </span>
               </div>
@@ -54,9 +54,9 @@ export default function DataTable({
       </div>
 
       {/*  ESCRITORIO: Vista de Tabla tradicional (>= 768px) */}
-      <div className="hidden md:block w-full overflow-x-auto bg-white rounded-xl border border-neutral-200 shadow-sm">
+      <div className="hidden md:block w-full overflow-x-auto bg-neutral-card rounded-xl border border-neutral-200 shadow-sm">
         <table className="w-full text-left border-collapse">
-          <thead className="bg-neutral-50 border-b border-neutral-200 text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+          <thead className="bg-neutral-bg border-b border-neutral-200 text-xs font-semibold text-neutral-muted uppercase tracking-wider">
             <tr>
               {columns.map((col, index) => (
                 <th
@@ -82,7 +82,7 @@ export default function DataTable({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-200 text-sm text-neutral-900">
+          <tbody className="divide-y divide-neutral-200 text-sm text-neutral-text">
             {data.map((row, rowIndex) => (
               <tr key={row._id || row.id || rowIndex} className="hover:bg-neutral-50/50 transition-colors">
                 {columns.map((col, colIndex) => (
