@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useUsuarios } from '../hooks/useUsuarios'
 import PageHeader from '../components/PageHeader'
@@ -30,11 +30,17 @@ export default function UsuariosForm() {
   const [submitting, setSubmitting] = useState(false)
   const [alertMessage, setAlertMessage] = useState(() => {
     const message = location.state?.success || ''
-    if (message) window.history.replaceState({}, document.title)
     return message ? { type: 'success', message } : null
   })
+  const [submitError, setSubmitError] = useState(null)
 
-  const { getById, create, update, error } = useUsuarios()
+  const { getById, create, update } = useUsuarios()
+
+  useEffect(() => {
+    if (location.state?.success) {
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state?.success])
 
   useEffect(() => {
     if (!isEdit) return undefined
@@ -64,13 +70,13 @@ export default function UsuariosForm() {
     }
   }, [getById, id, isEdit])
 
-  const handleChange = (event) => {
+  const handleChange = useCallback((event) => {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
     setErrors((current) => ({ ...current, [name]: '' }))
-  }
+  }, [])
 
-  const validate = () => {
+  const validate = useCallback(() => {
     const nextErrors = {}
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
@@ -92,13 +98,14 @@ export default function UsuariosForm() {
 
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
-  }
+  }, [form.nombre, form.email, form.rol, form.password, isEdit])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     if (!validate() || submitting) return
 
     setSubmitting(true)
+    setSubmitError(null)
     try {
       const payload = {
         nombre: form.nombre.trim(),
@@ -118,13 +125,10 @@ export default function UsuariosForm() {
           success: isEdit ? 'Usuario actualizado con exito.' : 'Usuario creado con exito.',
         },
       })
-    } catch {
-      setAlertMessage({
-        type: 'error',
-        message: isEdit
-          ? 'No se pudo actualizar el usuario. Intenta nuevamente.'
-          : 'No se pudo crear el usuario. Intenta nuevamente.',
-      })
+    } catch (err) {
+      setSubmitError(err?.response?.data?.message || (isEdit
+        ? 'No se pudo actualizar el usuario. Intenta nuevamente.'
+        : 'No se pudo crear el usuario. Intenta nuevamente.'))
     } finally {
       setSubmitting(false)
     }
@@ -161,7 +165,7 @@ export default function UsuariosForm() {
         />
       )}
 
-      {error && <Alert type="error" message={error} />}
+      {submitError && <Alert type="error" message={submitError} onClose={() => setSubmitError(null)} />}
 
       <form
         onSubmit={handleSubmit}

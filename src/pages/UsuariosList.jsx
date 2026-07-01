@@ -27,9 +27,14 @@ export default function UsuariosList() {
   const [isUpdating, setIsUpdating] = useState(false)
   const [alertMessage, setAlertMessage] = useState(() => {
     const message = location.state?.success || ''
-    if (message) window.history.replaceState({}, document.title)
     return message ? { type: 'success', message } : null
   })
+
+  useEffect(() => {
+    if (location.state?.success) {
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state?.success])
 
   const { data: usuarios, loading, error, pagination, refetch, toggleActive } = useUsuarios()
 
@@ -93,7 +98,7 @@ export default function UsuariosList() {
             <button
               type="button"
               onClick={() => navigate(`/usuarios/${row._id}/editar`)}
-              className="text-sm font-medium text-secondary-600 transition-colors hover:text-secondary-700"
+              className="text-sm font-medium text-secondary-600 transition-colors hover:text-secondary-600"
             >
               Editar
             </button>
@@ -135,7 +140,7 @@ export default function UsuariosList() {
         />
       )}
 
-      {error && (
+      {!alertMessage && error && (
         <div className="flex items-start gap-2">
           <Alert type="error" message={error} className="flex-1" />
           <button
@@ -170,12 +175,10 @@ export default function UsuariosList() {
             <DataTable
               columns={columns}
               data={usuarios}
-              emptyTitle="No hay usuarios registrados"
-              emptyMessage="Aún no existen usuarios activos para mostrar en esta lista."
             />
           )}
 
-          {pagination && pagination.totalPages > 1 && (
+          {pagination?.totalPages > 1 && (
             <Pagination
               page={pagination.page}
               pages={pagination.totalPages}
