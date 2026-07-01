@@ -5,6 +5,7 @@ import { useGenealogy } from '../hooks/useGenealogy'
 import Alert from '../components/Alert'
 import EmptyState from '../components/EmptyState'
 import Loading from '../components/Loading'
+import PageHeader from '../components/PageHeader'
 import ConfirmModal from '../components/ConfirmModal'
 
 /**
@@ -19,7 +20,7 @@ function RelationshipItem({ animal = {} }) {
       <span className="font-medium text-neutral-900">{animal.nombre}</span>
       <Link
         to={`/animales/${animal._id}`}
-        className="text-sm font-semibold text-secondary-600 hover:text-secondary-700"
+        className="text-sm font-semibold text-secondary-600 hover:text-secondary-500"
       >
         Ver detalle
       </Link>
@@ -73,26 +74,24 @@ export default function AnimalDetail() {
         const animalData = await getById(id)
         if (cancelled) return
 
-        if (!animalData) {
-          setNotFound(true)
-          return
-        }
-
         setAnimal(animalData)
 
         const familyData = await fetchFamilyTree(id)
-        if (cancelled || !familyData) return
+        if (cancelled) return
 
         setFamily({
           padres: {
-            padre: familyData.padre || familyData.padres?.padre,
-            madre: familyData.madre || familyData.padres?.madre,
+            padre: familyData?.padre || familyData?.padres?.padre,
+            madre: familyData?.madre || familyData?.padres?.madre,
           },
-          hijos: familyData.hijos || [],
-          hermanos: familyData.hermanos || [],
+          hijos: familyData?.hijos || [],
+          hermanos: familyData?.hermanos || [],
         })
       } catch (err) {
-        if (!cancelled) {
+        if (cancelled) return
+        if (err?.response?.status === 404) {
+          setNotFound(true)
+        } else {
           setLocalError(err?.response?.data?.message || err.message || 'Error al cargar el detalle del animal')
         }
       }
@@ -126,6 +125,30 @@ export default function AnimalDetail() {
     return <Loading message="Cargando expediente y arbol genealogico..." />
   }
 
+  if (localError || animalError || genealogyError) {
+    return (
+      <div className="space-y-4 p-4 sm:p-6 lg:p-8">
+        <Alert type="error" message={localError || animalError || genealogyError} />
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
+          >
+            Reintentar
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/animales')}
+            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
+          >
+            Volver a animales
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (notFound) {
     return (
       <div className="p-4 sm:p-6 lg:p-8">
@@ -146,59 +169,47 @@ export default function AnimalDetail() {
     )
   }
 
-  if (localError || animalError || genealogyError) {
-    return (
-      <div className="space-y-4 p-4 sm:p-6 lg:p-8">
-        <Alert type="error" message={localError || animalError || genealogyError} />
-        <button
-          type="button"
-          onClick={() => navigate('/animales')}
-          className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
-        >
-          Volver a animales
-        </button>
-      </div>
-    )
-  }
-
   if (!animal) return null
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6 lg:p-8">
-      <div className="flex flex-col justify-between gap-4 rounded-lg border border-neutral-200 bg-neutral-card p-4 shadow-sm sm:flex-row sm:items-center">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Expediente animal</span>
-          <h1 className="text-2xl font-bold text-brand-700 md:text-3xl">{animal.nombre}</h1>
-        </div>
-        <div className="flex w-full flex-wrap gap-2 sm:w-auto">
-          <button
-            type="button"
-            onClick={() => navigate(`/animales/${animal._id}/editar`)}
-            className="flex-1 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 sm:flex-none"
-          >
-            Editar
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate(`/genealogia/${animal._id}`)}
-            className="flex-1 rounded-md bg-secondary-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-700 sm:flex-none"
-          >
-            Ver arbol
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsConfirmOpen(true)}
-            className="flex-1 rounded-md bg-secondary-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-800 sm:flex-none"
-          >
-            Eliminar
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title={animal.nombre}
+        breadcrumbs={[
+          { label: 'Animales', to: '/animales' },
+          { label: animal.nombre },
+        ]}
+        action={
+          <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+            <button
+              type="button"
+              onClick={() => navigate(`/animales/${animal._id}/editar`)}
+              className="flex-1 rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600 sm:flex-none"
+            >
+              Editar
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate(`/genealogia/${animal._id}`)}
+              className="flex-1 rounded-md bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600 sm:flex-none"
+            >
+              Ver arbol
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsConfirmOpen(true)}
+              className="flex-1 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 sm:flex-none"
+            >
+              Eliminar
+            </button>
+          </div>
+        }
+      />
 
       <div className="grid gap-6 md:grid-cols-3">
         <section className="space-y-4 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm md:col-span-2">
           <h2 className="border-b border-neutral-200 pb-2 text-xl font-bold text-neutral-800">Informacion general</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             <InfoItem label="Identificador" value={animal.identificador || animal.codigo || animal._id} />
             <InfoItem label="Sexo" value={animal.sexo} />
             <InfoItem label="Especie" value={animal.especie?.nombre} />
@@ -207,7 +218,10 @@ export default function AnimalDetail() {
               label="Fecha de nacimiento"
               value={animal.fechaNacimiento ? new Date(animal.fechaNacimiento).toLocaleDateString() : ''}
             />
-            <InfoItem label="Estado" value={animal.estado || 'Activo'} />
+            <InfoItem label="Peso" value={animal.peso ? `${animal.peso} kg` : ''} />
+            <InfoItem label="Color" value={animal.color} />
+            <InfoItem label="Propietario" value={animal.propietario?.nombre} />
+            <InfoItem label="Estado" value={animal.active !== false ? 'Activo' : 'Inactivo'} />
           </div>
 
           {animal.observaciones && (
@@ -244,7 +258,7 @@ export default function AnimalDetail() {
               {family.padres?.madre ? (
                 <Link
                   to={`/animales/${family.padres.madre._id}`}
-                  className="block rounded border border-secondary-200 bg-secondary-50 p-3 text-center font-medium text-secondary-800 transition-colors hover:bg-secondary-100"
+                  className="block rounded border border-secondary-500/30 bg-secondary-500/10 p-3 text-center font-medium text-secondary-600 transition-colors hover:bg-secondary-500/20"
                 >
                   {family.padres.madre.nombre}
                 </Link>
