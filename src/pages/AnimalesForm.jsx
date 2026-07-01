@@ -111,7 +111,6 @@ export default function AnimalesForm() {
 
   const validate = useCallback(() => {
     const newErrors = {}
-    if (!form.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio'
     if (!form.especie) newErrors.especie = 'La especie es obligatoria'
     if (!form.raza) newErrors.raza = 'La raza es obligatoria'
     if (!form.sexo) newErrors.sexo = 'El sexo es obligatorio'
@@ -158,15 +157,15 @@ export default function AnimalesForm() {
     setApiError(null)
     try {
       const payload = {
-        nombre: form.nombre.trim(),
         especie: form.especie,
         raza: form.raza,
         sexo: form.sexo,
         fechaNacimiento: form.fechaNacimiento,
+        identificador: form.identificador.trim(),
       }
+      if (form.nombre.trim()) payload.nombre = form.nombre.trim()
       if (form.peso) payload.peso = Number(form.peso)
       if (form.color.trim()) payload.color = form.color.trim()
-      if (form.identificador.trim()) payload.identificador = form.identificador.trim()
       if (form.fotoUrl.trim()) payload.fotoUrl = form.fotoUrl.trim()
       if (form.notas.trim()) payload.notas = form.notas.trim()
       payload.padre = form.padre || null
@@ -204,12 +203,12 @@ export default function AnimalesForm() {
   ]
 
   const padreSelectOptions = useMemo(
-    () => padreOptions.map((a) => ({ value: a._id, label: a.nombre })),
+    () => padreOptions.map((a) => ({ value: a._id, label: a.nombre ? `${a.identificador} — ${a.nombre}` : a.identificador })),
     [padreOptions]
   )
 
   const madreSelectOptions = useMemo(
-    () => madreOptions.map((a) => ({ value: a._id, label: a.nombre })),
+    () => madreOptions.map((a) => ({ value: a._id, label: a.nombre ? `${a.identificador} — ${a.nombre}` : a.identificador })),
     [madreOptions]
   )
 
@@ -234,13 +233,24 @@ export default function AnimalesForm() {
       <form onSubmit={handleSubmit} noValidate className="rounded-2xl border border-neutral-200 bg-neutral-card p-4 shadow-sm sm:p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
+            id="identificador"
+            name="identificador"
+            label="Identificador"
+            value={form.identificador}
+            onChange={handleChange}
+            error={errors.identificador}
+            required
+            placeholder="Código de arete o microchip"
+            maxLength={50}
+          />
+
+          <FormField
             id="nombre"
             name="nombre"
-            label="Nombre"
+            label="Nombre (opcional)"
             value={form.nombre}
             onChange={handleChange}
             error={errors.nombre}
-            required
             placeholder="Nombre del animal"
             maxLength={100}
           />
@@ -323,18 +333,6 @@ export default function AnimalesForm() {
             onChange={handleChange}
             error={errors.color}
             placeholder="Color del animal"
-            maxLength={50}
-          />
-
-          <FormField
-            id="identificador"
-            name="identificador"
-            label="Identificador"
-            value={form.identificador}
-            onChange={handleChange}
-            error={errors.identificador}
-            required
-            placeholder="Número de identificación"
             maxLength={50}
           />
 
