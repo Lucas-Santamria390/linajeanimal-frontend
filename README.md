@@ -35,6 +35,8 @@ cp .env.example .env
 npm run dev
 ```
 
+El frontend queda disponible en `http://localhost:5173`, y espera que el backend (`linajeanimal-api`) esté corriendo en `http://localhost:3000` (ver variable `VITE_API_URL` abajo).
+
 ## Variables de entorno
 
 | Variable | Descripción | Valor por defecto |
@@ -68,14 +70,32 @@ Página → Custom Hook → Servicio (Axios) → API Backend
 6. Si el backend responde 401, el interceptor limpia el storage y redirige a `/login`
 7. `ProtectedRoute` verifica `isAuthenticated` antes de renderizar rutas privadas
 
-Las rutas privadas están protegidas por `ProtectedRoute` que redirige a `/login` si no hay token.
-
-## Enlaces
-
-- **Frontend desplegado:** (pendiente)
-- **API REST:** https://github.com/Lucas-Santamria390/linajeanimal-api
-- **API desplegada:** https://linajeanimal-api.onrender.com/api/v1
+Las rutas privadas están protegidas por `ProtectedRoute` que redirige a `/login` si no hay token. Las rutas exclusivas de administrador (ej. `/usuarios`) además están protegidas por `AdminRoute`.
 
 ## Credenciales de prueba
 
-(proximamente)
+| Rol | Email | Contraseña |
+|---|---|---|
+| Administrador | `admin@linajeanimal.test` | `Admin123!` |
+| Usuario | `usuario@linajeanimal.test` | `User123!` |
+
+> El rol **admin** tiene CRUD completo sobre animales, especies, razas y usuarios. El rol **user** tiene CRUD solo sobre sus propios animales y lectura de especies/razas.
+
+## Capturas de pantalla
+
+<!-- TODO: reemplazar con capturas reales del proyecto corriendo -->
+
+### Vista de escritorio (PC)
+
+![alt text](image-1.png)
+
+### Vista móvil
+
+![alt text](image-2.png)
+
+## Enlaces
+
+- **Repositorio (frontend):** https://github.com/Lucas-Santamria390/linajeanimal-frontend
+- **Frontend desplegado (Vercel):** _(pendiente)_
+- **Repositorio API:** https://github.com/Lucas-Santamria390/linajeanimal-api
+- **API desplegada (Render):** https://linajeanimal-api.onrender.com/api/v1
