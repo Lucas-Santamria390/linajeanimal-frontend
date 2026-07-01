@@ -66,7 +66,9 @@ export function useAnimales(initialParams = {}) {
       const res = await getAnimal(id)
       return res.data.data
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al obtener animal')
+      const msg = err.response?.data?.message || 'Error al obtener animal'
+      setError(msg)
+      throw err
     } finally {
       setLoading(false)
     }

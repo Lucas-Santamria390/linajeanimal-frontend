@@ -9,6 +9,7 @@ import Dashboard from '../pages/Dashboard'
 import EspeciesList from '../pages/EspeciesList'
 import EspeciesForm from '../pages/EspeciesForm'
 import AnimalesList from '../pages/AnimalesList'
+import AnimalDetail from '../pages/AnimalDetail'
 import RazasList from '../pages/RazasList'
 import AnimalesForm from '../pages/AnimalesForm'
 import RazasForm from '../pages/RazasForm'
@@ -85,6 +86,14 @@ export default function AppRouter() {
               element={
                 <ProtectedRoute>
                   <AnimalesForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/animales/:id"
+              element={
+                <ProtectedRoute>
+                  <AnimalDetail />
                 </ProtectedRoute>
               }
             />

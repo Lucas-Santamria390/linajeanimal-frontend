@@ -112,7 +112,14 @@ export default function AnimalesList() {
       key: 'acciones',
       header: 'Acciones',
       render: (_value, row) => (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/animales/${row._id}`)}
+            className="text-sm text-secondary-600 hover:text-secondary-700 font-medium"
+          >
+            Ver detalle
+          </button>
           <button
             type="button"
             onClick={() => navigate(`/animales/${row._id}/editar`)}
