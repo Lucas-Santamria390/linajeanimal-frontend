@@ -7,6 +7,7 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
 import EspeciesList from '../pages/EspeciesList'
+import EspeciesForm from '../pages/EspeciesForm'
 import AnimalesList from '../pages/AnimalesList'
 import RazasList from '../pages/RazasList'
 import AnimalesForm from '../pages/AnimalesForm'
@@ -44,6 +45,22 @@ export default function AppRouter() {
               element={
                 <ProtectedRoute>
                   <EspeciesList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/especies/nuevo"
+              element={
+                <ProtectedRoute>
+                  <EspeciesForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/especies/:id/editar"
+              element={
+                <ProtectedRoute>
+                  <EspeciesForm />
                 </ProtectedRoute>
               }
             />
