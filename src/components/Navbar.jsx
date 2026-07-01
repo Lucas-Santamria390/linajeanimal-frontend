@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 /**
  * Barra de navegación principal responsive con menú hamburguesa y drawer lateral.
- * Conserva la estructura de distribución extrema original del equipo.
- * @returns {JSX.Element}
+ * @returns {JSX.Element} Navbar completo con vista de escritorio y drawer móvil.
  */
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth()
@@ -40,8 +39,8 @@ export default function Navbar() {
 
   return (
     <nav className="bg-brand-500 text-white px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-md">
-      
-      {/* LOGO PRINCIPAL (Conserva la posición original exacta de tus compañeros) */}
+
+      {/* LOGO PRINCIPAL */}
       <Link to={isAuthenticated ? "/dashboard" : "/"} className="font-bold text-lg select-none flex items-center gap-2">
         <span>🐾 LinajeAnimal</span>
       </Link>
@@ -56,7 +55,6 @@ export default function Navbar() {
               <Link to="/animales" className={getLinkClass('/animales')}>Animales</Link>
               <Link to="/especies" className={getLinkClass('/especies')}>Especies</Link>
               <Link to="/razas" className={getLinkClass('/razas')}>Razas</Link>
-              {/* Tu requerimiento: Solo admin ve usuarios */}
               {user?.rol === 'admin' && (
                 <Link to="/usuarios" className={getLinkClass('/usuarios')}>Usuarios</Link>
               )}
@@ -82,12 +80,20 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <Link 
-              to="/login" 
-              className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-semibold text-white transition-colors shadow-xs hover:bg-secondary-600"
-            >
-              Iniciar sesión
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                to="/register"
+                className="rounded-lg border border-brand-100 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+              >
+                Registrarse
+              </Link>
+              <Link
+                to="/login"
+                className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-semibold text-white transition-colors shadow-xs hover:bg-secondary-600"
+              >
+                Iniciar sesión
+              </Link>
+            </div>
           )}
         </div>
       </div>
@@ -117,8 +123,8 @@ export default function Navbar() {
       {/* DRAWER LATERAL RESPONSIVE (< 768px) */}
       {/* Fondo oscuro traslúcido */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 md:hidden transition-opacity" 
+        <div
+          className="fixed inset-0 bg-neutral-900/50 backdrop-blur-xs z-40 md:hidden transition-opacity"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -133,7 +139,7 @@ export default function Navbar() {
         <div>
           {/* Botón Cerrar Drawer */}
           <div className="flex justify-end mb-6">
-            <button 
+            <button
               onClick={() => setIsOpen(false)}
               className="p-2 rounded-md hover:bg-brand-600 text-white cursor-pointer"
             >
@@ -177,13 +183,22 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            <Link
-              to="/login"
-              onClick={() => setIsOpen(false)}
-              className="block w-full rounded-lg bg-secondary-500 py-2.5 text-center text-sm font-bold text-white transition-colors shadow-xs hover:bg-secondary-600"
-            >
-              Iniciar sesión
-            </Link>
+            <div className="flex flex-col gap-2">
+              <Link
+                to="/register"
+                onClick={() => setIsOpen(false)}
+                className="block w-full rounded-lg border border-brand-100 py-2.5 text-center text-sm font-bold text-white transition-colors hover:bg-brand-600"
+              >
+                Registrarse
+              </Link>
+              <Link
+                to="/login"
+                onClick={() => setIsOpen(false)}
+                className="block w-full rounded-lg bg-secondary-500 py-2.5 text-center text-sm font-bold text-white transition-colors shadow-xs hover:bg-secondary-600"
+              >
+                Iniciar sesión
+              </Link>
+            </div>
           )}
         </div>
 
