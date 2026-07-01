@@ -40,7 +40,7 @@ export default function AnimalesList() {
     refetch({
       page,
       limit: 20,
-      nombre: search || undefined,
+      identificador: search || undefined,
       ...(especieFiltro && { especie: especieFiltro }),
       ...(razaFiltro && { raza: razaFiltro }),
       ...(sexoFiltro && { sexo: sexoFiltro }),
@@ -91,6 +91,7 @@ export default function AnimalesList() {
   }
 
   const columns = useMemo(() => [
+    { key: 'identificador', header: 'Identificador' },
     { key: 'nombre', header: 'Nombre' },
     {
       key: 'especie',
@@ -107,7 +108,6 @@ export default function AnimalesList() {
       header: 'Sexo',
       render: (value) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '-',
     },
-    { key: 'identificador', header: 'Identificador' },
     {
       key: 'acciones',
       header: 'Acciones',
@@ -176,7 +176,7 @@ export default function AnimalesList() {
 
       <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-end">
         <div className="w-full sm:max-w-xs">
-          <SearchBar onSearch={handleSearch} placeholder="Buscar por nombre..." />
+          <SearchBar onSearch={handleSearch} placeholder="Buscar por identificador..." />
         </div>
         <div className="w-full sm:max-w-xs">
           <SelectField
@@ -243,7 +243,7 @@ export default function AnimalesList() {
         title="Eliminar animal"
         message={
           deleteTarget
-            ? `¿Estás seguro de eliminar a "${deleteTarget.nombre}"? Esta acción no se puede deshacer.`
+            ? `¿Estás seguro de eliminar a "${deleteTarget.identificador}${deleteTarget.nombre ? ` — ${deleteTarget.nombre}` : ''}"? Esta acción no se puede deshacer.`
             : ''
         }
         confirmText="Eliminar"

@@ -15,9 +15,10 @@ import ConfirmModal from '../components/ConfirmModal'
  * @returns {JSX.Element} Elemento de lista con nombre y enlace al detalle.
  */
 function RelationshipItem({ animal = {} }) {
+  const label = animal.nombre ? `${animal.identificador} — ${animal.nombre}` : animal.identificador
   return (
     <li className="flex items-center justify-between gap-3 border-b border-neutral-200 py-2 last:border-none">
-      <span className="font-medium text-neutral-900">{animal.nombre}</span>
+      <span className="font-medium text-neutral-900">{label}</span>
       <Link
         to={`/animales/${animal._id}`}
         className="text-sm font-semibold text-secondary-600 hover:text-secondary-500"
@@ -169,15 +170,17 @@ export default function AnimalDetail() {
     )
   }
 
-  if (!animal) return null
+  if (!animal) return <Loading message="Preparando información..." />
+
+  const pageTitle = animal.nombre ? `${animal.identificador} — ${animal.nombre}` : animal.identificador
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6 lg:p-8">
       <PageHeader
-        title={animal.nombre}
+        title={pageTitle}
         breadcrumbs={[
           { label: 'Animales', to: '/animales' },
-          { label: animal.nombre },
+          { label: pageTitle },
         ]}
         action={
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
@@ -244,7 +247,7 @@ export default function AnimalDetail() {
                   to={`/animales/${family.padres.padre._id}`}
                   className="block rounded border border-brand-200 bg-brand-50 p-3 text-center font-medium text-brand-800 transition-colors hover:bg-brand-100"
                 >
-                  {family.padres.padre.nombre}
+                  {family.padres.padre.nombre ? `${family.padres.padre.identificador} — ${family.padres.padre.nombre}` : family.padres.padre.identificador}
                 </Link>
               ) : (
                 <p className="rounded border border-dashed bg-neutral-50 p-3 text-center text-sm text-neutral-400">
@@ -260,7 +263,7 @@ export default function AnimalDetail() {
                   to={`/animales/${family.padres.madre._id}`}
                   className="block rounded border border-secondary-500/30 bg-secondary-500/10 p-3 text-center font-medium text-secondary-600 transition-colors hover:bg-secondary-500/20"
                 >
-                  {family.padres.madre.nombre}
+                  {family.padres.madre.nombre ? `${family.padres.madre.identificador} — ${family.padres.madre.nombre}` : family.padres.madre.identificador}
                 </Link>
               ) : (
                 <p className="rounded border border-dashed bg-neutral-50 p-3 text-center text-sm text-neutral-400">
@@ -306,7 +309,7 @@ export default function AnimalDetail() {
       <ConfirmModal
         isOpen={isConfirmOpen}
         title="Eliminar animal"
-        message={`Estas seguro de eliminar a ${animal.nombre}? Esta accion no se puede deshacer.`}
+        message={`Estas seguro de eliminar a ${pageTitle}? Esta accion no se puede deshacer.`}
         onConfirm={handleConfirmDelete}
         onCancel={() => setIsConfirmOpen(false)}
         loading={isDeleting}
