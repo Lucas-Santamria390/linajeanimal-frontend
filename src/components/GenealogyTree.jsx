@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useGenealogy } from '../hooks/useGenealogy'
 import Loading from './Loading'
@@ -9,10 +9,13 @@ const MIN_GENERACIONES = 1
 const MAX_GENERACIONES = 5
 const DEFAULT_GENERACIONES = 3
 
-const GRAPH_COL_WIDTH = 180
-const GRAPH_ROW_HEIGHT = 140
-const GRAPH_NODE_WIDTH = 160
-const GRAPH_NODE_HEIGHT = 80
+const GRAPH_COL_WIDTH = 200
+const GRAPH_ROW_HEIGHT = 150
+const GRAPH_NODE_WIDTH = 190
+const GRAPH_NODE_HEIGHT = 90
+const NODE_HEADER_H = 32
+const NODE_ID_Y = 54
+const NODE_SPECIES_Y = 74
 
 function clampGeneraciones(value) {
   const parsed = Number.parseInt(value, 10)
@@ -30,6 +33,8 @@ function sexoClasses(sexo = '') {
         text: 'text-sky-800',
         fill: 'fill-sky-100',
         stroke: 'stroke-sky-500',
+        headerBg: 'fill-sky-200',
+        headerText: 'fill-sky-900',
         icon: '\u2642',
         label: 'Macho',
       }
@@ -39,9 +44,19 @@ function sexoClasses(sexo = '') {
         text: 'text-rose-800',
         fill: 'fill-rose-100',
         stroke: 'stroke-rose-400',
+        headerBg: 'fill-rose-200',
+        headerText: 'fill-rose-900',
         icon: '\u2640',
         label: 'Hembra',
       }
+}
+
+function getRelLabel(path, dashed = false) {
+  if (dashed) return 'Hermano'
+  if (path.endsWith('-p')) return 'Padre'
+  if (path.endsWith('-m')) return 'Madre'
+  if (path.includes('-h')) return 'Hijo'
+  return ''
 }
 
 function buildGraphLayout(root, hermanos = []) {
@@ -96,7 +111,17 @@ function buildGraphLayout(root, hermanos = []) {
   const nodeByPath = new Map(nodes.map((n) => [n.path, n]))
   const edges = nodes
     .filter((n) => n.parentPath && nodeByPath.has(n.parentPath))
-    .map((n) => ({ from: nodeByPath.get(n.parentPath), to: n, dashed: Boolean(n.dashed) }))
+    .map((n) => {
+      const from = nodeByPath.get(n.parentPath)
+      return {
+        from,
+        to: n,
+        dashed: Boolean(n.dashed),
+        label: getRelLabel(n.path, Boolean(n.dashed)),
+        mx: (from.x + n.x) / 2,
+        my: (from.y + n.y) / 2,
+      }
+    })
 
   return {
     nodes,
@@ -106,64 +131,17 @@ function buildGraphLayout(root, hermanos = []) {
   }
 }
 
-function MobileTreeNode({ node, path, direction, expandedPaths, onToggle, onNavigate }) {
-  const colors = sexoClasses(node.sexo)
-  const childEntries =
-    direction === 'down'
-      ? (node.hijos || []).map((hijo, i) => ({ node: hijo, path: `${path}-${i}` }))
-      : [
-          node.padre && { node: node.padre, path: `${path}-p` },
-          node.madre && { node: node.madre, path: `${path}-m` },
-        ].filter(Boolean)
-
-  const hasChildren = childEntries.length > 0
-  const isExpanded = expandedPaths.has(path)
-
-  return (
-    <li className="ml-3 border-l border-neutral-200 pl-3">
-      <div className={`flex items-center justify-between gap-2 rounded-md border ${colors.border} ${colors.bg} px-3 py-2`}>
-        <button
-          type="button"
-          onClick={() => onNavigate(node._id)}
-          className={`flex items-center gap-1.5 text-left text-sm font-medium ${colors.text} hover:underline`}
-        >
-          <span aria-hidden="true" className="text-base leading-none">{colors.icon}</span>
-          <span className="sr-only">{colors.label}</span>
-          {node.nombre}
-        </button>
-        {hasChildren && (
-          <button
-            type="button"
-            onClick={() => onToggle(path)}
-            aria-expanded={isExpanded}
-            className="rounded px-2 py-1 text-xs font-bold text-neutral-500 hover:bg-neutral-100"
-          >
-            {isExpanded ? '−' : '+'}
-          </button>
-        )}
-      </div>
-      {hasChildren && isExpanded && (
-        <ul className="mt-2 space-y-2">
-          {childEntries.map(({ node: childNode, path: childPath }) => (
-            <MobileTreeNode
-              key={childPath}
-              node={childNode}
-              path={childPath}
-              direction={direction}
-              expandedPaths={expandedPaths}
-              onToggle={onToggle}
-              onNavigate={onNavigate}
-            />
-          ))}
-        </ul>
-      )}
-    </li>
-  )
+function speciesBreedLabel(node) {
+  const especie = node?.especie?.nombre || node?.especie || ''
+  const raza = node?.raza?.nombre || node?.raza || ''
+  return [especie, raza].filter(Boolean).join(' · ')
 }
 
 /**
- * Componente de árbol genealógico. En móvil lista jerárquica, en desktop grafo SVG.
- * Si la API retorna null pero hay fallbackRelatives, muestra lista plana con hijos/hermanos.
+ * Componente de árbol genealógico. Muestra un grafo SVG único para todos los tamaños
+ * de pantalla con nodos enriquecidos (nombre, identificador, especie/raza) y etiquetas
+ * de parentesco en las conexiones. Cuando la API retorna null pero hay fallbackRelatives,
+ * muestra una lista plana de hijos/hermanos.
  * @param {object} props - Propiedades del componente
  * @param {string} props.animalId - ID del animal raíz
  * @param {object} [props.fallbackRelatives] - Datos alternativos { hijos, hermanos } cuando el árbol es null
@@ -173,7 +151,6 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { familyTree, loading, error, fetchFamilyTree } = useGenealogy()
-  const [expandedPaths, setExpandedPaths] = useState(() => new Set())
 
   const generaciones = clampGeneraciones(searchParams.get('generaciones') ?? DEFAULT_GENERACIONES)
 
@@ -181,27 +158,12 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
     if (animalId) fetchFamilyTree(animalId, generaciones)
   }, [animalId, generaciones, fetchFamilyTree])
 
-  const [prevKey, setPrevKey] = useState(`${animalId}-${generaciones}`)
-  if (`${animalId}-${generaciones}` !== prevKey) {
-    setPrevKey(`${animalId}-${generaciones}`)
-    setExpandedPaths(new Set())
-  }
-
   const handleGeneracionesChange = (event) => {
     const next = clampGeneraciones(event.target.value)
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev)
       params.set('generaciones', String(next))
       return params
-    })
-  }
-
-  const handleToggle = (path) => {
-    setExpandedPaths((prev) => {
-      const next = new Set(prev)
-      if (next.has(path)) next.delete(path)
-      else next.add(path)
-      return next
     })
   }
 
@@ -223,222 +185,292 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
     return <EmptyState title="Sin información genealógica" message="No se encontró un árbol para este animal." />
   }
 
-  const dataTree = familyTree || null
-  const rootColors = dataTree ? sexoClasses(dataTree.sexo) : { icon: '', label: '', text: '', border: '', bg: '' }
-  const ascendientes = dataTree
-    ? [
-        dataTree.padre && { node: dataTree.padre, path: 'root-p' },
-        dataTree.madre && { node: dataTree.madre, path: 'root-m' },
-      ].filter(Boolean)
-    : []
-  const descendientes = dataTree
-    ? (dataTree.hijos || []).map((hijo, i) => ({ node: hijo, path: `root-h${i}` }))
-    : (fallbackRelatives?.hijos || []).map((hijo, i) => ({ node: hijo, path: `fallback-h${i}` }))
-  const hermanos = dataTree?.hermanos || fallbackRelatives?.hermanos || []
-  const sinRelaciones = ascendientes.length === 0 && descendientes.length === 0 && hermanos.length === 0
+  const rootName = familyTree?.nombre || 'Animal'
+  const hasDashed = graph?.edges?.some((e) => e.dashed)
 
-  const rootName = dataTree?.nombre || 'Animal'
+  const fallbackHijos = fallbackRelatives?.hijos || []
+  const fallbackHermanos = fallbackRelatives?.hermanos || []
 
   return (
-    <div className="space-y-4">
-      {dataTree && (
-        <div className="flex items-center justify-end gap-2">
-          <label htmlFor="generaciones" className="text-sm font-medium text-neutral-600">
-            Generaciones
-          </label>
-          <select
-            id="generaciones"
-            value={generaciones}
-            onChange={handleGeneracionesChange}
-            className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-800"
-          >
-            {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
+    <div className="space-y-5">
+      {/* Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-sm text-neutral-600">
+          <span className="hidden font-medium sm:inline">Animal:</span>
+          <span className="rounded-md bg-neutral-100 px-2 py-1 text-sm font-semibold text-neutral-800">
+            {rootName}
+          </span>
+          {familyTree?.identificador && (
+            <span className="text-xs text-neutral-400">({familyTree.identificador})</span>
+          )}
         </div>
-      )}
-
-      {sinRelaciones ? (
-        <EmptyState
-          title="Sin relaciones registradas"
-          message="Este animal no tiene padres, hijos ni hermanos registrados."
-        />
-      ) : (
-        <>
-          {/* Vista móvil y fallback: lista jerárquica */}
-          <div className={dataTree ? 'space-y-4 md:hidden' : 'space-y-4'}>
-            {dataTree ? (
-              <div className={`flex items-center gap-1.5 rounded-md border ${rootColors.border} ${rootColors.bg} px-3 py-2`}>
-                <span aria-hidden="true" className="text-base leading-none">{rootColors.icon}</span>
-                <span className="sr-only">{rootColors.label}</span>
-                <div>
-                  <span className="block text-xs font-semibold uppercase text-neutral-500">Animal</span>
-                  <p className={`font-semibold ${rootColors.text}`}>{rootName}</p>
-                </div>
-              </div>
-            ) : null}
-
-            {ascendientes.length > 0 && (
-              <div>
-                <h3 className="mb-2 text-sm font-bold uppercase text-neutral-500">Ascendientes</h3>
-                <ul className="space-y-2">
-                  {ascendientes.map(({ node, path }) => (
-                    <MobileTreeNode
-                      key={path}
-                      node={node}
-                      path={path}
-                      direction="up"
-                      expandedPaths={expandedPaths}
-                      onToggle={handleToggle}
-                      onNavigate={handleNavigate}
-                    />
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {descendientes.length > 0 && (
-              <div>
-                <h3 className="mb-2 text-sm font-bold uppercase text-neutral-500">Descendientes</h3>
-                <ul className="space-y-2">
-                  {descendientes.map(({ node, path }) => (
-                    <MobileTreeNode
-                      key={path}
-                      node={node}
-                      path={path}
-                      direction="down"
-                      expandedPaths={expandedPaths}
-                      onToggle={handleToggle}
-                      onNavigate={handleNavigate}
-                    />
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {hermanos.length > 0 && (
-              <div>
-                <h3 className="mb-2 text-sm font-bold uppercase text-neutral-500">Hermanos</h3>
-                <ul className="space-y-2">
-                  {hermanos.map((hermano) => {
-                    const colors = sexoClasses(hermano.sexo)
-                    return (
-                      <li key={hermano._id} className={`rounded-md border ${colors.border} ${colors.bg} px-3 py-2`}>
-                        <button
-                          type="button"
-                          onClick={() => handleNavigate(hermano._id)}
-                          className={`flex items-center gap-1.5 text-sm font-medium ${colors.text} hover:underline`}
-                        >
-                          <span aria-hidden="true" className="text-base leading-none">{colors.icon}</span>
-                          <span className="sr-only">{colors.label}</span>
-                          {hermano.nombre}
-                        </button>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
+        {familyTree && (
+          <div className="flex items-center gap-2">
+            <label htmlFor="generaciones-arbol" className="text-sm font-medium text-neutral-600">
+              Generaciones
+            </label>
+            <select
+              id="generaciones-arbol"
+              value={generaciones}
+              onChange={handleGeneracionesChange}
+              className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-800"
+            >
+              {[1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
           </div>
+        )}
+      </div>
 
-          {/* Vista tablet/PC: grafo SVG puro con scroll */}
-          {graph && (
-            <div className="hidden overflow-auto rounded-lg border border-neutral-200 md:block" style={{ maxHeight: '600px' }}>
-              <svg
-                viewBox={`0 0 ${graph.width} ${graph.height}`}
-                className="h-auto w-full"
-                role="img"
-                aria-label={`Grafo genealógico de ${rootName}`}
-              >
-                <g>
-                  {graph.edges.map((edge) => (
+      {graph ? (
+        <>
+          {/* SVG — visible en todos los tamaños */}
+          <div className="overflow-auto rounded-xl border border-neutral-200 bg-neutral-50/50 shadow-sm">
+            <svg
+              viewBox={`0 0 ${graph.width} ${graph.height}`}
+              className="h-auto w-full"
+              role="img"
+              aria-label={`Grafo genealógico de ${rootName}`}
+              style={{ minWidth: graph.width }}
+            >
+              <defs>
+                <filter id="shadowNode" x="-10%" y="-10%" width="120%" height="130%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000" floodOpacity="0.08" />
+                </filter>
+              </defs>
+
+              {/* Edges */}
+              <g>
+                {graph.edges.map((edge) => (
+                  <g key={`${edge.from.path}-${edge.to.path}`}>
                     <line
-                      key={`${edge.from.path}-${edge.to.path}`}
                       x1={edge.from.x}
                       y1={edge.from.y}
                       x2={edge.to.x}
                       y2={edge.to.y}
                       className="stroke-neutral-300"
                       strokeWidth={edge.dashed ? 1.5 : 2}
-                      strokeDasharray={edge.dashed ? '4 4' : undefined}
+                      strokeDasharray={edge.dashed ? '5 5' : undefined}
                     />
-                  ))}
-                </g>
-                <g>
-                  {graph.nodes.map((n) => {
-                    const colors = sexoClasses(n.node.sexo)
-                    return (
-                      <g
-                        key={n.path}
-                        transform={`translate(${n.x - GRAPH_NODE_WIDTH / 2}, ${n.y - GRAPH_NODE_HEIGHT / 2})`}
-                        className="cursor-pointer"
-                        role="link"
-                        tabIndex={0}
-                        onClick={() => handleNavigate(n.node._id)}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') handleNavigate(n.node._id)
-                        }}
-                      >
-                        <title>{n.node.nombre}{n.node.sexo ? ` (${n.node.sexo})` : ''}</title>
+                    {edge.label && (
+                      <g>
                         <rect
-                          width={GRAPH_NODE_WIDTH}
-                          height={GRAPH_NODE_HEIGHT}
-                          rx={10}
-                          className={`${colors.fill} ${colors.stroke}`}
-                          strokeWidth={n.path === 'root' ? 3 : 1.5}
+                          x={edge.mx - 26}
+                          y={edge.my - 9}
+                          width={52}
+                          height={18}
+                          rx={9}
+                          className="fill-white stroke-neutral-300"
+                          strokeWidth={1}
                         />
                         <text
-                          x={GRAPH_NODE_WIDTH / 2}
-                          y={GRAPH_NODE_HEIGHT / 2 - 6}
+                          x={edge.mx}
+                          y={edge.my + 1}
                           textAnchor="middle"
                           dominantBaseline="middle"
-                          className={`text-xs font-semibold ${colors.text}`}
+                          className="text-[10px] fill-neutral-600 font-semibold"
                         >
-                          {n.node.nombre}
-                        </text>
-                        <text
-                          x={GRAPH_NODE_WIDTH / 2}
-                          y={GRAPH_NODE_HEIGHT / 2 + 14}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          className={`text-[10px] ${colors.text} opacity-75`}
-                        >
-                          {n.node.identificador || ''}
-                        </text>
-                        <text
-                          x={GRAPH_NODE_WIDTH - 8}
-                          y={GRAPH_NODE_HEIGHT - 8}
-                          textAnchor="end"
-                          dominantBaseline="end"
-                          aria-hidden="true"
-                          className={`text-sm font-bold ${colors.text}`}
-                        >
-                          {colors.icon}
+                          {edge.label}
                         </text>
                       </g>
-                    )
-                  })}
-                </g>
-              </svg>
-            </div>
-          )}
-          {/* Leyenda del grafo */}
-          {graph && graph.edges.some((e) => e.dashed) && (
-            <div className="hidden items-center gap-4 text-xs text-neutral-500 md:flex">
-              <span className="flex items-center gap-1">
-                <span className="inline-block h-0.5 w-4 bg-neutral-300" />
+                    )}
+                  </g>
+                ))}
+              </g>
+
+              {/* Nodes */}
+              <g filter="url(#shadowNode)">
+                {graph.nodes.map((n) => {
+                  const colors = sexoClasses(n.node.sexo)
+                  const isRoot = n.path === 'root'
+                  const species = speciesBreedLabel(n.node)
+                  const displayId = n.node.identificador || ''
+                  const nodeName = n.node.nombre || '—'
+
+                  return (
+                    <g
+                      key={n.path}
+                      transform={`translate(${n.x - GRAPH_NODE_WIDTH / 2}, ${n.y - GRAPH_NODE_HEIGHT / 2})`}
+                      className="cursor-pointer"
+                      role="link"
+                      tabIndex={0}
+                      onClick={() => handleNavigate(n.node._id)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') handleNavigate(n.node._id)
+                      }}
+                    >
+                      <title>
+                        {nodeName}{n.node.sexo ? ` (${n.node.sexo})` : ''}
+                        {displayId ? ` — ${displayId}` : ''}
+                      </title>
+
+                      {/* Cuerpo blanco */}
+                      <rect
+                        width={GRAPH_NODE_WIDTH}
+                        height={GRAPH_NODE_HEIGHT}
+                        rx={10}
+                        className="fill-white"
+                        strokeWidth={0}
+                      />
+
+                      {/* Borde (aplicado como rect separado para no afectar el header) */}
+                      <rect
+                        width={GRAPH_NODE_WIDTH}
+                        height={GRAPH_NODE_HEIGHT}
+                        rx={10}
+                        className={colors.stroke}
+                        strokeWidth={isRoot ? 3 : 1.5}
+                        fill="none"
+                      />
+
+                      {/* Header con color de sexo */}
+                      <rect
+                        x={1}
+                        y={1}
+                        width={GRAPH_NODE_WIDTH - 2}
+                        height={NODE_HEADER_H - 1}
+                        rx={9}
+                        className={colors.headerBg}
+                      />
+                      <rect
+                        x={1}
+                        y={NODE_HEADER_H - 6}
+                        width={GRAPH_NODE_WIDTH - 2}
+                        height={6}
+                        className={colors.headerBg}
+                      />
+
+                      {/* Línea divisoria sutil */}
+                      <line
+                        x1={12}
+                        y1={NODE_HEADER_H + 0.5}
+                        x2={GRAPH_NODE_WIDTH - 12}
+                        y2={NODE_HEADER_H + 0.5}
+                        className="stroke-neutral-200"
+                        strokeWidth={1}
+                      />
+
+                      {/* Nombre en header */}
+                      <text
+                        x={12}
+                        y={NODE_HEADER_H / 2 + 1}
+                        textAnchor="start"
+                        dominantBaseline="middle"
+                        className={`text-xs font-bold ${colors.headerText}`}
+                      >
+                        {colors.icon} {nodeName}
+                      </text>
+
+                      {/* Identificador */}
+                      <text
+                        x={GRAPH_NODE_WIDTH / 2}
+                        y={NODE_ID_Y}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        className="fill-neutral-700 text-[11px] font-semibold"
+                      >
+                        {displayId || '—'}
+                      </text>
+
+                      {/* Especie · Raza */}
+                      {species && (
+                        <text
+                          x={GRAPH_NODE_WIDTH / 2}
+                          y={NODE_SPECIES_Y}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          className="fill-neutral-500 text-[10px]"
+                        >
+                          {species}
+                        </text>
+                      )}
+                    </g>
+                  )
+                })}
+              </g>
+            </svg>
+          </div>
+
+          {/* Leyenda */}
+          {hasDashed && (
+            <div className="flex flex-wrap items-center gap-5 text-xs text-neutral-500">
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block h-0.5 w-5 bg-neutral-300" />
                 Parentesco directo
               </span>
-              <span className="flex items-center gap-1">
-                <span className="inline-block h-0.5 w-4 border-t border-dashed border-neutral-300" />
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block h-0.5 w-5 border-t border-dashed border-neutral-300" />
                 Hermanos
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block h-3 w-3 rounded bg-sky-200" />
+                Macho
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block h-3 w-3 rounded bg-rose-200" />
+                Hembra
               </span>
             </div>
           )}
         </>
+      ) : (
+        /* Fallback: lista plana cuando no hay árbol de la API */
+        <div className="space-y-4">
+          {fallbackHijos.length > 0 && (
+            <div>
+              <h3 className="mb-2 text-sm font-bold uppercase text-neutral-500">Hijos</h3>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {fallbackHijos.map((hijo) => {
+                  const c = sexoClasses(hijo.sexo)
+                  return (
+                    <button
+                      key={hijo._id}
+                      type="button"
+                      onClick={() => handleNavigate(hijo._id)}
+                      className={`flex items-center gap-2 rounded-lg border ${c.border} ${c.bg} px-3 py-2 text-left text-sm font-medium ${c.text} transition-colors hover:shadow-sm`}
+                    >
+                      <span className="text-base">{c.icon}</span>
+                      <span className="sr-only">{c.label}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="block truncate font-semibold">{hijo.nombre}</span>
+                        <span className="block truncate text-xs opacity-75">{hijo.identificador || ''}</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {fallbackHermanos.length > 0 && (
+            <div>
+              <h3 className="mb-2 text-sm font-bold uppercase text-neutral-500">Hermanos</h3>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {fallbackHermanos.map((hermano) => {
+                  const c = sexoClasses(hermano.sexo)
+                  return (
+                    <button
+                      key={hermano._id}
+                      type="button"
+                      onClick={() => handleNavigate(hermano._id)}
+                      className={`flex items-center gap-2 rounded-lg border ${c.border} ${c.bg} px-3 py-2 text-left text-sm font-medium ${c.text} transition-colors hover:shadow-sm`}
+                    >
+                      <span className="text-base">{c.icon}</span>
+                      <span className="sr-only">{c.label}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="block truncate font-semibold">{hermano.nombre}</span>
+                        <span className="block truncate text-xs opacity-75">{hermano.identificador || ''}</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   )
