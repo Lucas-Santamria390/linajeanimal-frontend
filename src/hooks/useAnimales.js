@@ -8,8 +8,13 @@ import {
 } from '../services/animales'
 
 /**
- * Hook CRUD para animales
- * @param {object} [initialParams] - Parametros iniciales de busqueda (page, limit, filtros)
+ * Hook CRUD para animales.
+ * Si no se pasan `initialParams` (queda en null), el hook NO dispara automaticamente
+ * el fetch de la lista completa; solo expone las operaciones puntuales (getById, create,
+ * update, remove). Esto evita llamadas innecesarias y estados de loading/error cruzados
+ * en paginas que solo necesitan un animal puntual (ej. AnimalDetail).
+ * @param {object} [initialParams] - Parametros iniciales de busqueda (page, limit, filtros).
+ *   Pasar un objeto (aunque sea vacio {}) activa el autofetch de la lista.
  * @returns {{
  *   data: object[],
  *   loading: boolean,
@@ -22,7 +27,7 @@ import {
  *   remove: (id: number|string) => Promise<void>
  * }} Retorna estado del hook y operaciones CRUD
  */
-export function useAnimales(initialParams = {}) {
+export function useAnimales(initialParams = null) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -31,6 +36,8 @@ export function useAnimales(initialParams = {}) {
   const [refreshCount, setRefreshCount] = useState(0)
 
   useEffect(() => {
+    if (params === null) return
+
     let cancelled = false
     const fetchData = async () => {
       setLoading(true)
@@ -53,8 +60,9 @@ export function useAnimales(initialParams = {}) {
 
   const refetch = useCallback((newParams) => {
     if (newParams) {
-      setParams((prev) => ({ ...prev, ...newParams }))
+      setParams((prev) => ({ ...(prev || {}), ...newParams }))
     } else {
+      setParams((prev) => prev ?? {})
       setRefreshCount((c) => c + 1)
     }
   }, [])

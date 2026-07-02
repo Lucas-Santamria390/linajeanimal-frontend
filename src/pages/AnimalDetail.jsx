@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAnimales } from '../hooks/useAnimales'
-import { useGenealogy } from '../hooks/useGenealogy'
+import { getChildren, getSiblings, getFamilyTree } from '../services/animales'
 import Alert from '../components/Alert'
 import EmptyState from '../components/EmptyState'
 import Loading from '../components/Loading'
 import PageHeader from '../components/PageHeader'
 import ConfirmModal from '../components/ConfirmModal'
+import GenealogyTree from '../components/GenealogyTree'
 
 /**
  * Item de lista que representa un animal relacionado (hijo o hermano) con enlace a su detalle.
@@ -15,13 +16,15 @@ import ConfirmModal from '../components/ConfirmModal'
  * @returns {JSX.Element} Elemento de lista con nombre y enlace al detalle.
  */
 function RelationshipItem({ animal = {} }) {
-  const label = animal.nombre ? `${animal.identificador} — ${animal.nombre}` : animal.identificador
+  const label = animal.nombre
+    ? `${animal.identificador || ''} ${animal.nombre}`.trim()
+    : animal.identificador || '—'
   return (
     <li className="flex items-center justify-between gap-3 border-b border-neutral-200 py-2 last:border-none">
       <span className="font-medium text-neutral-900">{label}</span>
       <Link
         to={`/animales/${animal._id}`}
-        className="text-sm font-semibold text-secondary-600 hover:text-secondary-500"
+        className="text-sm font-semibold text-secondary-600 hover:text-secondary-700"
       >
         Ver detalle
       </Link>
@@ -29,13 +32,6 @@ function RelationshipItem({ animal = {} }) {
   )
 }
 
-/**
- * Par etiqueta/valor usado en la seccion de informacion general del animal.
- * @param {object} props - Propiedades del componente.
- * @param {string} [props.label=''] - Etiqueta descriptiva del dato.
- * @param {string} [props.value=''] - Valor a mostrar; si esta vacio se muestra un texto por defecto.
- * @returns {JSX.Element} Bloque con etiqueta y valor.
- */
 function InfoItem({ label = '', value = '' }) {
   return (
     <div>
@@ -46,8 +42,8 @@ function InfoItem({ label = '', value = '' }) {
 }
 
 /**
- * Pagina de detalle de un animal. Muestra su informacion completa, padres, hijos
- * y hermanos, y permite editar, eliminar (con confirmacion) o ver su arbol genealogico.
+ * Pagina de detalle de un animal. Muestra su informacion completa, padres, hijos,
+ * hermanos y su arbol genealogico completo, y permite editar o eliminar (con confirmacion).
  * Cubre los estados de loading, error, not-found y empty (hijos/hermanos).
  * @returns {JSX.Element} Vista de detalle del animal.
  */
@@ -55,7 +51,6 @@ export default function AnimalDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { getById, remove, loading: animalLoading, error: animalError } = useAnimales()
-  const { fetchFamilyTree, loading: genealogyLoading, error: genealogyError } = useGenealogy()
 
   const [animal, setAnimal] = useState(null)
   const [family, setFamily] = useState({ padres: {}, hijos: [], hermanos: [] })
@@ -75,18 +70,31 @@ export default function AnimalDetail() {
         const animalData = await getById(id)
         if (cancelled) return
 
+        if (!animalData) {
+          setNotFound(true)
+          return
+        }
+
         setAnimal(animalData)
 
-        const familyData = await fetchFamilyTree(id)
+        const [childrenRes, siblingsRes, familyRes] = await Promise.all([
+          getChildren(id),
+          getSiblings(id),
+          getFamilyTree(id, 1),
+        ])
+
         if (cancelled) return
+
+        const treePayload = familyRes.data?.data
+        const arbol = treePayload?.arbol ?? treePayload ?? null
 
         setFamily({
           padres: {
-            padre: familyData?.padre || familyData?.padres?.padre,
-            madre: familyData?.madre || familyData?.padres?.madre,
+            padre: arbol?.padre || null,
+            madre: arbol?.madre || null,
           },
-          hijos: familyData?.hijos || [],
-          hermanos: familyData?.hermanos || [],
+          hijos: childrenRes.data?.data || [],
+          hermanos: siblingsRes.data?.data || [],
         })
       } catch (err) {
         if (cancelled) return
@@ -101,11 +109,8 @@ export default function AnimalDetail() {
     }
 
     loadAnimal()
-
-    return () => {
-      cancelled = true
-    }
-  }, [fetchFamilyTree, getById, id])
+    return () => { cancelled = true }
+  }, [getById, id])
 
   /**
    * Ejecuta la eliminacion del animal luego de la confirmacion del usuario en el modal.
@@ -124,14 +129,34 @@ export default function AnimalDetail() {
     }
   }
 
-  if (animalLoading || genealogyLoading) {
-    return <Loading message="Cargando expediente y arbol genealogico..." />
+  if (animalLoading) {
+    return <Loading message="Cargando expediente del animal..." />
   }
 
-  if (localError || animalError || genealogyError) {
+  if (notFound) {
+    return (
+      <div className="p-4 sm:p-6 lg:p-8">
+        <EmptyState
+          title="Animal no encontrado"
+          message="El animal solicitado no existe o ya no está disponible."
+          action={
+            <button
+              type="button"
+              onClick={() => navigate('/animales')}
+              className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
+            >
+              Volver a animales
+            </button>
+          }
+        />
+      </div>
+    )
+  }
+
+  if (localError || animalError) {
     return (
       <div className="space-y-4 p-4 sm:p-6 lg:p-8">
-        <Alert type="error" message={localError || animalError || genealogyError} />
+        <Alert type="error" message={localError || animalError} />
         <div className="flex gap-3">
           <button
             type="button"
@@ -152,27 +177,7 @@ export default function AnimalDetail() {
     )
   }
 
-  if (notFound) {
-    return (
-      <div className="p-4 sm:p-6 lg:p-8">
-        <EmptyState
-          title="Animal no encontrado"
-          message="El animal solicitado no existe o ya no esta disponible."
-          action={
-            <button
-              type="button"
-              onClick={() => navigate('/animales')}
-              className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
-            >
-              Volver a animales
-            </button>
-          }
-        />
-      </div>
-    )
-  }
-
-  if (!animal) return <Loading message="Preparando información..." />
+  if (!animal) return null
 
   const pageTitle = animal.nombre ? `${animal.identificador} — ${animal.nombre}` : animal.identificador
 
@@ -195,15 +200,8 @@ export default function AnimalDetail() {
             </button>
             <button
               type="button"
-              onClick={() => navigate(`/genealogia/${animal._id}`)}
-              className="flex-1 rounded-md bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600 sm:flex-none"
-            >
-              Ver arbol
-            </button>
-            <button
-              type="button"
               onClick={() => setIsConfirmOpen(true)}
-              className="flex-1 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 sm:flex-none"
+              className="flex-1 rounded-md bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600 sm:flex-none"
             >
               Eliminar
             </button>
@@ -211,9 +209,10 @@ export default function AnimalDetail() {
         }
       />
 
+      {/* Información General y Padres */}
       <div className="grid gap-6 md:grid-cols-3">
         <section className="space-y-4 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm md:col-span-2">
-          <h2 className="border-b border-neutral-200 pb-2 text-xl font-bold text-neutral-800">Informacion general</h2>
+          <h2 className="border-b border-neutral-200 pb-2 text-xl font-bold text-neutral-800">Información general</h2>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             <InfoItem label="Identificador" value={animal.identificador || animal.codigo || animal._id} />
             <InfoItem label="Sexo" value={animal.sexo} />
@@ -226,14 +225,14 @@ export default function AnimalDetail() {
             <InfoItem label="Peso" value={animal.peso ? `${animal.peso} kg` : ''} />
             <InfoItem label="Color" value={animal.color} />
             <InfoItem label="Propietario" value={animal.propietario?.nombre} />
-            <InfoItem label="Estado" value={animal.active !== false ? 'Activo' : 'Inactivo'} />
+            <InfoItem label="Estado" value={animal.estado || 'Activo'} />
           </div>
 
-          {animal.observaciones && (
+          {(animal.notas || animal.observaciones) && (
             <div>
-              <span className="text-xs font-semibold uppercase text-neutral-500">Observaciones</span>
+              <span className="text-xs font-semibold uppercase text-neutral-500">Notas</span>
               <p className="mt-1 rounded border border-neutral-200 bg-white p-3 text-sm text-neutral-700">
-                {animal.observaciones}
+                {animal.notas || animal.observaciones}
               </p>
             </div>
           )}
@@ -247,9 +246,9 @@ export default function AnimalDetail() {
               {family.padres?.padre ? (
                 <Link
                   to={`/animales/${family.padres.padre._id}`}
-                  className="block rounded border border-brand-200 bg-brand-50 p-3 text-center font-medium text-brand-800 transition-colors hover:bg-brand-100"
+                  className="block rounded border border-neutral-200 bg-neutral-50 p-3 text-center font-medium text-neutral-700 transition-colors hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800"
                 >
-                  {family.padres.padre.nombre ? `${family.padres.padre.identificador} — ${family.padres.padre.nombre}` : family.padres.padre.identificador}
+                  {family.padres.padre.nombre}
                 </Link>
               ) : (
                 <p className="rounded border border-dashed bg-neutral-50 p-3 text-center text-sm text-neutral-400">
@@ -257,15 +256,14 @@ export default function AnimalDetail() {
                 </p>
               )}
             </div>
-
             <div>
               <span className="mb-1 block text-xs font-bold uppercase text-neutral-500">Madre</span>
               {family.padres?.madre ? (
                 <Link
                   to={`/animales/${family.padres.madre._id}`}
-                  className="block rounded border border-secondary-500/30 bg-secondary-500/10 p-3 text-center font-medium text-secondary-600 transition-colors hover:bg-secondary-500/20"
+                  className="block rounded border border-neutral-200 bg-neutral-50 p-3 text-center font-medium text-neutral-700 transition-colors hover:border-rose-300 hover:bg-rose-50 hover:text-rose-800"
                 >
-                  {family.padres.madre.nombre ? `${family.padres.madre.identificador} — ${family.padres.madre.nombre}` : family.padres.madre.identificador}
+                  {family.padres.madre.nombre}
                 </Link>
               ) : (
                 <p className="rounded border border-dashed bg-neutral-50 p-3 text-center text-sm text-neutral-400">
@@ -277,6 +275,7 @@ export default function AnimalDetail() {
         </section>
       </div>
 
+      {/* Hijos y Hermanos */}
       <div className="grid gap-6 md:grid-cols-2">
         <section className="space-y-3 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm">
           <h3 className="border-b border-neutral-200 pb-2 text-lg font-bold text-neutral-800">
@@ -302,16 +301,23 @@ export default function AnimalDetail() {
           ) : (
             <EmptyState
               title="Sin hermanos registrados"
-              message="No se encontraron hermanos compartiendo la misma linea de padres."
+              message="No se encontraron hermanos compartiendo la misma línea de padres."
             />
           )}
         </section>
       </div>
 
+      {/* Árbol Genealógico */}
+      <section className="space-y-4 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm">
+        <h2 className="border-b border-neutral-200 pb-2 text-xl font-bold text-neutral-800">Árbol genealógico</h2>
+        <GenealogyTree animalId={animal._id} />
+      </section>
+
+      {/* Modal de Confirmación */}
       <ConfirmModal
         isOpen={isConfirmOpen}
         title="Eliminar animal"
-        message={`Estas seguro de eliminar a ${pageTitle}? Esta accion no se puede deshacer.`}
+        message={`¿Estás seguro de eliminar a ${pageTitle}? Esta acción no se puede deshacer.`}
         onConfirm={handleConfirmDelete}
         onCancel={() => setIsConfirmOpen(false)}
         loading={isDeleting}
