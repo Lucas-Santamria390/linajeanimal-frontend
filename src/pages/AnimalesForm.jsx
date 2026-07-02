@@ -180,8 +180,12 @@ export default function AnimalesForm() {
         state: { success: isEditing ? 'Animal actualizado exitosamente' : 'Animal creado exitosamente' },
       })
     } catch (err) {
-      const message = err?.response?.data?.message || 'Error al guardar el animal'
-      setApiError(message)
+      if (err?.response?.status === 403) {
+        setApiError('No tienes permiso para modificar este animal')
+      } else {
+        const message = err?.response?.data?.message || 'Error al guardar el animal'
+        setApiError(message)
+      }
     } finally {
       setSubmitting(false)
     }
