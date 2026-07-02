@@ -55,7 +55,7 @@ export function useUsuarios(initialParams = {}) {
 
   const refetch = useCallback((newParams) => {
     if (newParams) {
-      setParams((prev) => ({ ...prev, ...newParams }))
+      setParams(newParams)
     } else {
       setRefreshCount((c) => c + 1)
     }
