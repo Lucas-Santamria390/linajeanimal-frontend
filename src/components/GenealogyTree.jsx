@@ -102,10 +102,29 @@ function buildGraphLayout(root, hermanos = []) {
   const offsetX = -minX + PADDING
   const topOffset = Math.abs(sortedLevels[0]) * GRAPH_ROW_HEIGHT
 
-  const nodes = [...positioned.values()].map((entry) => ({
+  const rawNodes = [...positioned.values()].map((entry) => ({
     ...entry,
     x: entry.x + offsetX + GRAPH_NODE_WIDTH / 2,
     y: entry.level * GRAPH_ROW_HEIGHT + topOffset + GRAPH_NODE_HEIGHT,
+  }))
+
+  // Calcular bounding box real de todas las cards para centrar correctamente
+  const cardLeft = Math.min(...rawNodes.map((n) => n.x - GRAPH_NODE_WIDTH / 2))
+  const cardRight = Math.max(...rawNodes.map((n) => n.x + GRAPH_NODE_WIDTH / 2))
+  const cardTop = Math.min(...rawNodes.map((n) => n.y - GRAPH_NODE_HEIGHT / 2))
+  const cardBottom = Math.max(...rawNodes.map((n) => n.y + GRAPH_NODE_HEIGHT / 2))
+
+  const contentWidth = cardRight - cardLeft
+  const contentHeight = cardBottom - cardTop
+
+  // Re-centrar: desplazar todo para que el contenido quede con PADDING en cada lado
+  const recenterX = PADDING - cardLeft
+  const recenterY = PADDING - cardTop
+
+  const nodes = rawNodes.map((n) => ({
+    ...n,
+    x: n.x + recenterX,
+    y: n.y + recenterY,
   }))
 
   const nodeByPath = new Map(nodes.map((n) => [n.path, n]))
@@ -114,7 +133,7 @@ function buildGraphLayout(root, hermanos = []) {
     .map((n) => {
       const from = nodeByPath.get(n.parentPath)
       const mx = (from.x + n.x) / 2
-      const my = n.dashed ? from.y - 20 : (from.y + n.y) / 2
+      const my = n.dashed ? from.y - 46 : (from.y + n.y) / 2
       return {
         from,
         to: n,
@@ -128,8 +147,8 @@ function buildGraphLayout(root, hermanos = []) {
   return {
     nodes,
     edges,
-    width: maxX - minX + GRAPH_NODE_WIDTH + PADDING * 2,
-    height: (sortedLevels[sortedLevels.length - 1] - sortedLevels[0] + 1) * GRAPH_ROW_HEIGHT + 40,
+    width: contentWidth + PADDING * 2,
+    height: contentHeight + PADDING * 2,
   }
 }
 
@@ -228,7 +247,7 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
           <div className="overflow-auto rounded-xl border border-neutral-200 bg-neutral-50/50 shadow-sm">
             <svg
               viewBox={`0 0 ${graph.width} ${graph.height}`}
-              className="h-auto w-full"
+              className="h-auto block mx-auto"
               role="img"
               aria-label={`Grafo genealógico de ${rootName}`}
               style={{ minWidth: graph.width }}
@@ -250,42 +269,19 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
                 })}
               </defs>
 
-              {/* Edges */}
+              {/* Edge lines (detrás de nodos) */}
               <g>
                 {graph.edges.map((edge) => (
-                  <g key={`${edge.from.path}-${edge.to.path}`}>
-                    <line
-                      x1={edge.from.x}
-                      y1={edge.from.y}
-                      x2={edge.to.x}
-                      y2={edge.to.y}
-                      className="stroke-neutral-300"
-                      strokeWidth={edge.dashed ? 1.5 : 2}
-                      strokeDasharray={edge.dashed ? '5 5' : undefined}
-                    />
-                    {edge.label && (
-                      <g>
-                        <rect
-                          x={edge.mx - 26}
-                          y={edge.my - 9}
-                          width={52}
-                          height={18}
-                          rx={9}
-                          className="fill-white stroke-neutral-300"
-                          strokeWidth={1}
-                        />
-                        <text
-                          x={edge.mx}
-                          y={edge.my + 1}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          className="text-[10px] fill-neutral-600 font-semibold"
-                        >
-                          {edge.label}
-                        </text>
-                      </g>
-                    )}
-                  </g>
+                  <line
+                    key={`line-${edge.from.path}-${edge.to.path}`}
+                    x1={edge.from.x}
+                    y1={edge.from.y}
+                    x2={edge.to.x}
+                    y2={edge.to.y}
+                    className="stroke-neutral-300"
+                    strokeWidth={edge.dashed ? 1.5 : 2}
+                    strokeDasharray={edge.dashed ? '5 5' : undefined}
+                  />
                 ))}
               </g>
 
@@ -396,6 +392,31 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
                     </g>
                   )
                 })}
+              </g>
+              {/* Edge labels (encima de nodos para no quedar detrás) */}
+              <g>
+                {graph.edges.filter((e) => e.label).map((edge) => (
+                  <g key={`label-${edge.from.path}-${edge.to.path}`}>
+                    <rect
+                      x={edge.mx - 26}
+                      y={edge.my - 9}
+                      width={52}
+                      height={18}
+                      rx={9}
+                      className="fill-white stroke-neutral-300"
+                      strokeWidth={1}
+                    />
+                    <text
+                      x={edge.mx}
+                      y={edge.my + 1}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="text-[10px] fill-neutral-600 font-semibold"
+                    >
+                      {edge.label}
+                    </text>
+                  </g>
+                ))}
               </g>
             </svg>
           </div>
