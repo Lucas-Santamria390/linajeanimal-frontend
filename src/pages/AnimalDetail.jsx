@@ -295,7 +295,7 @@ export default function AnimalDetail() {
       <section className="space-y-4 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm">
         <h2 className="border-b border-neutral-200 pb-2 text-xl font-bold text-neutral-800">Árbol genealógico</h2>
         {showTree ? (
-          <GenealogyTree animalId={animal._id} fallbackRelatives={{ hijos, hermanos }} />
+          <GenealogyTree animalId={animal._id} hermanos={hermanos} fallbackRelatives={{ hijos, hermanos }} />
         ) : (
           <button
             type="button"

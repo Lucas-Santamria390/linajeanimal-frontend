@@ -138,10 +138,11 @@ function buildGraphLayout(root, hermanos = []) {
  * muestra una lista plana de hijos/hermanos.
  * @param {object} props - Propiedades del componente
  * @param {string} props.animalId - ID del animal raíz
+ * @param {object[]} [props.hermanos] - Lista de hermanos para mostrar en el grafo
  * @param {object} [props.fallbackRelatives] - Datos alternativos { hijos, hermanos } cuando el árbol es null
  * @returns {JSX.Element}
  */
-export default function GenealogyTree({ animalId, fallbackRelatives }) {
+export default function GenealogyTree({ animalId, hermanos = [], fallbackRelatives }) {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { familyTree, loading, error, fetchFamilyTree } = useGenealogy()
@@ -163,7 +164,7 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
 
   const handleNavigate = (id) => navigate(`/animales/${id}`)
 
-  const graph = useMemo(() => buildGraphLayout(familyTree, familyTree?.hermanos), [familyTree])
+  const graph = useMemo(() => buildGraphLayout(familyTree, hermanos), [familyTree, hermanos])
 
   const hasFallback = fallbackRelatives && (fallbackRelatives.hijos?.length > 0 || fallbackRelatives.hermanos?.length > 0)
 
