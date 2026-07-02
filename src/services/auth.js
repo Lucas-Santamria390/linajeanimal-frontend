@@ -28,12 +28,12 @@ export const getProfile = () => api.get('/auth/profile')
 
 /**
  * Cambia la contrasena del usuario autenticado
- * @param {string} oldPassword - Contrasena actual
+ * @param {string} currentPassword - Contrasena actual
  * @param {string} newPassword - Nueva contrasena
  * @returns {Promise<object>} { success, data: { ... } }
  */
-export const changePassword = (oldPassword, newPassword) =>
-  api.put('/auth/password', { oldPassword, newPassword })
+export const changePassword = (currentPassword, newPassword) =>
+  api.put('/auth/password', { currentPassword, newPassword })
 
 /**
  * Cierra sesion en el backend

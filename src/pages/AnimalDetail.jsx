@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useAnimales } from '../hooks/useAnimales'
 import { getChildren, getSiblings, getFamilyTree } from '../services/animales'
 import Alert from '../components/Alert'
@@ -50,6 +51,7 @@ function InfoItem({ label = '', value = '' }) {
 export default function AnimalDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { getById, remove, loading: animalLoading, error: animalError } = useAnimales()
 
   const [animal, setAnimal] = useState(null)
@@ -198,13 +200,15 @@ export default function AnimalDetail() {
             >
               Editar
             </button>
-            <button
-              type="button"
-              onClick={() => setIsConfirmOpen(true)}
-              className="flex-1 rounded-md bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600 sm:flex-none"
-            >
-              Eliminar
-            </button>
+            {user?.rol === 'admin' && (
+              <button
+                type="button"
+                onClick={() => setIsConfirmOpen(true)}
+                className="flex-1 rounded-md bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600 sm:flex-none"
+              >
+                Eliminar
+              </button>
+            )}
           </div>
         }
       />

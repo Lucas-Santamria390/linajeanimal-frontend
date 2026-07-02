@@ -22,7 +22,7 @@ const PASSWORD_REQUIREMENTS = [
  * @returns {JSX.Element}
  */
 export default function Perfil() {
-  const { user, logout } = useAuth()
+  const { user, logout, updateAuth } = useAuth()
   const navigate = useNavigate()
 
   const [oldPassword, setOldPassword] = useState('')
@@ -58,7 +58,9 @@ export default function Perfil() {
     if (!validate()) return
     setLoading(true)
     try {
-      await changePassword(oldPassword, newPassword)
+      const res = await changePassword(oldPassword, newPassword)
+      const { token: newToken, usuario: userData } = res.data.data
+      updateAuth(newToken, userData)
       setSuccess('Contrasena actualizada exitosamente')
       setOldPassword('')
       setNewPassword('')
@@ -70,8 +72,8 @@ export default function Perfil() {
     }
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate('/login')
   }
 
