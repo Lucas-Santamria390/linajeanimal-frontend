@@ -210,9 +210,11 @@ export default function GenealogyTree({ animalId }) {
     if (animalId) fetchFamilyTree(animalId, generaciones)
   }, [animalId, generaciones, fetchFamilyTree])
 
-  useEffect(() => {
+  const [prevKey, setPrevKey] = useState(`${animalId}-${generaciones}`)
+  if (`${animalId}-${generaciones}` !== prevKey) {
+    setPrevKey(`${animalId}-${generaciones}`)
     setExpandedPaths(new Set())
-  }, [animalId, generaciones])
+  }
 
   /**
    * Actualiza el query param `generaciones` en la URL cuando el usuario cambia el selector.
