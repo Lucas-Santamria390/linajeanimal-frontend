@@ -44,6 +44,7 @@ export function useGenealogy() {
     } catch (err) {
       const msg = err.response?.data?.message || 'Error al cargar hijos'
       safeSet(setError, msg)
+      throw err
     } finally {
       safeSet(setLoading, false)
     }
@@ -59,6 +60,7 @@ export function useGenealogy() {
     } catch (err) {
       const msg = err.response?.data?.message || 'Error al cargar hermanos'
       safeSet(setError, msg)
+      throw err
     } finally {
       safeSet(setLoading, false)
     }
@@ -75,6 +77,7 @@ export function useGenealogy() {
     } catch (err) {
       const msg = err.response?.data?.message || 'Error al cargar árbol genealógico'
       safeSet(setError, msg)
+      throw err
     } finally {
       safeSet(setLoading, false)
     }
