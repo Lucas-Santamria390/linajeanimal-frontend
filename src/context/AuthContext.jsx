@@ -39,7 +39,19 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const logout = () => {
+  const updateAuth = (newToken, newUser) => {
+    localStorage.setItem('token', newToken)
+    localStorage.setItem('user', JSON.stringify(newUser))
+    setToken(newToken)
+    setUser(newUser)
+  }
+
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout')
+    } catch {
+      // best effort — always clear local session
+    }
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     setToken(null)
@@ -51,7 +63,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, error, isAuthenticated, login, logout, setError }}
+      value={{ user, token, loading, error, isAuthenticated, login, logout, setError, updateAuth }}
     >
       {children}
     </AuthContext.Provider>

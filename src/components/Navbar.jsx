@@ -24,9 +24,9 @@ export default function Navbar() {
     }
   }, [isOpen])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsOpen(false)
-    logout()
+    await logout()
     navigate('/login')
   }
 
