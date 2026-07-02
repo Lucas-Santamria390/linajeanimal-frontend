@@ -60,7 +60,7 @@ export function useAnimales(initialParams = null) {
 
   const refetch = useCallback((newParams) => {
     if (newParams) {
-      setParams((prev) => ({ ...(prev || {}), ...newParams }))
+      setParams(newParams)
     } else {
       setParams((prev) => prev ?? {})
       setRefreshCount((c) => c + 1)
