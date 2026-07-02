@@ -15,6 +15,7 @@ const EspeciesList = lazy(() => import('../pages/EspeciesList'))
 const EspeciesForm = lazy(() => import('../pages/EspeciesForm'))
 const AnimalesList = lazy(() => import('../pages/AnimalesList'))
 const AnimalDetail = lazy(() => import('../pages/AnimalDetail'))
+const AnimalTree = lazy(() => import('../pages/AnimalTree'))
 const RazasList = lazy(() => import('../pages/RazasList'))
 const AnimalesForm = lazy(() => import('../pages/AnimalesForm'))
 const RazasForm = lazy(() => import('../pages/RazasForm'))
@@ -102,6 +103,14 @@ export default function AppRouter() {
                   element={
                     <ProtectedRoute>
                       <AnimalDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/animales/:id/arbol"
+                  element={
+                    <ProtectedRoute>
+                      <AnimalTree />
                     </ProtectedRoute>
                   }
                 />

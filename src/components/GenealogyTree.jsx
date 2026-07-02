@@ -113,13 +113,15 @@ function buildGraphLayout(root, hermanos = []) {
     .filter((n) => n.parentPath && nodeByPath.has(n.parentPath))
     .map((n) => {
       const from = nodeByPath.get(n.parentPath)
+      const mx = (from.x + n.x) / 2
+      const my = n.dashed ? from.y - 20 : (from.y + n.y) / 2
       return {
         from,
         to: n,
         dashed: Boolean(n.dashed),
         label: getRelLabel(n.path, Boolean(n.dashed)),
-        mx: (from.x + n.x) / 2,
-        my: (from.y + n.y) / 2,
+        mx,
+        my,
       }
     })
 
