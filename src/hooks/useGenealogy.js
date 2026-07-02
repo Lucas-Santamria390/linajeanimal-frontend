@@ -39,6 +39,7 @@ export function useGenealogy() {
     } catch (err) {
       const msg = err.response?.data?.message || 'Error al cargar árbol genealógico'
       safeSet(setError, msg)
+      throw err
     } finally {
       safeSet(setLoading, false)
     }

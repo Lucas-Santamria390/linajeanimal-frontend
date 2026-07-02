@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useAnimales } from '../hooks/useAnimales'
 import { useEspecies } from '../hooks/useEspecies'
 import { useRazas } from '../hooks/useRazas'
+import { getUsuarios } from '../services/usuarios'
 import PageHeader from '../components/PageHeader'
 import SearchBar from '../components/SearchBar'
 import SelectField from '../components/SelectField'
@@ -20,10 +22,15 @@ export default function AnimalesList() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const { user } = useAuth()
+  const isAdmin = user?.rol === 'admin'
+
   const [search, setSearch] = useState('')
   const [especieFiltro, setEspecieFiltro] = useState('')
   const [razaFiltro, setRazaFiltro] = useState('')
   const [sexoFiltro, setSexoFiltro] = useState('')
+  const [activeFiltro, setActiveFiltro] = useState('')
+  const [propietarioFiltro, setPropietarioFiltro] = useState('')
   const [page, setPage] = useState(1)
 
   const [deleteTarget, setDeleteTarget] = useState(null)
@@ -36,6 +43,28 @@ export default function AnimalesList() {
 
   const { data, loading, error, pagination, remove, refetch } = useAnimales()
 
+  const [usuarios, setUsuarios] = useState([])
+  const [loadingUsuarios, setLoadingUsuarios] = useState(false)
+
+  useEffect(() => {
+    if (!isAdmin) return
+    let cancelled = false
+    const loadUsuarios = async () => {
+      setLoadingUsuarios(true)
+      try {
+        const res = await getUsuarios({ limit: 200 })
+        if (cancelled) return
+        setUsuarios(res.data.data || [])
+      } catch {
+        if (cancelled) return
+      } finally {
+        if (!cancelled) setLoadingUsuarios(false)
+      }
+    }
+    loadUsuarios()
+    return () => { cancelled = true }
+  }, [isAdmin])
+
   useEffect(() => {
     refetch({
       page,
@@ -44,8 +73,10 @@ export default function AnimalesList() {
       ...(especieFiltro && { especie: especieFiltro }),
       ...(razaFiltro && { raza: razaFiltro }),
       ...(sexoFiltro && { sexo: sexoFiltro }),
+      ...(activeFiltro && { active: activeFiltro }),
+      ...(isAdmin && propietarioFiltro && { propietario: propietarioFiltro }),
     })
-  }, [page, search, especieFiltro, razaFiltro, sexoFiltro, refetch])
+  }, [page, search, especieFiltro, razaFiltro, sexoFiltro, activeFiltro, propietarioFiltro, isAdmin, refetch])
 
   const { data: especies, loading: loadingEspecies, error: errorEspecies } = useEspecies({ limit: 100 })
   const { data: razas, loading: loadingRazas, error: errorRazas, refetch: refetchRazas } = useRazas()
@@ -73,6 +104,16 @@ export default function AnimalesList() {
 
   const handleSexoChange = useCallback((e) => {
     setSexoFiltro(e.target.value)
+    setPage(1)
+  }, [])
+
+  const handleActiveChange = useCallback((e) => {
+    setActiveFiltro(e.target.value)
+    setPage(1)
+  }, [])
+
+  const handlePropietarioChange = useCallback((e) => {
+    setPropietarioFiltro(e.target.value)
     setPage(1)
   }, [])
 
@@ -214,6 +255,32 @@ export default function AnimalesList() {
             placeholder="Todos"
           />
         </div>
+        <div className="w-full sm:max-w-[160px]">
+          <SelectField
+            id="filtro-active"
+            label="Estado"
+            value={activeFiltro}
+            onChange={handleActiveChange}
+            options={[
+              { value: 'true', label: 'Activos' },
+              { value: 'false', label: 'Inactivos' },
+            ]}
+            placeholder="Todos"
+          />
+        </div>
+        {isAdmin && (
+          <div className="w-full sm:max-w-xs">
+            <SelectField
+              id="filtro-propietario"
+              label="Propietario"
+              value={propietarioFiltro}
+              onChange={handlePropietarioChange}
+              options={usuarios.map((u) => ({ value: u._id, label: u.nombre || u.email }))}
+              loading={loadingUsuarios}
+              placeholder="Todos los propietarios"
+            />
+          </div>
+        )}
       </div>
 
       {loading ? (
