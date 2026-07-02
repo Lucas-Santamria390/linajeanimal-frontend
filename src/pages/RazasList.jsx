@@ -91,14 +91,14 @@ export default function RazasList() {
             <button
               type="button"
               onClick={() => navigate(`/razas/${row._id}/editar`)}
-              className="text-sm font-medium text-secondary-600 transition-colors hover:text-secondary-800"
+              className="inline-flex items-center rounded-md bg-secondary-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-secondary-600"
             >
               Editar
             </button>
             <button
               type="button"
               onClick={() => setDeleteTarget(row)}
-              className="text-sm font-medium text-brand-700 transition-colors hover:text-brand-800"
+              className="inline-flex items-center rounded-md border border-brand-300 bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-800 transition-colors hover:bg-brand-200"
             >
               Desactivar
             </button>

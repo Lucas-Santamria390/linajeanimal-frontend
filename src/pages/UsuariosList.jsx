@@ -98,7 +98,7 @@ export default function UsuariosList() {
             <button
               type="button"
               onClick={() => navigate(`/usuarios/${row._id}/editar`)}
-              className="text-sm font-medium text-secondary-600 transition-colors hover:text-secondary-600"
+              className="inline-flex items-center rounded-md bg-secondary-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-secondary-600"
             >
               Editar
             </button>
@@ -106,7 +106,7 @@ export default function UsuariosList() {
               type="button"
               onClick={() => openToggleModal(row)}
               disabled={!canToggle}
-              className="text-sm font-medium text-brand-700 transition-colors hover:text-brand-800 disabled:cursor-not-allowed disabled:text-neutral-400"
+              className="inline-flex items-center rounded-md border border-brand-300 bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-800 transition-colors hover:bg-brand-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {row.active ? 'Desactivar' : 'Activar'}
             </button>
