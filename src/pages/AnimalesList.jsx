@@ -168,17 +168,19 @@ export default function AnimalesList() {
           >
             Editar
           </button>
-          <button
-            type="button"
-            onClick={() => setDeleteTarget(row)}
-            className="text-sm text-brand-700 hover:text-brand-800 font-medium"
-          >
-            Eliminar
-          </button>
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => setDeleteTarget(row)}
+              className="text-sm text-brand-700 hover:text-brand-800 font-medium"
+            >
+              Eliminar
+            </button>
+          )}
         </div>
       ),
     },
-  ], [navigate])
+  ], [navigate, isAdmin])
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">

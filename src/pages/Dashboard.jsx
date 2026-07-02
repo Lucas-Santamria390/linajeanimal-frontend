@@ -15,7 +15,8 @@ import EmptyState from '../components/EmptyState'
  */
 export default function Dashboard() {
   const { user } = useAuth()
-  const { stats, loading: statsLoading, error: statsError } = useDashboard()
+  const isAdmin = user?.rol === 'admin'
+  const { stats, loading: statsLoading, error: statsError } = useDashboard(isAdmin)
   const {
     data: latestAnimals,
     loading: animalsLoading,
@@ -27,7 +28,7 @@ export default function Dashboard() {
     { label: 'Animales', value: stats?.animales, color: 'border-l-brand-500' },
     { label: 'Especies', value: stats?.especies, color: 'border-l-secondary-500' },
     { label: 'Razas', value: stats?.razas, color: 'border-l-brand-300' },
-    { label: 'Usuarios', value: stats?.usuarios, color: 'border-l-secondary-600' },
+    ...(isAdmin ? [{ label: 'Usuarios', value: stats?.usuarios, color: 'border-l-secondary-600' }] : []),
   ]
 
   const latestAnimalColumns = useMemo(

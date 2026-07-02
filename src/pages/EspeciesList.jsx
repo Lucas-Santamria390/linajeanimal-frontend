@@ -73,7 +73,7 @@ export default function EspeciesList() {
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => navigate(`/especies/editar/${row._id}`)}
+            onClick={() => navigate(`/especies/${row._id}/editar`)}
             className="text-sm text-secondary-600 hover:text-secondary-800 font-medium"
           >
             Editar
