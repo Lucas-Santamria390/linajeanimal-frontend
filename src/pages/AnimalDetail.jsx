@@ -92,6 +92,8 @@ export default function AnimalDetail() {
         if (cancelled) return
         if (err?.response?.status === 404) {
           setNotFound(true)
+        } else if (err?.response?.status === 403) {
+          setLocalError('No tienes permiso para acceder a este animal')
         } else {
           setLocalError(err?.response?.data?.message || err.message || 'Error al cargar el detalle del animal')
         }
