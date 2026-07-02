@@ -53,6 +53,7 @@ export default function AnimalDetail() {
   const [localError, setLocalError] = useState(null)
   const [notFound, setNotFound] = useState(false)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [showTree, setShowTree] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
@@ -293,7 +294,17 @@ export default function AnimalDetail() {
       {/* Árbol Genealógico */}
       <section className="space-y-4 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm">
         <h2 className="border-b border-neutral-200 pb-2 text-xl font-bold text-neutral-800">Árbol genealógico</h2>
-        <GenealogyTree animalId={animal._id} fallbackRelatives={{ hijos, hermanos }} />
+        {showTree ? (
+          <GenealogyTree animalId={animal._id} fallbackRelatives={{ hijos, hermanos }} />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowTree(true)}
+            className="w-full rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-6 py-4 text-center text-sm font-semibold text-neutral-600 transition-colors hover:border-secondary-300 hover:bg-secondary-50 hover:text-secondary-700"
+          >
+            Generar árbol genealógico
+          </button>
+        )}
       </section>
 
       <ConfirmModal

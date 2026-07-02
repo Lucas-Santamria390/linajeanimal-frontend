@@ -10,12 +10,12 @@ const MAX_GENERACIONES = 5
 const DEFAULT_GENERACIONES = 3
 
 const GRAPH_COL_WIDTH = 200
-const GRAPH_ROW_HEIGHT = 150
+const GRAPH_ROW_HEIGHT = 140
 const GRAPH_NODE_WIDTH = 190
-const GRAPH_NODE_HEIGHT = 90
-const NODE_HEADER_H = 32
-const NODE_ID_Y = 54
-const NODE_SPECIES_Y = 74
+const GRAPH_NODE_HEIGHT = 72
+const NODE_HEADER_H = 26
+const NODE_PHOTO_SIZE = 38
+const PADDING = 80
 
 function clampGeneraciones(value) {
   const parsed = Number.parseInt(value, 10)
@@ -99,7 +99,7 @@ function buildGraphLayout(root, hermanos = []) {
     })
   })
 
-  const offsetX = -minX
+  const offsetX = -minX + PADDING
   const topOffset = Math.abs(sortedLevels[0]) * GRAPH_ROW_HEIGHT
 
   const nodes = [...positioned.values()].map((entry) => ({
@@ -126,21 +126,15 @@ function buildGraphLayout(root, hermanos = []) {
   return {
     nodes,
     edges,
-    width: maxX - minX + GRAPH_NODE_WIDTH + 40,
+    width: maxX - minX + GRAPH_NODE_WIDTH + PADDING * 2,
     height: (sortedLevels[sortedLevels.length - 1] - sortedLevels[0] + 1) * GRAPH_ROW_HEIGHT + 40,
   }
 }
 
-function speciesBreedLabel(node) {
-  const especie = node?.especie?.nombre || node?.especie || ''
-  const raza = node?.raza?.nombre || node?.raza || ''
-  return [especie, raza].filter(Boolean).join(' · ')
-}
-
 /**
  * Componente de árbol genealógico. Muestra un grafo SVG único para todos los tamaños
- * de pantalla con nodos enriquecidos (nombre, identificador, especie/raza) y etiquetas
- * de parentesco en las conexiones. Cuando la API retorna null pero hay fallbackRelatives,
+ * de pantalla con nodos compactos (nombre, identificador, raza en header + foto circular)
+ * y etiquetas de parentesco en las conexiones. Cuando la API retorna null pero hay fallbackRelatives,
  * muestra una lista plana de hijos/hermanos.
  * @param {object} props - Propiedades del componente
  * @param {string} props.animalId - ID del animal raíz
@@ -240,6 +234,17 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
                 <filter id="shadowNode" x="-10%" y="-10%" width="120%" height="130%">
                   <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#000" floodOpacity="0.08" />
                 </filter>
+                {graph.nodes.map((n) => {
+                  if (!n.node.fotoUrl) return null
+                  const px = Math.round((GRAPH_NODE_WIDTH - NODE_PHOTO_SIZE) / 2)
+                  const py = NODE_HEADER_H + 4
+                  const c = NODE_PHOTO_SIZE / 2
+                  return (
+                    <clipPath key={`clip-${n.path}`} id={`clip-${n.path}`}>
+                      <circle cx={px + c} cy={py + c} r={c} />
+                    </clipPath>
+                  )
+                })}
               </defs>
 
               {/* Edges */}
@@ -286,9 +291,18 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
                 {graph.nodes.map((n) => {
                   const colors = sexoClasses(n.node.sexo)
                   const isRoot = n.path === 'root'
-                  const species = speciesBreedLabel(n.node)
                   const displayId = n.node.identificador || ''
                   const nodeName = n.node.nombre || '—'
+                  const raza = n.node?.raza?.nombre || n.node?.raza || ''
+                  const fotoUrl = n.node.fotoUrl
+
+                  const headerParts = [nodeName]
+                  if (displayId) headerParts.push(displayId)
+                  if (raza) headerParts.push(raza)
+                  const headerText = `${colors.icon} ${headerParts.join(' · ')}`
+
+                  const photoX = Math.round((GRAPH_NODE_WIDTH - NODE_PHOTO_SIZE) / 2)
+                  const photoY = NODE_HEADER_H + 4
 
                   return (
                     <g
@@ -353,39 +367,28 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
                         strokeWidth={1}
                       />
 
-                      {/* Nombre en header */}
+                      {/* Nombre · ID · Raza en header */}
                       <text
                         x={12}
                         y={NODE_HEADER_H / 2 + 1}
                         textAnchor="start"
                         dominantBaseline="middle"
-                        className={`text-xs font-bold ${colors.headerText}`}
+                        className={`text-[10px] font-bold ${colors.headerText}`}
                       >
-                        {colors.icon} {nodeName}
+                        {headerText}
                       </text>
 
-                      {/* Identificador */}
-                      <text
-                        x={GRAPH_NODE_WIDTH / 2}
-                        y={NODE_ID_Y}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className="fill-neutral-700 text-[11px] font-semibold"
-                      >
-                        {displayId || '—'}
-                      </text>
-
-                      {/* Especie · Raza */}
-                      {species && (
-                        <text
-                          x={GRAPH_NODE_WIDTH / 2}
-                          y={NODE_SPECIES_Y}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          className="fill-neutral-500 text-[10px]"
-                        >
-                          {species}
-                        </text>
+                      {/* Foto circular centrada debajo del header */}
+                      {fotoUrl && (
+                        <image
+                          href={fotoUrl}
+                          x={photoX}
+                          y={photoY}
+                          width={NODE_PHOTO_SIZE}
+                          height={NODE_PHOTO_SIZE}
+                          clipPath={`url(#clip-${n.path})`}
+                          preserveAspectRatio="xMidYMid slice"
+                        />
                       )}
                     </g>
                   )
