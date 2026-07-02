@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useAnimales } from '../hooks/useAnimales'
-import Alert from '../components/Alert'
-import EmptyState from '../components/EmptyState'
-import Loading from '../components/Loading'
-import PageHeader from '../components/PageHeader'
-import ConfirmModal from '../components/ConfirmModal'
+import { useAuth } from '../../context/AuthContext'
+import { useAnimales } from '../../hooks/useAnimales'
+import Alert from '../../components/ui/Alert'
+import EmptyState from '../../components/ui/EmptyState'
+import Loading from '../../components/ui/Loading'
+import PageHeader from '../../components/ui/PageHeader'
+import ConfirmModal from '../../components/ui/ConfirmModal'
 
 function RelationshipItem({ animal = {} }) {
   const label = animal.nombre

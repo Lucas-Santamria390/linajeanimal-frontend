@@ -2,10 +2,10 @@ import { useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useDashboard } from '../hooks/useDashboard'
 import { useAnimales } from '../hooks/useAnimales'
-import Loading from '../components/Loading'
-import Alert from '../components/Alert'
-import DataTable from '../components/DataTable'
-import EmptyState from '../components/EmptyState'
+import Loading from '../components/ui/Loading'
+import Alert from '../components/ui/Alert'
+import DataTable from '../components/data/DataTable'
+import EmptyState from '../components/ui/EmptyState'
 
 /**
  * Pagina de Dashboard con estadisticas generales.

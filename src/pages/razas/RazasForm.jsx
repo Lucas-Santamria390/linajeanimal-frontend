@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEspecies } from '../hooks/useEspecies'
-import { useRazas } from '../hooks/useRazas'
-import PageHeader from '../components/PageHeader'
-import FormField from '../components/FormField'
-import SelectField from '../components/SelectField'
-import Loading from '../components/Loading'
-import Alert from '../components/Alert'
+import { useEspecies } from '../../hooks/useEspecies'
+import { useRazas } from '../../hooks/useRazas'
+import PageHeader from '../../components/ui/PageHeader'
+import FormField from '../../components/form/FormField'
+import SelectField from '../../components/form/SelectField'
+import Loading from '../../components/ui/Loading'
+import Alert from '../../components/ui/Alert'
 
 const INITIAL_FORM = {
   nombre: '',

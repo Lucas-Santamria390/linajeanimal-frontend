@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { changePassword } from '../services/auth'
-import PageHeader from '../components/PageHeader'
-import FormField from '../components/FormField'
-import Alert from '../components/Alert'
-import Loading from '../components/Loading'
+import PageHeader from '../components/ui/PageHeader'
+import FormField from '../components/form/FormField'
+import Alert from '../components/ui/Alert'
+import Loading from '../components/ui/Loading'
 
 const PASSWORD_REQUIREMENTS = [
   { label: 'Minimo 8 caracteres', test: (v) => v.length >= 8 },

@@ -1,27 +1,27 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from '../context/AuthContext'
-import ProtectedRoute from '../components/ProtectedRoute'
-import AdminRoute from '../components/AdminRoute'
-import Navbar from '../components/Navbar'
-import Sidebar from '../components/Sidebar'
-import Loading from '../components/Loading'
+import ProtectedRoute from '../components/routes/ProtectedRoute'
+import AdminRoute from '../components/routes/AdminRoute'
+import Navbar from '../components/layout/Navbar'
+import Sidebar from '../components/layout/Sidebar'
+import Loading from '../components/ui/Loading'
 
 const Landing = lazy(() => import('../pages/Landing'))
-const Login = lazy(() => import('../pages/Login'))
-const Register = lazy(() => import('../pages/Register'))
+const Login = lazy(() => import('../pages/auth/Login'))
+const Register = lazy(() => import('../pages/auth/Register'))
 const Dashboard = lazy(() => import('../pages/Dashboard'))
-const EspeciesList = lazy(() => import('../pages/EspeciesList'))
-const EspeciesForm = lazy(() => import('../pages/EspeciesForm'))
-const AnimalesList = lazy(() => import('../pages/AnimalesList'))
-const AnimalDetail = lazy(() => import('../pages/AnimalDetail'))
-const AnimalTree = lazy(() => import('../pages/AnimalTree'))
-const RazasList = lazy(() => import('../pages/RazasList'))
-const AnimalesForm = lazy(() => import('../pages/AnimalesForm'))
-const RazasForm = lazy(() => import('../pages/RazasForm'))
+const EspeciesList = lazy(() => import('../pages/especies/EspeciesList'))
+const EspeciesForm = lazy(() => import('../pages/especies/EspeciesForm'))
+const AnimalesList = lazy(() => import('../pages/animales/AnimalesList'))
+const AnimalDetail = lazy(() => import('../pages/animales/AnimalDetail'))
+const AnimalTree = lazy(() => import('../pages/animales/AnimalTree'))
+const RazasList = lazy(() => import('../pages/razas/RazasList'))
+const AnimalesForm = lazy(() => import('../pages/animales/AnimalesForm'))
+const RazasForm = lazy(() => import('../pages/razas/RazasForm'))
 const Perfil = lazy(() => import('../pages/Perfil'))
-const UsuariosList = lazy(() => import('../pages/UsuariosList'))
-const UsuariosForm = lazy(() => import('../pages/UsuariosForm'))
+const UsuariosList = lazy(() => import('../pages/usuarios/UsuariosList'))
+const UsuariosForm = lazy(() => import('../pages/usuarios/UsuariosForm'))
 const NotFound = lazy(() => import('../pages/NotFound'))
 
 /**

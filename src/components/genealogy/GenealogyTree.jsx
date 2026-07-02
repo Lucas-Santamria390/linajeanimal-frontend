@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useGenealogy } from '../hooks/useGenealogy'
-import Loading from './Loading'
-import Alert from './Alert'
-import EmptyState from './EmptyState'
+import { useGenealogy } from '../../hooks/useGenealogy'
+import Loading from '../ui/Loading'
+import Alert from '../ui/Alert'
+import EmptyState from '../ui/EmptyState'
 
 const MIN_GENERACIONES = 1
 const MAX_GENERACIONES = 5

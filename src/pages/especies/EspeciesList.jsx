@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useEspecies } from '../hooks/useEspecies'
-import PageHeader from '../components/PageHeader'
-import DataTable from '../components/DataTable'
-import Pagination from '../components/Pagination'
-import EmptyState from '../components/EmptyState'
-import ConfirmModal from '../components/ConfirmModal'
-import Alert from '../components/Alert'
-import Loading from '../components/Loading'
+import { useAuth } from '../../context/AuthContext'
+import { useEspecies } from '../../hooks/useEspecies'
+import PageHeader from '../../components/ui/PageHeader'
+import DataTable from '../../components/data/DataTable'
+import Pagination from '../../components/data/Pagination'
+import EmptyState from '../../components/ui/EmptyState'
+import ConfirmModal from '../../components/ui/ConfirmModal'
+import Alert from '../../components/ui/Alert'
+import Loading from '../../components/ui/Loading'
 
 /**
  * Pagina de listado de especies con busqueda, paginacion, soft delete y control de roles

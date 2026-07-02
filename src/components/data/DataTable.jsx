@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import EmptyState from './EmptyState'
+import EmptyState from '../ui/EmptyState'
 
 /**
  * Tabla de datos responsiva con vista de tarjetas colapsables en móvil y tabla en escritorio.

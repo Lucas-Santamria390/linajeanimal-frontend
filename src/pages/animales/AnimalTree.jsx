@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useAnimales } from '../hooks/useAnimales'
-import GenealogyTree from '../components/GenealogyTree'
-import Alert from '../components/Alert'
-import EmptyState from '../components/EmptyState'
-import Loading from '../components/Loading'
-import PageHeader from '../components/PageHeader'
+import { useAnimales } from '../../hooks/useAnimales'
+import GenealogyTree from '../../components/genealogy/GenealogyTree'
+import Alert from '../../components/ui/Alert'
+import EmptyState from '../../components/ui/EmptyState'
+import Loading from '../../components/ui/Loading'
+import PageHeader from '../../components/ui/PageHeader'
 
 /**
  * Página del árbol genealógico de un animal. Carga el animal y sus hermanos,
