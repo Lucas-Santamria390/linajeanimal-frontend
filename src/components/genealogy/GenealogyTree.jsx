@@ -28,24 +28,24 @@ function sexoClasses(sexo = '') {
 
   return esMacho
     ? {
-        border: 'border-sky-300',
-        bg: 'bg-sky-50',
-        text: 'text-sky-800',
-        fill: 'fill-sky-100',
-        stroke: 'stroke-sky-500',
-        headerBg: 'fill-sky-200',
-        headerText: 'fill-sky-900',
+        border: 'border-gender-male-border',
+        bg: 'bg-gender-male-bg',
+        text: 'text-gender-male-text',
+        fill: 'fill-gender-male-bg',
+        stroke: 'stroke-gender-male-text',
+        headerBg: 'fill-gender-male-border',
+        headerText: 'fill-gender-male-text',
         icon: '\u2642',
         label: 'Macho',
       }
     : {
-        border: 'border-rose-300',
-        bg: 'bg-rose-50',
-        text: 'text-rose-800',
-        fill: 'fill-rose-100',
-        stroke: 'stroke-rose-400',
-        headerBg: 'fill-rose-200',
-        headerText: 'fill-rose-900',
+        border: 'border-gender-female-border',
+        bg: 'bg-gender-female-bg',
+        text: 'text-gender-female-text',
+        fill: 'fill-gender-female-bg',
+        stroke: 'stroke-gender-female-text',
+        headerBg: 'fill-gender-female-border',
+        headerText: 'fill-gender-female-text',
         icon: '\u2640',
         label: 'Hembra',
       }
@@ -211,9 +211,9 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
     <div className="space-y-5">
       {/* Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-sm text-neutral-600">
+        <div className="flex items-center gap-2 text-sm text-neutral-muted">
           <span className="hidden font-medium sm:inline">Animal:</span>
-          <span className="rounded-md bg-neutral-100 px-2 py-1 text-sm font-semibold text-neutral-800">
+          <span className="rounded-md bg-neutral-hover px-2 py-1 text-sm font-semibold text-neutral-text">
             {rootName}
           </span>
           {familyTree?.identificador && (
@@ -222,14 +222,14 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
         </div>
         {familyTree && (
           <div className="flex items-center gap-2">
-            <label htmlFor="generaciones-arbol" className="text-sm font-medium text-neutral-600">
+            <label htmlFor="generaciones-arbol" className="text-sm font-medium text-neutral-muted">
               Generaciones
             </label>
             <select
               id="generaciones-arbol"
               value={generaciones}
               onChange={handleGeneracionesChange}
-              className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-800"
+              className="rounded-md border border-neutral-300 bg-neutral-card px-2 py-1 text-sm text-neutral-text"
             >
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
@@ -244,7 +244,7 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
       {graph ? (
         <>
           {/* SVG — visible en todos los tamaños */}
-          <div className="overflow-auto rounded-xl border border-neutral-200 bg-neutral-50/50 shadow-sm">
+          <div className="overflow-auto rounded-xl border border-neutral-border bg-neutral-light/50 shadow-sm">
             <svg
               viewBox={`0 0 ${graph.width} ${graph.height}`}
               className="h-auto block mx-auto"
@@ -423,7 +423,7 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
 
           {/* Leyenda */}
           {hasDashed && (
-            <div className="flex flex-wrap items-center gap-5 text-xs text-neutral-500">
+            <div className="flex flex-wrap items-center gap-5 text-xs text-neutral-muted">
               <span className="flex items-center gap-1.5">
                 <span className="inline-block h-0.5 w-5 bg-neutral-300" />
                 Parentesco directo
@@ -433,11 +433,11 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
                 Hermanos
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="inline-block h-3 w-3 rounded bg-sky-200" />
+                <span className="inline-block h-3 w-3 rounded bg-gender-male-border" />
                 Macho
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="inline-block h-3 w-3 rounded bg-rose-200" />
+                <span className="inline-block h-3 w-3 rounded bg-gender-female-border" />
                 Hembra
               </span>
             </div>
@@ -448,7 +448,7 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
         <div className="space-y-4">
           {fallbackHijos.length > 0 && (
             <div>
-              <h3 className="mb-2 text-sm font-bold uppercase text-neutral-500">Hijos</h3>
+              <h3 className="mb-2 text-sm font-bold uppercase text-neutral-muted">Hijos</h3>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {fallbackHijos.map((hijo) => {
                   const c = sexoClasses(hijo.sexo)
@@ -474,7 +474,7 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
 
           {fallbackHermanos.length > 0 && (
             <div>
-              <h3 className="mb-2 text-sm font-bold uppercase text-neutral-500">Hermanos</h3>
+              <h3 className="mb-2 text-sm font-bold uppercase text-neutral-muted">Hermanos</h3>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {fallbackHermanos.map((hermano) => {
                   const c = sexoClasses(hermano.sexo)

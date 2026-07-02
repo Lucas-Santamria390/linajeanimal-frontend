@@ -85,7 +85,7 @@ export default function RazasList() {
       {
         key: 'acciones',
         header: 'Acciones',
-        className: 'w-48',
+        className: 'w-56',
         render: (_value, row) => (
           <div className="flex flex-wrap gap-2">
             <button

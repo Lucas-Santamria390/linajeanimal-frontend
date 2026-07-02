@@ -52,7 +52,7 @@ export default function AnimalesList() {
     const loadUsuarios = async () => {
       setLoadingUsuarios(true)
       try {
-        const res = await getUsuarios({ limit: 200 })
+        const res = await getUsuarios({ limit: 100 })
         if (cancelled) return
         setUsuarios(res.data.data || [])
       } catch {
@@ -66,7 +66,7 @@ export default function AnimalesList() {
   }, [isAdmin])
 
   useEffect(() => {
-    refetch({
+    const queryParams = {
       page,
       limit: 20,
       identificador: search || undefined,
@@ -75,9 +75,9 @@ export default function AnimalesList() {
       ...(sexoFiltro && { sexo: sexoFiltro }),
       ...(activeFiltro && { active: activeFiltro }),
       ...(isAdmin && propietarioFiltro && { propietario: propietarioFiltro }),
-    })
+    };
+    refetch(queryParams);
   }, [page, search, especieFiltro, razaFiltro, sexoFiltro, activeFiltro, propietarioFiltro, isAdmin, refetch])
-
   const { data: especies, loading: loadingEspecies, error: errorEspecies } = useEspecies({ limit: 100 })
   const { data: razas, loading: loadingRazas, error: errorRazas, refetch: refetchRazas } = useRazas()
 
@@ -251,9 +251,9 @@ export default function AnimalesList() {
             value={sexoFiltro}
             onChange={handleSexoChange}
             options={[
-                { value: 'macho', label: 'Macho' },
-                { value: 'hembra', label: 'Hembra' },
-              ]}
+              { value: 'macho', label: 'Macho' },
+              { value: 'hembra', label: 'Hembra' },
+            ]}
             placeholder="Todos"
           />
         </div>

@@ -27,7 +27,7 @@ export function useDashboard(includeUsuarios = false) {
         if (includeUsuarios) {
           try {
             const usuariosRes = await getUsuarios({ limit: 1 })
-            usuariosCount = usuariosRes.data.pagination?.totalDocs ?? 0
+            usuariosCount = usuariosRes.data.pagination?.total ?? 0
           } catch {
             // non-admin users get 403, silently skip
           }
