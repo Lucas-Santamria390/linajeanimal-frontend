@@ -9,7 +9,7 @@ const MIN_GENERACIONES = 1
 const MAX_GENERACIONES = 5
 const DEFAULT_GENERACIONES = 3
 
-const GRAPH_COL_WIDTH = 150
+const GRAPH_COL_WIDTH = 180
 const GRAPH_ROW_HEIGHT = 140
 const GRAPH_NODE_WIDTH = 160
 const GRAPH_NODE_HEIGHT = 80
@@ -344,83 +344,99 @@ export default function GenealogyTree({ animalId, fallbackRelatives }) {
             )}
           </div>
 
-          {/* Vista tablet/PC: grafo SVG puro */}
+          {/* Vista tablet/PC: grafo SVG puro con scroll */}
           {graph && (
-            <svg
-              viewBox={`0 0 ${graph.width} ${graph.height}`}
-              className="hidden h-auto w-full md:block"
-              role="img"
-              aria-label={`Grafo genealógico de ${rootName}`}
-            >
-              <g>
-                {graph.edges.map((edge) => (
-                  <line
-                    key={`${edge.from.path}-${edge.to.path}`}
-                    x1={edge.from.x}
-                    y1={edge.from.y}
-                    x2={edge.to.x}
-                    y2={edge.to.y}
-                    className="stroke-neutral-300"
-                    strokeWidth={edge.dashed ? 1.5 : 2}
-                    strokeDasharray={edge.dashed ? '4 4' : undefined}
-                  />
-                ))}
-              </g>
-              <g>
-                {graph.nodes.map((n) => {
-                  const colors = sexoClasses(n.node.sexo)
-                  return (
-                    <g
-                      key={n.path}
-                      transform={`translate(${n.x - GRAPH_NODE_WIDTH / 2}, ${n.y - GRAPH_NODE_HEIGHT / 2})`}
-                      className="cursor-pointer"
-                      role="link"
-                      tabIndex={0}
-                      onClick={() => handleNavigate(n.node._id)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter') handleNavigate(n.node._id)
-                      }}
-                    >
-                      <rect
-                        width={GRAPH_NODE_WIDTH}
-                        height={GRAPH_NODE_HEIGHT}
-                        rx={10}
-                        className={`${colors.fill} ${colors.stroke}`}
-                        strokeWidth={n.path === 'root' ? 3 : 1.5}
-                      />
-                      <text
-                        x={GRAPH_NODE_WIDTH / 2}
-                        y={GRAPH_NODE_HEIGHT / 2 - 6}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className={`text-xs font-semibold ${colors.text}`}
+            <div className="hidden overflow-auto rounded-lg border border-neutral-200 md:block" style={{ maxHeight: '600px' }}>
+              <svg
+                viewBox={`0 0 ${graph.width} ${graph.height}`}
+                className="h-auto w-full"
+                role="img"
+                aria-label={`Grafo genealógico de ${rootName}`}
+              >
+                <g>
+                  {graph.edges.map((edge) => (
+                    <line
+                      key={`${edge.from.path}-${edge.to.path}`}
+                      x1={edge.from.x}
+                      y1={edge.from.y}
+                      x2={edge.to.x}
+                      y2={edge.to.y}
+                      className="stroke-neutral-300"
+                      strokeWidth={edge.dashed ? 1.5 : 2}
+                      strokeDasharray={edge.dashed ? '4 4' : undefined}
+                    />
+                  ))}
+                </g>
+                <g>
+                  {graph.nodes.map((n) => {
+                    const colors = sexoClasses(n.node.sexo)
+                    return (
+                      <g
+                        key={n.path}
+                        transform={`translate(${n.x - GRAPH_NODE_WIDTH / 2}, ${n.y - GRAPH_NODE_HEIGHT / 2})`}
+                        className="cursor-pointer"
+                        role="link"
+                        tabIndex={0}
+                        onClick={() => handleNavigate(n.node._id)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') handleNavigate(n.node._id)
+                        }}
                       >
-                        {n.node.nombre}
-                      </text>
-                      <text
-                        x={GRAPH_NODE_WIDTH / 2}
-                        y={GRAPH_NODE_HEIGHT / 2 + 14}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className={`text-[10px] ${colors.text} opacity-75`}
-                      >
-                        {n.node.identificador || ''}
-                      </text>
-                      <text
-                        x={GRAPH_NODE_WIDTH - 8}
-                        y={GRAPH_NODE_HEIGHT - 8}
-                        textAnchor="end"
-                        dominantBaseline="end"
-                        aria-hidden="true"
-                        className={`text-sm font-bold ${colors.text}`}
-                      >
-                        {colors.icon}
-                      </text>
-                    </g>
-                  )
-                })}
-              </g>
-            </svg>
+                        <title>{n.node.nombre}{n.node.sexo ? ` (${n.node.sexo})` : ''}</title>
+                        <rect
+                          width={GRAPH_NODE_WIDTH}
+                          height={GRAPH_NODE_HEIGHT}
+                          rx={10}
+                          className={`${colors.fill} ${colors.stroke}`}
+                          strokeWidth={n.path === 'root' ? 3 : 1.5}
+                        />
+                        <text
+                          x={GRAPH_NODE_WIDTH / 2}
+                          y={GRAPH_NODE_HEIGHT / 2 - 6}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          className={`text-xs font-semibold ${colors.text}`}
+                        >
+                          {n.node.nombre}
+                        </text>
+                        <text
+                          x={GRAPH_NODE_WIDTH / 2}
+                          y={GRAPH_NODE_HEIGHT / 2 + 14}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          className={`text-[10px] ${colors.text} opacity-75`}
+                        >
+                          {n.node.identificador || ''}
+                        </text>
+                        <text
+                          x={GRAPH_NODE_WIDTH - 8}
+                          y={GRAPH_NODE_HEIGHT - 8}
+                          textAnchor="end"
+                          dominantBaseline="end"
+                          aria-hidden="true"
+                          className={`text-sm font-bold ${colors.text}`}
+                        >
+                          {colors.icon}
+                        </text>
+                      </g>
+                    )
+                  })}
+                </g>
+              </svg>
+            </div>
+          )}
+          {/* Leyenda del grafo */}
+          {graph && graph.edges.some((e) => e.dashed) && (
+            <div className="hidden items-center gap-4 text-xs text-neutral-500 md:flex">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-0.5 w-4 bg-neutral-300" />
+                Parentesco directo
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-0.5 w-4 border-t border-dashed border-neutral-300" />
+                Hermanos
+              </span>
+            </div>
           )}
         </>
       )}

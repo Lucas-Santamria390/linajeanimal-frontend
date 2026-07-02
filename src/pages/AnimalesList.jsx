@@ -168,17 +168,19 @@ export default function AnimalesList() {
           >
             Editar
           </button>
-          <button
-            type="button"
-            onClick={() => setDeleteTarget(row)}
-            className="inline-flex items-center rounded-md border border-brand-300 bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-800 transition-colors hover:bg-brand-200"
-          >
-            Eliminar
-          </button>
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => setDeleteTarget(row)}
+              className="inline-flex items-center rounded-md border border-brand-300 bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-800 transition-colors hover:bg-brand-200"
+            >
+              Eliminar
+            </button>
+          )}
         </div>
       ),
     },
-  ], [navigate])
+  ], [navigate, isAdmin])
 
   return (
     <div className="space-y-6 p-4 sm:p-6 lg:p-8">
