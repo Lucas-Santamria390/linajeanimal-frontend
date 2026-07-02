@@ -1,18 +1,18 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useAnimales } from '../hooks/useAnimales'
-import { useEspecies } from '../hooks/useEspecies'
-import { useRazas } from '../hooks/useRazas'
-import { getUsuarios } from '../services/usuarios'
-import PageHeader from '../components/PageHeader'
-import SearchBar from '../components/SearchBar'
-import SelectField from '../components/SelectField'
-import DataTable from '../components/DataTable'
-import Pagination from '../components/Pagination'
-import ConfirmModal from '../components/ConfirmModal'
-import Loading from '../components/Loading'
-import Alert from '../components/Alert'
+import { useAuth } from '../../context/AuthContext'
+import { useAnimales } from '../../hooks/useAnimales'
+import { useEspecies } from '../../hooks/useEspecies'
+import { useRazas } from '../../hooks/useRazas'
+import { getUsuarios } from '../../services/usuarios'
+import PageHeader from '../../components/ui/PageHeader'
+import SearchBar from '../../components/form/SearchBar'
+import SelectField from '../../components/form/SelectField'
+import DataTable from '../../components/data/DataTable'
+import Pagination from '../../components/data/Pagination'
+import ConfirmModal from '../../components/ui/ConfirmModal'
+import Loading from '../../components/ui/Loading'
+import Alert from '../../components/ui/Alert'
 
 /**
  * Pagina de listado de animales con busqueda, filtros, paginacion y soft delete
@@ -52,7 +52,7 @@ export default function AnimalesList() {
     const loadUsuarios = async () => {
       setLoadingUsuarios(true)
       try {
-        const res = await getUsuarios({ limit: 200 })
+        const res = await getUsuarios({ limit: 100 })
         if (cancelled) return
         setUsuarios(res.data.data || [])
       } catch {
@@ -66,7 +66,7 @@ export default function AnimalesList() {
   }, [isAdmin])
 
   useEffect(() => {
-    refetch({
+    const queryParams = {
       page,
       limit: 20,
       identificador: search || undefined,
@@ -75,9 +75,9 @@ export default function AnimalesList() {
       ...(sexoFiltro && { sexo: sexoFiltro }),
       ...(activeFiltro && { active: activeFiltro }),
       ...(isAdmin && propietarioFiltro && { propietario: propietarioFiltro }),
-    })
+    };
+    refetch(queryParams);
   }, [page, search, especieFiltro, razaFiltro, sexoFiltro, activeFiltro, propietarioFiltro, isAdmin, refetch])
-
   const { data: especies, loading: loadingEspecies, error: errorEspecies } = useEspecies({ limit: 100 })
   const { data: razas, loading: loadingRazas, error: errorRazas, refetch: refetchRazas } = useRazas()
 
@@ -157,14 +157,14 @@ export default function AnimalesList() {
           <button
             type="button"
             onClick={() => navigate(`/animales/${row._id}`)}
-            className="text-sm text-secondary-600 hover:text-secondary-700 font-medium"
+            className="inline-flex items-center rounded-md bg-secondary-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-secondary-600"
           >
             Ver detalle
           </button>
           <button
             type="button"
             onClick={() => navigate(`/animales/${row._id}/editar`)}
-            className="text-sm text-brand-600 hover:text-brand-700 font-medium"
+            className="inline-flex items-center rounded-md bg-brand-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-600"
           >
             Editar
           </button>
@@ -172,7 +172,7 @@ export default function AnimalesList() {
             <button
               type="button"
               onClick={() => setDeleteTarget(row)}
-              className="text-sm text-brand-700 hover:text-brand-800 font-medium"
+              className="inline-flex items-center rounded-md border border-brand-300 bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-800 transition-colors hover:bg-brand-200"
             >
               Eliminar
             </button>
@@ -251,9 +251,9 @@ export default function AnimalesList() {
             value={sexoFiltro}
             onChange={handleSexoChange}
             options={[
-                { value: 'macho', label: 'Macho' },
-                { value: 'hembra', label: 'Hembra' },
-              ]}
+              { value: 'macho', label: 'Macho' },
+              { value: 'hembra', label: 'Hembra' },
+            ]}
             placeholder="Todos"
           />
         </div>
@@ -292,6 +292,8 @@ export default function AnimalesList() {
           <DataTable
             columns={columns}
             data={data}
+            collapsibleCards={true}
+            cardPreview={['identificador', 'nombre']}
             emptyTitle="No se encontraron animales"
             emptyMessage="No hay animales registrados con los filtros seleccionados."
           />

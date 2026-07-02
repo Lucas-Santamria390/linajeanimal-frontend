@@ -8,10 +8,10 @@
  */
 export default function Alert({ type = 'info', message, onClose }) {
   const colors = {
-    success: 'bg-brand-50 border-brand-500 text-brand-700',
-    error: 'bg-red-100 border-red-400 text-red-800',
-    warning: 'bg-yellow-100 border-yellow-400 text-yellow-800',
-    info: 'bg-blue-100 border-blue-400 text-blue-800',
+    success: 'bg-state-success-bg border-state-success-border text-state-success-text',
+    error: 'bg-state-error-bg border-state-error-border text-state-error-text',
+    warning: 'bg-state-warning-bg border-state-warning-border text-state-warning-text',
+    info: 'bg-state-info-bg border-state-info-border text-state-info-text',
   }
 
   if (!message) return null

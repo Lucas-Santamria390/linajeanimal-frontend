@@ -20,4 +20,35 @@
   --color-neutral-text: #1e293b;
   --color-neutral-muted: #64748b;
   --color-neutral-300: #d1d5db;
+
+  /* Colores de Estados */
+  --color-state-success-bg: var(--color-brand-50);
+  --color-state-success-border: var(--color-brand-500);
+  --color-state-success-text: var(--color-brand-700);
+
+  --color-state-error-bg: #fef2f2;
+  --color-state-error-border: #f87171;
+  --color-state-error-text: #991b1b;
+
+  --color-state-warning-bg: #fffbeb;
+  --color-state-warning-border: #fbbf24;
+  --color-state-warning-text: #92400e;
+
+  --color-state-info-bg: #f0f9ff;
+  --color-state-info-border: #38bdf8;
+  --color-state-info-text: #075985;
+
+  /* Colores de Géneros (Genealogía) */
+  --color-gender-male-bg: #f0f9ff;
+  --color-gender-male-border: #bae6fd;
+  --color-gender-male-text: #0284c7;
+
+  --color-gender-female-bg: #fff1f2;
+  --color-gender-female-border: #fecdd3;
+  --color-gender-female-text: #e11d48;
+
+  /* Grises y Neutros Formalizados */
+  --color-neutral-border: #e5e7eb;
+  --color-neutral-hover: #f3f4f6;
+  --color-neutral-light: #f9fafb;
 }

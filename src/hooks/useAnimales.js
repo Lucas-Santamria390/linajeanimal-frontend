@@ -5,6 +5,8 @@ import {
   createAnimal,
   updateAnimal,
   deleteAnimal,
+  getChildren,
+  getSiblings,
 } from '../services/animales'
 
 /**
@@ -67,6 +69,24 @@ export function useAnimales(initialParams = null) {
     }
   }, [])
 
+  const fetchChildren = useCallback(async (id) => {
+    try {
+      const res = await getChildren(id)
+      return res.data?.data || []
+    } catch {
+      return []
+    }
+  }, [])
+
+  const fetchSiblings = useCallback(async (id) => {
+    try {
+      const res = await getSiblings(id)
+      return res.data?.data || []
+    } catch {
+      return []
+    }
+  }, [])
+
   const getById = useCallback(async (id) => {
     setLoading(true)
     setError(null)
@@ -120,5 +140,5 @@ export function useAnimales(initialParams = null) {
     }
   }, [])
 
-  return { data, loading, error, pagination, refetch, getById, create, update, remove }
+  return { data, loading, error, pagination, refetch, getById, create, update, remove, fetchChildren, fetchSiblings }
 }

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import Alert from '../components/Alert'
-import Loading from '../components/Loading'
+import { useAuth } from '../../context/AuthContext'
+import Alert from '../../components/ui/Alert'
+import Loading from '../../components/ui/Loading'
 
 const PASSWORD_REQUIREMENTS = [
   { label: 'Minimo 8 caracteres', test: (v) => v.length >= 8 },

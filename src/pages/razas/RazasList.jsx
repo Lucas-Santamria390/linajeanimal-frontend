@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useEspecies } from '../hooks/useEspecies'
-import { useRazas } from '../hooks/useRazas'
-import PageHeader from '../components/PageHeader'
-import SelectField from '../components/SelectField'
-import DataTable from '../components/DataTable'
-import Pagination from '../components/Pagination'
-import ConfirmModal from '../components/ConfirmModal'
-import Loading from '../components/Loading'
-import Alert from '../components/Alert'
-import EmptyState from '../components/EmptyState'
+import { useAuth } from '../../context/AuthContext'
+import { useEspecies } from '../../hooks/useEspecies'
+import { useRazas } from '../../hooks/useRazas'
+import PageHeader from '../../components/ui/PageHeader'
+import SelectField from '../../components/form/SelectField'
+import DataTable from '../../components/data/DataTable'
+import Pagination from '../../components/data/Pagination'
+import ConfirmModal from '../../components/ui/ConfirmModal'
+import Loading from '../../components/ui/Loading'
+import Alert from '../../components/ui/Alert'
+import EmptyState from '../../components/ui/EmptyState'
 
 /**
  * Pagina de listado de razas con filtro por especie, paginacion y borrado suave.
@@ -85,20 +85,20 @@ export default function RazasList() {
       {
         key: 'acciones',
         header: 'Acciones',
-        className: 'w-48',
+        className: 'w-56',
         render: (_value, row) => (
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => navigate(`/razas/${row._id}/editar`)}
-              className="text-sm font-medium text-secondary-600 transition-colors hover:text-secondary-800"
+              className="inline-flex items-center rounded-md bg-secondary-500 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-secondary-600"
             >
               Editar
             </button>
             <button
               type="button"
               onClick={() => setDeleteTarget(row)}
-              className="text-sm font-medium text-brand-700 transition-colors hover:text-brand-800"
+              className="inline-flex items-center rounded-md border border-brand-300 bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-800 transition-colors hover:bg-brand-200"
             >
               Desactivar
             </button>

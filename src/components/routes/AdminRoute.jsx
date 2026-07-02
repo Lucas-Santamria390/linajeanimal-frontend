@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../../context/AuthContext'
 
 /**
  * Ruta de administracion que bloquea acceso a usuarios sin rol admin.

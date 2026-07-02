@@ -1,21 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useAnimales } from '../hooks/useAnimales'
-import { getChildren, getSiblings, getFamilyTree } from '../services/animales'
-import Alert from '../components/Alert'
-import EmptyState from '../components/EmptyState'
-import Loading from '../components/Loading'
-import PageHeader from '../components/PageHeader'
-import ConfirmModal from '../components/ConfirmModal'
-import GenealogyTree from '../components/GenealogyTree'
+import { useAuth } from '../../context/AuthContext'
+import { useAnimales } from '../../hooks/useAnimales'
+import Alert from '../../components/ui/Alert'
+import EmptyState from '../../components/ui/EmptyState'
+import Loading from '../../components/ui/Loading'
+import PageHeader from '../../components/ui/PageHeader'
+import ConfirmModal from '../../components/ui/ConfirmModal'
 
-/**
- * Item de lista que representa un animal relacionado (hijo o hermano) con enlace a su detalle.
- * @param {object} props - Propiedades del componente.
- * @param {object} [props.animal={}] - Datos del animal relacionado.
- * @returns {JSX.Element} Elemento de lista con nombre y enlace al detalle.
- */
 function RelationshipItem({ animal = {} }) {
   const label = animal.nombre
     ? `${animal.identificador || ''} ${animal.nombre}`.trim()
@@ -43,19 +35,20 @@ function InfoItem({ label = '', value = '' }) {
 }
 
 /**
- * Pagina de detalle de un animal. Muestra su informacion completa, padres, hijos,
- * hermanos y su arbol genealogico completo, y permite editar o eliminar (con confirmacion).
- * Cubre los estados de loading, error, not-found y empty (hijos/hermanos).
- * @returns {JSX.Element} Vista de detalle del animal.
+ * Página de detalle de un animal. Muestra su información, padres (desde getById),
+ * hijos/hermanos (vía fetchChildren/fetchSiblings del hook) y árbol genealógico.
+ * No importa servicios directamente; usa hooks.
+ * @returns {JSX.Element}
  */
 export default function AnimalDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { getById, remove, loading: animalLoading, error: animalError } = useAnimales()
+  const { getById, remove, fetchChildren, fetchSiblings, loading: animalLoading, error: animalError } = useAnimales()
 
   const [animal, setAnimal] = useState(null)
-  const [family, setFamily] = useState({ padres: {}, hijos: [], hermanos: [] })
+  const [hijos, setHijos] = useState([])
+  const [hermanos, setHermanos] = useState([])
   const [localError, setLocalError] = useState(null)
   const [notFound, setNotFound] = useState(false)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
@@ -79,25 +72,14 @@ export default function AnimalDetail() {
 
         setAnimal(animalData)
 
-        const [childrenRes, siblingsRes, familyRes] = await Promise.all([
-          getChildren(id),
-          getSiblings(id),
-          getFamilyTree(id, 1),
+        const [childrenData, siblingsData] = await Promise.all([
+          fetchChildren(id),
+          fetchSiblings(id),
         ])
-
         if (cancelled) return
 
-        const treePayload = familyRes.data?.data
-        const arbol = treePayload?.arbol ?? treePayload ?? null
-
-        setFamily({
-          padres: {
-            padre: arbol?.padre || null,
-            madre: arbol?.madre || null,
-          },
-          hijos: childrenRes.data?.data || [],
-          hermanos: siblingsRes.data?.data || [],
-        })
+        setHijos(childrenData)
+        setHermanos(siblingsData)
       } catch (err) {
         if (cancelled) return
         if (err?.response?.status === 404) {
@@ -112,12 +94,8 @@ export default function AnimalDetail() {
 
     loadAnimal()
     return () => { cancelled = true }
-  }, [getById, id])
+  }, [getById, id, fetchChildren, fetchSiblings])
 
-  /**
-   * Ejecuta la eliminacion del animal luego de la confirmacion del usuario en el modal.
-   * @returns {Promise<void>} Promesa que se resuelve cuando termina el intento de eliminacion.
-   */
   const handleConfirmDelete = async () => {
     setIsDeleting(true)
     try {
@@ -247,12 +225,12 @@ export default function AnimalDetail() {
           <div className="space-y-3">
             <div>
               <span className="mb-1 block text-xs font-bold uppercase text-neutral-500">Padre</span>
-              {family.padres?.padre ? (
+              {animal.padre ? (
                 <Link
-                  to={`/animales/${family.padres.padre._id}`}
+                  to={`/animales/${animal.padre._id}`}
                   className="block rounded border border-neutral-200 bg-neutral-50 p-3 text-center font-medium text-neutral-700 transition-colors hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800"
                 >
-                  {family.padres.padre.nombre}
+                  {animal.padre.nombre}
                 </Link>
               ) : (
                 <p className="rounded border border-dashed bg-neutral-50 p-3 text-center text-sm text-neutral-400">
@@ -262,12 +240,12 @@ export default function AnimalDetail() {
             </div>
             <div>
               <span className="mb-1 block text-xs font-bold uppercase text-neutral-500">Madre</span>
-              {family.padres?.madre ? (
+              {animal.madre ? (
                 <Link
-                  to={`/animales/${family.padres.madre._id}`}
+                  to={`/animales/${animal.madre._id}`}
                   className="block rounded border border-neutral-200 bg-neutral-50 p-3 text-center font-medium text-neutral-700 transition-colors hover:border-rose-300 hover:bg-rose-50 hover:text-rose-800"
                 >
-                  {family.padres.madre.nombre}
+                  {animal.madre.nombre}
                 </Link>
               ) : (
                 <p className="rounded border border-dashed bg-neutral-50 p-3 text-center text-sm text-neutral-400">
@@ -283,11 +261,11 @@ export default function AnimalDetail() {
       <div className="grid gap-6 md:grid-cols-2">
         <section className="space-y-3 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm">
           <h3 className="border-b border-neutral-200 pb-2 text-lg font-bold text-neutral-800">
-            Hijos <span className="text-sm font-normal text-neutral-500">({family.hijos.length})</span>
+            Hijos <span className="text-sm font-normal text-neutral-500">({hijos.length})</span>
           </h3>
-          {family.hijos.length > 0 ? (
+          {hijos.length > 0 ? (
             <ul className="max-h-60 overflow-y-auto pr-1">
-              {family.hijos.map((hijo) => <RelationshipItem key={hijo._id} animal={hijo} />)}
+              {hijos.map((hijo) => <RelationshipItem key={hijo._id} animal={hijo} />)}
             </ul>
           ) : (
             <EmptyState title="Sin hijos registrados" message="Este animal no cuenta con descendencia registrada." />
@@ -296,11 +274,11 @@ export default function AnimalDetail() {
 
         <section className="space-y-3 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm">
           <h3 className="border-b border-neutral-200 pb-2 text-lg font-bold text-neutral-800">
-            Hermanos <span className="text-sm font-normal text-neutral-500">({family.hermanos.length})</span>
+            Hermanos <span className="text-sm font-normal text-neutral-500">({hermanos.length})</span>
           </h3>
-          {family.hermanos.length > 0 ? (
+          {hermanos.length > 0 ? (
             <ul className="max-h-60 overflow-y-auto pr-1">
-              {family.hermanos.map((hermano) => <RelationshipItem key={hermano._id} animal={hermano} />)}
+              {hermanos.map((hermano) => <RelationshipItem key={hermano._id} animal={hermano} />)}
             </ul>
           ) : (
             <EmptyState
@@ -314,10 +292,14 @@ export default function AnimalDetail() {
       {/* Árbol Genealógico */}
       <section className="space-y-4 rounded-lg border border-neutral-200 bg-neutral-card p-6 shadow-sm">
         <h2 className="border-b border-neutral-200 pb-2 text-xl font-bold text-neutral-800">Árbol genealógico</h2>
-        <GenealogyTree animalId={animal._id} />
+        <Link
+          to={`/animales/${animal._id}/arbol`}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-6 py-4 text-center text-sm font-semibold text-neutral-600 transition-colors hover:border-secondary-300 hover:bg-secondary-50 hover:text-secondary-700"
+        >
+          Ver árbol genealógico completo
+        </Link>
       </section>
 
-      {/* Modal de Confirmación */}
       <ConfirmModal
         isOpen={isConfirmOpen}
         title="Eliminar animal"

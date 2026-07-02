@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEspecies } from '../hooks/useEspecies'
-import PageHeader from '../components/PageHeader'
-import FormField from '../components/FormField'
-import Loading from '../components/Loading'
-import Alert from '../components/Alert'
+import { useEspecies } from '../../hooks/useEspecies'
+import PageHeader from '../../components/ui/PageHeader'
+import FormField from '../../components/form/FormField'
+import Loading from '../../components/ui/Loading'
+import Alert from '../../components/ui/Alert'
 
 const INITIAL_FORM = {
   nombre: '',

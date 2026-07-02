@@ -1,8 +1,8 @@
 const STYLES = {
-  success: 'border-brand-500 bg-brand-50 text-brand-700',
-  warning: 'border-secondary-500 bg-secondary-500/10 text-secondary-600',
-  info: 'border-secondary-500 bg-secondary-500/10 text-secondary-600',
-  neutral: 'border-neutral-300 bg-neutral-100 text-neutral-muted',
+  success: 'border-state-success-border bg-state-success-bg text-state-success-text',
+  warning: 'border-state-warning-border bg-state-warning-bg text-state-warning-text',
+  info: 'border-state-info-border bg-state-info-bg text-state-info-text',
+  neutral: 'border-neutral-300 bg-neutral-hover text-neutral-muted',
 }
 
 /**
