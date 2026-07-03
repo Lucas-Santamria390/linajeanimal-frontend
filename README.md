@@ -228,7 +228,7 @@ Paleta eco-profesional que combina verdes naturaleza con acentos técnicos cian.
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/Lucas-Santamria390/linajeanimal-frontend.git
+git clone https://github.com/Lucas-Santamaria390/linajeanimal-frontend.git
 cd linajeanimal-frontend
 
 # 2. Instalar dependencias
@@ -337,7 +337,7 @@ El build genera los archivos estáticos en el directorio `dist/`, listos para de
 
 ### Plataformas compatibles
 
-- **Vercel** (recomendado) — configuración SPA con rewrites
+- **Vercel** (recomendado) — [desplegado actualmente](https://linajeanimal-frontend.vercel.app), configuración SPA con rewrites
 - **Netlify** — compatible con `_redirects` para SPA
 - **Render Static Sites** — compatible
 - Cualquier servidor web (nginx, Apache, etc.)
@@ -379,13 +379,34 @@ Para servidores que no soporten SPA nativamente, redirigir todas las rutas a `in
 
 ---
 
+##  Enlaces
+
+| Recurso | URL |
+|---|---|
+| Frontend desplegado | [https://linajeanimal-frontend.vercel.app](https://linajeanimal-frontend.vercel.app) |
+| API REST (repositorio) | [https://github.com/Lucas-Santamaria390/linajeanimal-api](https://github.com/Lucas-Santamaria390/linajeanimal-api) |
+| API desplegada | [https://linajeanimal-api.onrender.com/api/v1](https://linajeanimal-api.onrender.com/api/v1) |
+| Documentación Swagger | [https://linajeanimal-api.onrender.com/api/v1/docs](https://linajeanimal-api.onrender.com/api/v1/docs) |
+
+##  Credenciales de prueba
+
+Pobladas mediante `npm run seed` en la API:
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| Admin | `admin@linajeanimal.test` | `Admin123!` |
+| Usuario | `juan@linajeanimal.test` | `User123!` |
+| Usuario | `maria@linajeanimal.test` | `User123!` |
+
+---
+
 ##  Documentación adicional
 
 | Archivo | Contenido |
 |---|---|
 | [`docs/API.md`](./docs/API.md) | Documentación completa de la API REST |
 | [`docs/PLAN.md`](./docs/PLAN.md) | Plan de desarrollo detallado del proyecto |
-| [`docs/ISSUES.md`](./docs/ISSUES.md) | Issues y milestone del proyecto |
+
 | [`docs/REQUERIMIENTOS.md`](./docs/REQUERIMIENTOS.md) | Requisitos del parcial académico |
 | [`AGENTS.md`](./AGENTS.md) | Instrucciones para asistentes de IA (OpenCode) |
 
@@ -395,10 +416,10 @@ Para servidores que no soporten SPA nativamente, redirigir todas las rutas a `in
 
 | Rol | Integrante |
 |---|---|
-| Desarrollo Frontend | [Lucas-Santamria390](https://github.com/Lucas-Santamria390) |
+| Desarrollo Frontend | [Lucas-Santamaria390](https://github.com/Lucas-Santamaria390) |
 | Desarrollo Frontend | [SamuraiPonchedefruta](https://github.com/SamuraiPonchedefruta) |
 | Desarrollo Frontend | [XavierGonzalezG](https://github.com/XavierGonzalezG) |
-| API REST | [linajeanimal-api](https://github.com/Lucas-Santamria390/linajeanimal-api) |
+| API REST | [linajeanimal-api](https://github.com/Lucas-Santamaria390/linajeanimal-api) |
 
 ---
 
