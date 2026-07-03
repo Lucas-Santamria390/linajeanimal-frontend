@@ -400,18 +400,6 @@ Pobladas mediante `npm run seed` en la API:
 
 ---
 
-##  Documentación adicional
-
-| Archivo | Contenido |
-|---|---|
-| [`docs/API.md`](./docs/API.md) | Documentación completa de la API REST |
-| [`docs/PLAN.md`](./docs/PLAN.md) | Plan de desarrollo detallado del proyecto |
-
-| [`docs/REQUERIMIENTOS.md`](./docs/REQUERIMIENTOS.md) | Requisitos del parcial académico |
-| [`AGENTS.md`](./AGENTS.md) | Instrucciones para asistentes de IA (OpenCode) |
-
----
-
 ##  Equipo
 
 | Rol | Integrante |
