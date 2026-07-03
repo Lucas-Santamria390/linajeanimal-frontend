@@ -68,7 +68,7 @@ export default function AnimalTree() {
         <EmptyState
           title="Animal no encontrado"
           message="El animal que buscas no existe o fue eliminado."
-          action={{ label: 'Volver a animales', to: '/animales' }}
+          action={<Link to="/animales" className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600">Volver a animales</Link>}
         />
       </div>
     )

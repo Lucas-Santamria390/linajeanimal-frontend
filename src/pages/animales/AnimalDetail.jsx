@@ -140,7 +140,7 @@ export default function AnimalDetail() {
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => window.location.reload()}
+            onClick={() => navigate(0)}
             className="rounded-lg bg-secondary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary-600"
           >
             Reintentar

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import api from '../services/api'
+import { login as loginService } from '../services/auth'
 
 const AuthContext = createContext(null)
 
@@ -23,7 +24,7 @@ export function AuthProvider({ children }) {
     setLoading(true)
     setError(null)
     try {
-      const res = await api.post('/auth/login', { email, password })
+      const res = await loginService(email, password)
       const { token: newToken, usuario: userData } = res.data.data
       localStorage.setItem('token', newToken)
       localStorage.setItem('user', JSON.stringify(userData))

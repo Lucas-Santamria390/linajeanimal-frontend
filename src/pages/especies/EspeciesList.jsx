@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useEspecies } from '../../hooks/useEspecies'
@@ -17,21 +17,15 @@ import Loading from '../../components/ui/Loading'
 export default function EspeciesList() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const { data: especies, loading, error, refetch: fetchEspecies, remove: deleteEspecie } = useEspecies()
-
   const [currentPage, setCurrentPage] = useState(1)
-  const [especiesPerPage] = useState(10)
+  const limit = 10
+  const { data: especies, loading, error, pagination, refetch: fetchEspecies, remove: deleteEspecie } = useEspecies({ page: currentPage, limit })
+
   const [alertMessage, setAlertMessage] = useState(null)
-
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedEspecieId, setSelectedEspecieId] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
-
+  const [selectedEspecieId, setSelectedEspecieId] = useState(null)
   const isAdmin = user?.rol === 'admin'
-
-  useEffect(() => {
-    fetchEspecies()
-  }, [fetchEspecies])
 
   const handleOpenDeleteModal = (id) => {
     setSelectedEspecieId(id)
@@ -54,10 +48,7 @@ export default function EspeciesList() {
     }
   }
 
-  const indexOfLastEspecie = currentPage * especiesPerPage
-  const indexOfFirstEspecie = indexOfLastEspecie - especiesPerPage
-  const currentEspecies = especies ? especies.slice(indexOfFirstEspecie, indexOfLastEspecie) : []
-  const totalPages = especies ? Math.ceil(especies.length / especiesPerPage) : 1
+  const totalPages = pagination?.pages || 1
 
   if (loading) {
     return <Loading message="Cargando catálogo de especies..." />
@@ -148,7 +139,7 @@ export default function EspeciesList() {
         <div className="overflow-hidden rounded-xl border border-neutral-200 bg-neutral-card shadow-sm">
           <DataTable
             columns={columnas}
-            data={currentEspecies}
+            data={especies || []}
           />
 
           {totalPages > 1 && (
@@ -156,7 +147,10 @@ export default function EspeciesList() {
               <Pagination
                 page={currentPage}
                 totalPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
+                onPageChange={(page) => {
+                  setCurrentPage(page)
+                  fetchEspecies({ page, limit })
+                }}
               />
             </div>
           )}

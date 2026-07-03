@@ -3,13 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import Alert from '../../components/ui/Alert'
 import Loading from '../../components/ui/Loading'
-
-const PASSWORD_REQUIREMENTS = [
-  { label: 'Minimo 8 caracteres', test: (v) => v.length >= 8 },
-  { label: 'Al menos una mayuscula', test: (v) => /[A-Z]/.test(v) },
-  { label: 'Al menos un numero', test: (v) => /\d/.test(v) },
-  { label: 'Al menos un caracter especial', test: (v) => /[!@#$%^&*(),.?":{}|<>_]/.test(v) },
-]
+import { PASSWORD_REQUIREMENTS } from '../../utils/constants'
 
 /**
  * Pagina de inicio de sesion
@@ -113,7 +107,7 @@ export default function Login() {
                   key={req.label}
                   className={`text-xs ${passed ? 'text-brand-600' : 'text-neutral-muted'}`}
                 >
-                  <span aria-hidden="true">{passed ? '?' : '?'}</span> {req.label}
+                  <span aria-hidden="true">{passed ? '\u2713' : '\u2022'}</span> {req.label}
                 </li>
               )
             })}

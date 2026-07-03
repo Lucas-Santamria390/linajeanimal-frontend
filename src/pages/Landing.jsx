@@ -36,21 +36,21 @@ export default function Landing() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-100">
+    <div className="min-h-screen bg-gradient-to-b from-brand-50 via-white to-brand-100">
 
       {/* HERO */}
       <section className="mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-24 lg:flex-row lg:gap-16">
 
         <div className="max-w-xl">
-          <span className="rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700">
+          <span className="rounded-full bg-brand-100 px-4 py-2 text-sm font-semibold text-brand-700">
             LinajeAnimal
           </span>
 
-          <h1 className="mt-6 text-5xl font-extrabold leading-tight text-gray-900">
+          <h1 className="mt-6 text-5xl font-extrabold leading-tight text-neutral-text">
             Gestiona el linaje de tus animales de forma sencilla.
           </h1>
 
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-6 text-lg leading-8 text-neutral-muted">
             Organiza animales, especies y razas, asigna relaciones familiares
             y consulta el árbol genealógico desde una plataforma intuitiva.
           </p>
@@ -58,14 +58,14 @@ export default function Landing() {
           <div className="mt-10 flex gap-4">
             <Link
               to="/register"
-              className="rounded-xl bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-700"
+              className="rounded-xl bg-brand-500 px-6 py-3 font-semibold text-white transition hover:bg-brand-600"
             >
               Crear cuenta
             </Link>
 
             <Link
               to="/login"
-              className="rounded-xl border border-green-600 px-6 py-3 font-semibold text-green-700 transition hover:bg-green-50"
+              className="rounded-xl border border-brand-500 px-6 py-3 font-semibold text-brand-600 transition hover:bg-brand-50"
             >
               Iniciar sesión
             </Link>
@@ -87,11 +87,11 @@ export default function Landing() {
 
       <section className="mx-auto max-w-7xl px-6 py-20">
 
-        <h2 className="text-center text-4xl font-bold text-gray-900">
+        <h2 className="text-center text-4xl font-bold text-neutral-text">
           Todo lo que necesitas
         </h2>
 
-        <p className="mt-4 text-center text-gray-600">
+        <p className="mt-4 text-center text-neutral-muted">
           Diseñado para administrar genealogías animales de manera rápida y organizada.
         </p>
 
@@ -109,7 +109,7 @@ export default function Landing() {
                 {feature.title}
               </h3>
 
-              <p className="mt-3 text-gray-600">
+              <p className="mt-3 text-neutral-muted">
                 {feature.description}
               </p>
 
@@ -167,19 +167,19 @@ export default function Landing() {
 
       <section className="py-24">
 
-        <div className="mx-auto max-w-3xl rounded-3xl bg-green-700 px-8 py-16 text-center text-white">
+        <div className="mx-auto max-w-3xl rounded-3xl bg-secondary-600 px-8 py-16 text-center text-white">
 
           <h2 className="text-4xl font-bold">
             Comienza hoy mismo
           </h2>
 
-          <p className="mt-5 text-lg text-green-100">
+          <p className="mt-5 text-lg text-white/80">
             Organiza toda la genealogía de tus animales desde una sola plataforma.
           </p>
 
           <Link
             to="/register"
-            className="mt-10 inline-block rounded-xl bg-white px-8 py-4 font-bold text-green-700 transition hover:scale-105"
+            className="mt-10 inline-block rounded-xl bg-white px-8 py-4 font-bold text-secondary-700 transition hover:scale-105"
           >
             Crear cuenta gratis
           </Link>
@@ -192,11 +192,16 @@ export default function Landing() {
   )
 }
 
+/**
+ * Paso de la seccion "Como funciona"
+ * @param {{ number: string, title: string, text: string }} props - Propiedades del paso
+ * @returns {JSX.Element}
+ */
 function Step({ number, title, text }) {
   return (
     <div className="text-center">
 
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-600 text-2xl font-bold text-white">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 text-2xl font-bold text-white">
         {number}
       </div>
 

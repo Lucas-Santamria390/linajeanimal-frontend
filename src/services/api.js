@@ -25,10 +25,13 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      sessionStorage.setItem('sessionExpired', 'true')
-      window.location.href = '/login'
+      const isLoginEndpoint = error.config?.url?.includes('/auth/login')
+      if (!isLoginEndpoint) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        sessionStorage.setItem('sessionExpired', 'true')
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }

@@ -6,13 +6,7 @@ import PageHeader from '../components/ui/PageHeader'
 import FormField from '../components/form/FormField'
 import Alert from '../components/ui/Alert'
 import Loading from '../components/ui/Loading'
-
-const PASSWORD_REQUIREMENTS = [
-  { label: 'Minimo 8 caracteres', test: (v) => v.length >= 8 },
-  { label: 'Al menos una mayuscula', test: (v) => /[A-Z]/.test(v) },
-  { label: 'Al menos un numero', test: (v) => /\d/.test(v) },
-  { label: 'Al menos un caracter especial', test: (v) => /[!@#$%^&*(),.?":{}|<>_]/.test(v) },
-]
+import { PASSWORD_REQUIREMENTS } from '../utils/constants'
 
 /**
  * Pagina de perfil del usuario autenticado
