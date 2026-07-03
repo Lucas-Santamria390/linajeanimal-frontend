@@ -1,5 +1,6 @@
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import fincaImg from '../assets/finca.avif'
 
 const features = [
   {
@@ -75,8 +76,8 @@ export default function Landing() {
         {/* Imagen */}
         <div className="mt-14 lg:mt-0">
           <img
-            src="/dashboard.png"
-            alt="Dashboard"
+            src={fincaImg}
+            alt="Finca"
             className="w-full max-w-xl rounded-3xl border bg-white shadow-2xl"
           />
         </div>
@@ -179,7 +180,7 @@ export default function Landing() {
 
           <Link
             to="/register"
-            className="mt-10 inline-block rounded-xl bg-white px-8 py-4 font-bold text-secondary-700 transition hover:scale-105"
+            className="mt-10 inline-block rounded-xl bg-white px-8 py-4 font-bold text-brand-700 transition hover:scale-105"
           >
             Crear cuenta gratis
           </Link>

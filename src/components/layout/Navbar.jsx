@@ -43,7 +43,8 @@ export default function Navbar() {
 
       {/* LOGO PRINCIPAL */}
       <Link to={isAuthenticated ? "/dashboard" : "/"} className="font-bold text-lg select-none flex items-center gap-2">
-        <span>🐾 LinajeAnimal</span>
+        <img src="/android-chrome-192x192.png" alt="LinajeAnimal" className="h-6 w-6 md:h-7 md:w-7 inline-block" />
+        <span>LinajeAnimal</span>
       </Link>
 
       {/* SESIÓN / ACCESO — ESCRITORIO (>= 768px). La navegación por secciones la maneja Sidebar. */}
