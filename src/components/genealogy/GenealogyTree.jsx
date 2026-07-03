@@ -295,10 +295,12 @@ export default function GenealogyTree({ animalId, hermanos = [], fallbackRelativ
                   const raza = n.node?.raza?.nombre || n.node?.raza || ''
                   const fotoUrl = n.node.fotoUrl
 
-                  const headerParts = [nodeName]
+                  const headerParts = []
                   if (displayId) headerParts.push(displayId)
                   if (raza) headerParts.push(raza)
-                  const headerText = `${colors.icon} ${headerParts.join(' · ')}`
+                  let headerText = `${colors.icon} ${headerParts.join(' · ')}`
+                  const maxHeaderLen = 28
+                  if (headerText.length > maxHeaderLen) headerText = headerText.slice(0, maxHeaderLen - 1) + '…'
 
                   const photoX = Math.round((GRAPH_NODE_WIDTH - NODE_PHOTO_SIZE) / 2)
                   const photoY = NODE_HEADER_H + 4
