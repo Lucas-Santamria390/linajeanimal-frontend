@@ -5,6 +5,7 @@ import {
   createEspecie,
   updateEspecie,
   deleteEspecie,
+  toggleActivateEspecie,
 } from '../services/especies'
 
 /**
@@ -19,7 +20,8 @@ import {
  *   getById: (id: number|string) => Promise<object>,
  *   create: (formData: object) => Promise<object>,
  *   update: (id: number|string, formData: object) => Promise<object>,
- *   remove: (id: number|string) => Promise<void>
+ *   remove: (id: number|string) => Promise<void>,
+ *   toggleActive: (id: number|string, active: boolean) => Promise<object>
  * }} Retorna estado del hook y operaciones CRUD
  */
 export function useEspecies(initialParams = {}) {
@@ -110,5 +112,18 @@ export function useEspecies(initialParams = {}) {
     }
   }, [])
 
-  return { data, loading, error, pagination, refetch, getById, create, update, remove }
+  const toggleActive = useCallback(async (id, active) => {
+    setError(null)
+    try {
+      const res = await toggleActivateEspecie(id, active)
+      setRefreshCount((c) => c + 1)
+      return res.data.data
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Error al cambiar estado de la especie'
+      setError(msg)
+      throw err
+    }
+  }, [])
+
+  return { data, loading, error, pagination, refetch, getById, create, update, remove, toggleActive }
 }

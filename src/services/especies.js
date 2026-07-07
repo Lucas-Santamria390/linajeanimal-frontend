@@ -35,3 +35,11 @@ export const updateEspecie = (id, data) => api.put(`/especies/${id}`, data)
  * @returns {Promise<object>} { success, data: { ... } }
  */
 export const deleteEspecie = (id) => api.delete(`/especies/${id}`)
+
+/**
+ * Activa o desactiva una especie (solo admin)
+ * @param {number|string} id - ID de la especie
+ * @param {boolean} active - true para activar, false para desactivar
+ * @returns {Promise<object>} { success, data: { ...especie } }
+ */
+export const toggleActivateEspecie = (id, active) => api.patch(`/especies/${id}`, { active })

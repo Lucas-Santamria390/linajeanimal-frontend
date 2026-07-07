@@ -5,6 +5,7 @@ import {
   createRaza,
   updateRaza,
   deleteRaza,
+  toggleActivateRaza,
 } from '../services/razas'
 
 /**
@@ -21,7 +22,8 @@ import {
  *   getById: (id: number|string) => Promise<object>,
  *   create: (formData: object) => Promise<object>,
  *   update: (id: number|string, formData: object) => Promise<object>,
- *   remove: (id: number|string) => Promise<void>
+ *   remove: (id: number|string) => Promise<void>,
+ *   toggleActive: (id: number|string, active: boolean) => Promise<object>
  * }} Retorna estado del hook y operaciones CRUD
  */
 export function useRazas(initialParams = {}, options = {}) {
@@ -119,5 +121,18 @@ export function useRazas(initialParams = {}, options = {}) {
     }
   }, [])
 
-  return { data, loading, error, pagination, refetch, getById, create, update, remove }
+  const toggleActive = useCallback(async (id, active) => {
+    setError(null)
+    try {
+      const res = await toggleActivateRaza(id, active)
+      setRefreshCount((c) => c + 1)
+      return res.data.data
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Error al cambiar estado de la raza'
+      setError(msg)
+      throw err
+    }
+  }, [])
+
+  return { data, loading, error, pagination, refetch, getById, create, update, remove, toggleActive }
 }

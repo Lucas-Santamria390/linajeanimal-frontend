@@ -35,3 +35,11 @@ export const updateRaza = (id, data) => api.put(`/razas/${id}`, data)
  * @returns {Promise<object>} { success, data: { ... } }
  */
 export const deleteRaza = (id) => api.delete(`/razas/${id}`)
+
+/**
+ * Activa o desactiva una raza (solo admin)
+ * @param {number|string} id - ID de la raza
+ * @param {boolean} active - true para activar, false para desactivar
+ * @returns {Promise<object>} { success, data: { ...raza } }
+ */
+export const toggleActivateRaza = (id, active) => api.patch(`/razas/${id}`, { active })

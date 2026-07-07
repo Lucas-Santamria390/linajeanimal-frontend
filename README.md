@@ -171,8 +171,8 @@ src/
 │   ├── api.js                     # Instancia Axios (baseURL, interceptores request/response)
 │   ├── auth.js                    # login, register, getProfile, changePassword
 │   ├── animales.js                # CRUD + children, siblings, familyTree, parents
-│   ├── especies.js                # CRUD especies
-│   ├── razas.js                   # CRUD razas
+│   ├── especies.js                # CRUD especies + toggleActive (PATCH)
+│   ├── razas.js                   # CRUD razas + toggleActive (PATCH)
 │   └── usuarios.js                # CRUD usuarios + toggleActive
 │
 ├── hooks/                         # Lógica de estado y efectos
@@ -420,8 +420,25 @@ El frontend consume la API REST de `linajeanimal-api`. Todas las respuestas sigu
 | `/animales/:id/family-tree` | GET | ✅ Bearer | — |
 | `/animales/:id/parents` | POST | ✅ Bearer | — |
 | `/especies` | GET, POST, PUT, DELETE | GET público, resto admin | ✅ |
+| `/especies/:id` | PATCH | ✅ Bearer | ✅ (toggle active) |
 | `/razas` | GET, POST, PUT, DELETE | GET público, resto admin | ✅ |
+| `/razas/:id` | PATCH | ✅ Bearer | ✅ (toggle active) |
 | `/usuarios` | GET, POST, PUT, DELETE, PATCH | ✅ Bearer | ✅ |
+
+### Filtros disponibles
+
+| Recurso | Parámetro GET | Valores | Descripción |
+|---|---|---|---|
+| `GET /especies` | `active` | `true`, `false` | Filtra por estado. Por defecto solo activas. |
+| `GET /razas` | `active` | `true`, `false` | Filtra por estado. Por defecto solo activas. |
+| `GET /razas` | `especie` | ID | Filtra por especie. |
+
+### Activación/Desactivación (Admin)
+
+| Recurso | Método | Body | Descripción |
+|---|---|---|---|
+| `PATCH /especies/:id` | PATCH | `{ "active": true/false }` | Activa o desactiva una especie. Error `409` si tiene animales activos. |
+| `PATCH /razas/:id` | PATCH | `{ "active": true/false }` | Activa o desactiva una raza. Error `409` si tiene animales activos. |
 
 ### Formato de respuestas
 
