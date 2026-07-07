@@ -1,7 +1,9 @@
 import AppRouter from './routes/AppRouter'
 
-function App() {
+/**
+ * Componente raiz de la aplicacion
+ * @returns {JSX.Element}
+ */
+export default function App() {
   return <AppRouter />
 }
-
-export default App

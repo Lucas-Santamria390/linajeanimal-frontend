@@ -164,9 +164,21 @@ Desactivar raza.
 ## Animales
 
 ### GET /animales
-Listar animales activos (paginado).
+Listar animales paginados. Por defecto solo muestra animales activos (`active=true`).
 - Auth: Bearer
-- Query: `page`, `limit`, `nombre`, `especie`, `raza`, `sexo`, `propietario`
+- Query:
+  - `page` (default 1)
+  - `limit` (default 20)
+  - `active` (`true`|`false`) — filtrar por estado activo/inactivo. Por defecto `true`.
+  - `identificador` — búsqueda por identificador
+  - `especie` — filtrar por ID de especie
+  - `raza` — filtrar por ID de raza
+  - `sexo` — filtrar por sexo (`macho`|`hembra`)
+  - `propietario` — (solo admin) filtrar por ID de propietario. Usuario regular: se ignora.
+- Comportamiento por propietario:
+  - **Admin**: ve todos los animales. Puede filtrar por `?propietario=ID`.
+  - **Usuario regular**: ve solo sus propios animales (filtro automático). El parámetro `propietario` se ignora.
+- Ordenamiento: por `identificador` ascendente (collation: español)
 - Status: 200 / 401
 
 ### POST /animales
@@ -175,52 +187,60 @@ Crear animal.
 - Body:
   ```json
   {
-    "nombre": "...",
-    "especie": "ID",
-    "raza": "ID",
-    "sexo": "macho|hembra",
-    "fechaNacimiento": "date",
-    "peso?": number,
-    "color?": "...",
-    "identificador?": "...",
-    "fotoUrl?": "...",
-    "notas?": "...",
-    "padre?": "ID|null",
-    "madre?": "ID|null"
+    "identificador": "ABC-123",        // REQUERIDO (arete, microchip, etc.)
+    "nombre": "Rex",                   // OPCIONAL
+    "especie": "ID_ESPECIE",           // REQUERIDO
+    "raza": "ID_RAZA",                // REQUERIDO
+    "sexo": "macho|hembra",           // REQUERIDO
+    "fechaNacimiento": "2023-01-01",  // REQUERIDO
+    "peso": 30.5,                     // OPCIONAL
+    "color": "Marron",                // OPCIONAL
+    "fotoUrl": "https://...",         // OPCIONAL
+    "notas": "texto",                 // OPCIONAL
+    "padre": "ID|null",               // OPCIONAL
+    "madre": "ID|null"                // OPCIONAL
   }
   ```
-- Status: 201 / 400 / 401 / 409 / 500
+- Índice único compuesto: `{ identificador + propietario._id }` — mismo identificador puede repetirse entre propietarios, no para el mismo propietario.
+- Status: 201 / 400 / 401 / 403 / 409 / 500
 
 ### GET /animales/{id}
 Detalle de animal.
 - Auth: Bearer
-- Status: 200 / 400 / 401 / 404
+- **403** si el usuario regular no es propietario del animal
+- Status: 200 / 400 / 401 / **403** / 404
 
 ### PUT /animales/{id}
 Actualizar animal (campos opcionales).
-- Auth: Bearer
+- Auth: Bearer (propietario o admin)
 - Status: 200 / 400 / 401 / 403 / 404 / 500
 
 ### DELETE /animales/{id}
-Desactivar (soft delete, solo admin).
-- Auth: Bearer (admin)
+Desactivar (soft delete). Disponible para propietario o admin.
+- Auth: Bearer (propietario o admin)
 - Status: 200 / 400 / 401 / 403 / 404 / 500
 
 ### GET /animales/{id}/children
-Listar hijos directos.
+Listar hijos directos del animal.
 - Auth: Bearer
-- Status: 200 / 400 / 401 / 404
+- **403** si el usuario regular no es propietario del animal
+- Ordenamiento: por `identificador` ascendente (collation: español)
+- Status: 200 / 400 / 401 / **403** / 404
 
 ### GET /animales/{id}/siblings
-Listar hermanos.
+Listar hermanos del animal.
 - Auth: Bearer
-- Status: 200 / 400 / 401 / 404
+- **403** si el usuario regular no es propietario del animal
+- Ordenamiento: por `identificador` ascendente (collation: español)
+- Status: 200 / 400 / 401 / **403** / 404
 
 ### GET /animales/{id}/family-tree
-Árbol genealógico.
+Árbol genealógico del animal.
 - Auth: Bearer
+- **403** si el usuario regular no es propietario del animal
 - Query: `generaciones` (default 3, max 5)
-- Status: 200 / 400 / 401 / 404
+- Cada nodo del árbol incluye: `_id`, `identificador`, `nombre`, `sexo`, `fechaNacimiento`, `padre`, `madre`, `hijos`
+- Status: 200 / 400 / 401 / **403** / 404
 
 ### POST /animales/{id}/parents
 Asignar o desasignar padres.
@@ -236,12 +256,12 @@ Asignar o desasignar padres.
 ```json
 {
   "_id": "string",
+  "identificador": "string",
   "nombre": "string",
   "sexo": "macho|hembra",
   "fechaNacimiento": "date",
   "peso": "number",
   "color": "string",
-  "identificador": "string",
   "fotoUrl": "string",
   "notas": "string",
   "active": "boolean",
@@ -262,3 +282,5 @@ Asignar o desasignar padres.
 - **Usuarios** solo accesible para admin
 - **Rate limit** (429) presente en auth (register/login)
 - Soft delete en usuarios, especies, razas y animales (campo `active: false`)
+- El usuario regular solo puede ver/manipular sus propios animales; el admin tiene visibilidad total
+- Nuevo código de error **403 Forbidden** cuando un usuario regular intenta acceder a un animal que no le pertenece

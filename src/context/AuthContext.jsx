@@ -1,8 +1,16 @@
 import { createContext, useContext, useState } from 'react'
 import api from '../services/api'
+import { login as loginService } from '../services/auth'
 
 const AuthContext = createContext(null)
 
+/**
+ * Proveedor de autenticacion global
+ * Maneja login/logout, almacena token y usuario en localStorage
+ * @param {object} props - Propiedades del componente
+ * @param {JSX.Element} props.children - Componentes hijos
+ * @returns {JSX.Element}
+ */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('user')
@@ -16,7 +24,7 @@ export function AuthProvider({ children }) {
     setLoading(true)
     setError(null)
     try {
-      const res = await api.post('/auth/login', { email, password })
+      const res = await loginService(email, password)
       const { token: newToken, usuario: userData } = res.data.data
       localStorage.setItem('token', newToken)
       localStorage.setItem('user', JSON.stringify(userData))
@@ -32,7 +40,19 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const logout = () => {
+  const updateAuth = (newToken, newUser) => {
+    localStorage.setItem('token', newToken)
+    localStorage.setItem('user', JSON.stringify(newUser))
+    setToken(newToken)
+    setUser(newUser)
+  }
+
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout')
+    } catch {
+      // best effort — always clear local session
+    }
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     setToken(null)
@@ -44,13 +64,18 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, error, isAuthenticated, login, logout, setError }}
+      value={{ user, token, loading, error, isAuthenticated, login, logout, setError, updateAuth }}
     >
       {children}
     </AuthContext.Provider>
   )
 }
 
+/**
+ * Hook para acceder al contexto de autenticacion
+ * @returns {{ user: (object|null), token: (string|null), loading: boolean, error: (string|null), isAuthenticated: boolean, login: (email: string, password: string) => Promise<boolean>, logout: () => void, setError: (msg: string|null) => void }} Estado y funciones de autenticacion
+ * @throws {Error} Si se usa fuera de AuthProvider
+ */
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext)
